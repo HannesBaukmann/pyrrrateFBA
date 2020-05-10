@@ -30,20 +30,20 @@ def readSBML(filename):
     reader = sbml.SBMLReader()
     document = reader.readSBML(filename)
     if document.isSetModel():  # Returns True if the Model object has been set.
-        # Initialize the RamParser object
-        parsed = __RamParser(document)
-        # return the DefbaModel object
-        from . import rrrdefbamodel
-        rrrdefbaModel = rrrdefbamodel.rrrdefbaModel(parsed.stoich, parsed.name, species=parsed.species_dict,
+        # Initialize RAMParser object
+        parsed = RAMParser(document)
+        # return the model object
+        import pyrrrateModel
+        model = pyrrrateModel.rrrModel(parsed.stoich, parsed.name, species=parsed.species_dict,
                                                     reactions=parsed.reactions_dict, HC=parsed.HC_matrix,
-                                                    HE=parsed.HE_matrix, HB=parsed.HB_matrix, HM=parsed.HM_matrix, )
-        return rrrdefbaModel
+                                                    HE=parsed.HE_matrix, HB=parsed.HB_matrix, HM=parsed.HM_matrix)
+        return model
     else:
         raise SBMLError(
             'The SBML file contains no model. Maybe the filename is wrong or the file does not follow SBML standards. Please run the SBML validator at http://sbml.org/Facilities/Validator/index.jsp to find the problem.')
 
 
-class __RAMParser:
+class RAMParser:
     """
     read all necessary information from a SBML file supporting the Resource Allocation Modelling (RAM) annotation standard and convert them
     to the matrix representation of a deFBA model. Minimimal informationen content is the stoichiometric matrix and the molecular weights of
