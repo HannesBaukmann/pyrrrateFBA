@@ -1,4 +1,8 @@
-def printNumbers():
+class rrrModel:
+    pass
+    def print_numbers():
+        pass
+
 #species
 #- metabolites
 #- intra
