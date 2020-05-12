@@ -190,7 +190,6 @@ class RAMParser:
             for product in r.getListOfProducts():
                 i = list(self.species_dict).index(product.getSpecies())
                 self.stoich[i, j] += product.getStoichiometry()
-            # (reversible Reaktionen??)
 
             # get gene association
             fbc_model = model.getPlugin('fbc')
@@ -214,6 +213,8 @@ class RAMParser:
                                 'fbc:geneAssociation for geneProduct ' + gene_product_id + ' is pointing to an unknown species')
                 except ValueError:
                     print('No gene product association given for reaction ' + r_id)
+            else:
+                self.reactions_dict[r_id]['geneProduct'] = None
 
             # get RAM reactions attributes
             annotation = r.getAnnotation()
