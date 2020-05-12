@@ -1,154 +1,29 @@
-# because a single enzyme can catalyze multiple reactions, we dont get a 1-to-1 mapping and need the inverse dict as well
-self.enzyme_catalyzes = {}
-for j, reactionname in enumerate(reaction_catalyzed_by):
-    try:
-        self.enzyme_catalyzes[reaction_catalyzed_by[reactionname]].append(reactionname)
-    except KeyError:
-        self.enzyme_catalyzes[reaction_catalyzed_by[reactionname]] = [reactionname]
-# Construct HC, HE matrices
-# eliminate the empty set from the dict
-self.enzyme_catalyzes = {k: v for k, v in list(self.enzyme_catalyzes.items()) if v != []}
-# Go through enzymes and construct the enzyme capacity constraints accordingly
-for enz, reac_array in list(self.enzyme_catalyzes.items()):
-    reversible_reactions = []
-    irreversible_reactions = []
-    for reac in reac_array:
-        if reac in self.reversible_fluxes:
-            reversible_reactions.append(reac)
-        else:
-            irreversible_reactions.append(reac)
-    self.__constructHCHEmatrix(enz, reversible_reactions, irreversible_reactions)
-
-self.__constructHBmatrix()
-self.__constructHMmattrix()
-
-
-def __constructHCHEmatrix(self, enz, reversible_reactions, irreversible_reactions):
+def construct_HcHe(model):
     """
-    Construct the enzyme capacity constraints iteratively.
-    Adds the constraints for the enzyme enz to the already present HC, HE matrices.
+    Construct matrices for enzyme capacity constraints: H_C and filter matrix H_E
     """
-    # include forward kcat values for the irreversible reactions
-    new_row_number = 2 ** len(reversible_reactions)
-    new_HC = np.zeros((new_row_number, len(self.reactions)))
-    new_HCtemp = np.zeros((1, len(self.reactions)))
-    # check if HC is already present.
-    if not hasattr(self.HC_matrix, 'shape'):
-        HC_size = 0
-    else:
-        HC_size = self.HC_matrix.shape[0]
-    # First we set the elements for the irreversible reactions.
-    # While RAM enforces the backward kcat for irreversible reactions to be zero. This method can handle irreversible reactions with
-    # k_forward = 0 and k_backward != 0.
-    for irr in irreversible_reactions:
-        if not self.kcat_values[irr][0] == 0:
-            # Decide whether the parameter will be scaled in the deFBA model.
-            if irr in self.protein_reactions:
-                self.parameter_list[self.param_kcat[irr][0]] = [
-                    ['HC[' + str(HC_size) + ',' + str(self.reactions.index(irr)) + ']'], self.kcat_values[irr][0],
-                    [-1], [1], 'kcat']
-            else:
-                self.parameter_list[self.param_kcat[irr][0]] = [
-                    ['HC[' + str(HC_size) + ',' + str(self.reactions.index(irr)) + ']'], self.kcat_values[irr][0],
-                    [-1], [self.scale], 'kcat']
-            # Add all positions of the parameter
-            for i in range(1, new_row_number):
-                self.parameter_list[self.param_kcat[irr][0]][0].append(
-                    'HC[' + str(HC_size + i) + ',' + str(self.reactions.index(irr)) + ']')
-                self.parameter_list[self.param_kcat[irr][0]][2].append(-1)
-                if irr in self.protein_reactions:
-                    self.parameter_list[self.param_kcat[irr][0]][3].append(1)
-                else:
-                    self.parameter_list[self.param_kcat[irr][0]][3].append(self.scale)
-            # Put the values in
-            new_HCtemp[0, self.reactions.index(irr)] = 1.0 / (self.kcat_values[irr][0])
-        # handle backward pointing reactions
-        elif not self.kcat_values[irr][1] == 0:
-            if irr in self.protein_reactions:
-                self.parameter_list[self.param_kcat[irr][1]] = [
-                    ['HC[' + str(HC_size) + ',' + str(self.reactions.index(irr)) + ']'], self.kcat_values[irr][1],
-                    [-1], [-1], 'kcat']
-            else:
-                self.parameter_list[self.param_kcat[irr][1]] = [
-                    ['HC[' + str(HC_size) + ',' + str(self.reactions.index(irr)) + ']'], self.kcat_values[irr][1],
-                    [-1], [-self.scale], 'kcat']
-            for i in range(1, new_row_number):
-                self.parameter_list[self.param_kcat[irr][1]][0].append(
-                    'HC[' + str(HC_size + i) + ',' + str(self.reactions.index(irr)) + ']')
-                self.parameter_list[self.param_kcat[irr][1]][2].append(-1)
-                if irr in self.protein_reactions:
-                    self.parameter_list[self.param_kcat[irr][1]][3].append(-1)
-                else:
-                    self.parameter_list[self.param_kcat[irr][1]][3].append(-self.scale)
-            new_HCtemp[0, self.reactions.index(irr)] = -1.0 / (self.kcat_values[irr][1])
-    # state which enzyme is in play
-    new_HE = np.zeros((new_row_number, len(self.species)))
-    new_HEtemp = np.zeros((1, len(self.species)))
-    new_HEtemp[0, self.species.index(enz)] = 1
-    # generate templates
-    for rows in range(2 ** (len(reversible_reactions))):
-        new_HC[rows, :] = new_HCtemp
-        new_HE[rows, :] = new_HEtemp
-    # first column
-    if reversible_reactions:
-        for rev_reac in reversible_reactions:
-            self.parameter_list[self.param_kcat[rev_reac][0]] = [[], self.kcat_values[rev_reac][0], [], [], 'kcat']
-            self.parameter_list[self.param_kcat[rev_reac][1]] = [[], self.kcat_values[rev_reac][1], [], [], 'kcat']
-        for i in range(new_row_number):
-            if (-1) ** i == 1:
-                self.parameter_list[self.param_kcat[reversible_reactions[0]][0]][0].append(
-                    'HC[' + str(HC_size + i) + ',' + str(self.reactions.index(reversible_reactions[0])) + ']')
-                self.parameter_list[self.param_kcat[reversible_reactions[0]][0]][2].append(-1)
-                if reversible_reactions[0] in self.protein_reactions:
-                    self.parameter_list[self.param_kcat[reversible_reactions[0]][0]][3].append(1)
-                else:
-                    self.parameter_list[self.param_kcat[reversible_reactions[0]][0]][3].append(self.scale)
-                new_HC[i, self.reactions.index(reversible_reactions[0])] = 1.0 / (
-                    self.kcat_values[reversible_reactions[0]][0])
-            else:
-                self.parameter_list[self.param_kcat[reversible_reactions[0]][1]][0].append(
-                    'HC[' + str(HC_size + i) + ',' + str(self.reactions.index(reversible_reactions[0])) + ']')
-                self.parameter_list[self.param_kcat[reversible_reactions[0]][1]][2].append(-1)
-                if reversible_reactions[0] in self.protein_reactions:
-                    self.parameter_list[self.param_kcat[reversible_reactions[0]][1]][3].append(-1)
-                else:
-                    self.parameter_list[self.param_kcat[reversible_reactions[0]][1]][3].append(-self.scale)
-                new_HC[i, self.reactions.index(reversible_reactions[0])] = -1.0 / (
-                    self.kcat_values[reversible_reactions[0]][1])
-        for j in range(1, len(reversible_reactions)):
-            for i in range(new_row_number):
-                if not ((i % (2 ** (j + 1))) < 2 ** j):
-                    self.parameter_list[self.param_kcat[reversible_reactions[j]][1]][0].append(
-                        'HC[' + str(HC_size + i) + ',' + str(self.reactions.index(reversible_reactions[j])) + ']')
-                    self.parameter_list[self.param_kcat[reversible_reactions[j]][1]][2].append(-1)
-                    if reversible_reactions[j] in self.protein_reactions:
-                        self.parameter_list[self.param_kcat[reversible_reactions[j]][1]][3].append(-1)
-                    else:
-                        self.parameter_list[self.param_kcat[reversible_reactions[j]][1]][3].append(-self.scale)
-                    new_HC[i, self.reactions.index(reversible_reactions[j])] = -1.0 / (
-                        self.kcat_values[reversible_reactions[j]][1])
-                else:
-                    self.parameter_list[self.param_kcat[reversible_reactions[j]][0]][0].append(
-                        'HC[' + str(HC_size + i) + ',' + str(self.reactions.index(reversible_reactions[j])) + ']')
-                    self.parameter_list[self.param_kcat[reversible_reactions[j]][0]][2].append(-1)
-                    if reversible_reactions[j] in self.protein_reactions:
-                        self.parameter_list[self.param_kcat[reversible_reactions[j]][0]][3].append(1)
-                    else:
-                        self.parameter_list[self.param_kcat[reversible_reactions[j]][0]][3].append(self.scale)
-                    new_HC[i, self.reactions.index(reversible_reactions[j])] = 1.0 / (
-                        self.kcat_values[reversible_reactions[j]][0])
-    # if no the method is called the first time, create a HC matrix
-    if not hasattr(self.HC_matrix, 'shape'):
-        self.HC_matrix = new_HC
-        self.HE_matrix = new_HE
-    # else add the new constraints
-    else:
-        self.HC_matrix = np.r_[self.HC_matrix, new_HC]
-        self.HE_matrix = np.r_[self.HE_matrix, new_HE]
+    # calculate number of rows in H_C:
+    for enzyme, key in model.species_dict.items():
+        # iterate over enzymes
+        if model.species_dict[enzyme]['speciesType'] == 'enzyme':
+            # iterate over reactions
+            for rxn, key in model.reactions_dict.items():
+                if model.reactions_dict[rxn]['geneProduct'] == enzyme:
+                    print(enzyme)
+
+    # sum of 2^(number of reversible reactions) per enzyme that catalyzes at least one reversible reaction
 
 
 
-    def __constructHMmattrix(self):
+
+
+
+    model.HC_matrix =
+    model.HE_matrix =
+
+
+
+    def __construct_Hm(self):
         """
         Constructs the HM matrix
         """
@@ -165,7 +40,7 @@ def __constructHCHEmatrix(self, enz, reversible_reactions, irreversible_reaction
                         self.maintenance_percentage[reac], [-1], [self.scale], 'maintenance']
 
 
-    def __constructHBmatrix(self):
+    def __construct_Hb(self):
         """
         Construct the HB matrix
         """
@@ -216,4 +91,3 @@ def __constructHCHEmatrix(self, enz, reversible_reactions, irreversible_reaction
                         if specie == self.species[coloumn - self.numbers['proteins']]:
                             self.HB_matrix[row, coloumn - self.numbers['proteins']] = (self.biomass_percentage[specie] - 1) * \
                                                                                   self.molecular_weight[specie]
-
