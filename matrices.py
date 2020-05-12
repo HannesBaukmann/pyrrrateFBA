@@ -1,26 +1,28 @@
+import numpy as np
+
 def construct_HcHe(model):
     """
     Construct matrices for enzyme capacity constraints: H_C and filter matrix H_E
     """
-    # calculate number of rows in H_C:
-    for enzyme, key in model.species_dict.items():
-        # iterate over enzymes
+    # calculate number of rows in H_C and H_E:
+    n_rev = []  # list containing number of reversible rxns per enzyme
+
+    # iterate over enzymes
+    for enzyme in model.species_dict.keys():
+        e_rev = 0  # number of reversible reactions catalyzed by this enzyme
         if model.species_dict[enzyme]['speciesType'] == 'enzyme':
             # iterate over reactions
             for rxn, key in model.reactions_dict.items():
                 if model.reactions_dict[rxn]['geneProduct'] == enzyme:
-                    print(enzyme)
+                    if model.reactions_dict[rxn]['reversible']:
+                        e_rev = e_rev + 1
+            n_rev.append(e_rev)
 
-    # sum of 2^(number of reversible reactions) per enzyme that catalyzes at least one reversible reaction
+    n = sum(2 ** i for i in n_rev)  # number of rows in H_C and H_E
 
-
-
-
-
-
-    model.HC_matrix =
-    model.HE_matrix =
-
+    # initialize matrices
+    model.HC_matrix = np.zeros((n, len(model.reactions_dict)))
+    model.HE_matrix = np.zeros((n, len(n_rev)))  # number of enzymes = number of columns in H_E
 
 
     def __construct_Hm(self):
