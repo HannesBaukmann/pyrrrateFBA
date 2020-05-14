@@ -11,18 +11,63 @@ def construct_HcHe(model):
     for enzyme in model.species_dict.keys():
         e_rev = 0  # number of reversible reactions catalyzed by this enzyme
         if model.species_dict[enzyme]['speciesType'] == 'enzyme':
+            enzyme_catalyzed_anything = False
             # iterate over reactions
             for rxn, key in model.reactions_dict.items():
                 if model.reactions_dict[rxn]['geneProduct'] == enzyme:
+                    enzyme_catalyzed_anything = True
                     if model.reactions_dict[rxn]['reversible']:
                         e_rev = e_rev + 1
-            n_rev.append(e_rev)
+            if enzyme_catalyzed_anything:
+                n_rev.append(e_rev)
 
     n = sum(2 ** i for i in n_rev)  # number of rows in H_C and H_E
 
     # initialize matrices
     model.HC_matrix = np.zeros((n, len(model.reactions_dict)))
     model.HE_matrix = np.zeros((n, len(n_rev)))  # number of enzymes = number of columns in H_E
+
+    # fill matrices
+    e = 0  # enzyme counter
+    i = 0  # row counter
+
+    # iterate over enzymes
+    for enzyme in model.species_dict.keys():
+        enzyme_catalyzes_anything = False
+        if e < len(n_rev):
+            if model.species_dict[enzyme]['speciesType'] == 'enzyme':
+                j = 0  # reversible-reaction-per-enzyme counter
+                # iterate over reactions
+                if j <= n_rev[e]:
+                    for rxn, key in model.reactions_dict.items():
+                        if model.reactions_dict[rxn]['geneProduct'] == enzyme:
+                            enzyme_catalyzes_anything = True
+                            if model.reactions_dict[rxn]['reversible']:
+                                fwd = True
+                                for r in range(2 ** n_rev[e]):
+                                    if fwd:
+                                        model.HC_matrix[i + r][list(model.reactions_dict.keys()).index(rxn)] = \
+                                        model.reactions_dict[rxn]['kcatForward']
+                                        r = r + 1
+                                        if np.mod(r, 2 ** n_rev[e] / 2 ** (j + 1)) == 0:
+                                            fwd = False
+                                    else:
+                                        model.HC_matrix[i + r][list(model.reactions_dict.keys()).index(rxn)] = -1 * \
+                                                                                                               model.reactions_dict[
+                                                                                                                   rxn][
+                                                                                                                   'kcatBackward']
+                                        r = r + 1
+                                        if np.mod(r, 2 ** n_rev[e] / 2 ** (j + 1)) == 0:
+                                            fwd = True
+                                j = j + 1
+                            else:  # irreversible
+                                for r in range(2 ** n_rev[e]):
+                                    model.HC_matrix[i + r][list(model.reactions_dict.keys()).index(rxn)] = \
+                                    model.reactions_dict[rxn]['kcatForward']
+        if enzyme_catalyzes_anything:
+            i = i + 2 ** n_rev[e]
+            e = e + 1
+
 
 
     def __construct_Hm(self):
