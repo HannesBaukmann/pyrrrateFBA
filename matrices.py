@@ -46,24 +46,25 @@ def construct_HcHe(model):
                                 fwd = True
                                 for r in range(2 ** n_rev[e]):
                                     if fwd:
-                                        model.HC_matrix[i + r][list(model.reactions_dict.keys()).index(rxn)] = \
-                                        model.reactions_dict[rxn]['kcatForward']
+                                        model.HC_matrix[i + r][
+                                            list(model.reactions_dict.keys()).index(rxn)] = np.reciprocal(
+                                            model.reactions_dict[rxn]['kcatForward'])
                                         r = r + 1
                                         if np.mod(r, 2 ** n_rev[e] / 2 ** (j + 1)) == 0:
                                             fwd = False
                                     else:
-                                        model.HC_matrix[i + r][list(model.reactions_dict.keys()).index(rxn)] = -1 * \
-                                                                                                               model.reactions_dict[
-                                                                                                                   rxn][
-                                                                                                                   'kcatBackward']
+                                        model.HC_matrix[i + r][
+                                            list(model.reactions_dict.keys()).index(rxn)] = -1 * np.reciprocal(
+                                            model.reactions_dict[rxn]['kcatBackward'])
                                         r = r + 1
                                         if np.mod(r, 2 ** n_rev[e] / 2 ** (j + 1)) == 0:
                                             fwd = True
                                 j = j + 1
                             else:  # irreversible
                                 for r in range(2 ** n_rev[e]):
-                                    model.HC_matrix[i + r][list(model.reactions_dict.keys()).index(rxn)] = \
-                                    model.reactions_dict[rxn]['kcatForward']
+                                    model.HC_matrix[i + r][
+                                        list(model.reactions_dict.keys()).index(rxn)] = np.reciprocal(
+                                        model.reactions_dict[rxn]['kcatForward'])
         if enzyme_catalyzes_anything:
             i = i + 2 ** n_rev[e]
             e = e + 1
