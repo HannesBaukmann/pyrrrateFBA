@@ -45,7 +45,7 @@ def construct_HcHe(model):
         # n_rev contains a number for each catalytically active enzyme
         if e < len(n_rev):
             # in order to stick with the definition of the set P, quota compounds are included
-            if model.species_dict[enzyme]['speciesType'] == 'enzyme' or model.species_dict[enzyme]['speciesType'] == 'quota':
+            if model.species_dict[enzyme]['speciesType'] == 'enzyme' or model.species_dict[enzyme]['speciesType'] == 'quota' or model.species_dict[enzyme]['speciesType'] == 'storage':
                 # increment macromolecule counter
                 m = m + 1
                 j = 0  # reversible-reaction-per-enzyme counter
@@ -96,21 +96,11 @@ def construct_HcHe(model):
             e = e + 1
 
 
-    def __construct_Hm(self):
-        """
-        Constructs the HM matrix
-        """
-        if self.maintenance_percentage:
-            self.HM_matrix = np.zeros((len(self.maintenance_percentage), len(self.reactions)))
-            for row, reac in enumerate(self.maintenance_percentage.keys()):
-                self.HM_matrix[row, self.reactions.index(reac)] = 1.0 / self.maintenance_percentage[reac]
-                if reac in self.protein_reactions:
-                    self.parameter_list[self.param_main[reac]] = [['HM[' + str(row) + ',' + str(self.reactions.index(reac)) + ']'],
-                                                                  self.maintenance_percentage[reac], [-1], [1], 'maintenance']
-                else:
-                    self.parameter_list[self.param_main[reac]] = [
-                        ['HM[' + str(row) + ',' + str(self.reactions.index(reac)) + ']'],
-                        self.maintenance_percentage[reac], [-1], [self.scale], 'maintenance']
+def __construct_Hm(self):
+    """
+    Constructs the HM matrix
+    """
+    
 
 
     def __construct_Hb(self):
