@@ -33,10 +33,11 @@ def readSBML(filename):
         # Initialize RAMParser object
         parsed = RAMParser(document)
         # return the model object
+        return parsed
         import pyrrrateModel
         model = pyrrrateModel.rrrModel(parsed.stoich, parsed.name, species=parsed.species_dict,
-                                                    reactions=parsed.reactions_dict, HC=parsed.HC_matrix,
-                                                    HE=parsed.HE_matrix, HB=parsed.HB_matrix, HM=parsed.HM_matrix)
+                                       reactions=parsed.reactions_dict, HC=parsed.HC_matrix,
+                                       HE=parsed.HE_matrix, HB=parsed.HB_matrix, HM=parsed.HM_matrix)
         return model
     else:
         raise SBMLError(
@@ -56,7 +57,8 @@ class RAMParser:
         - document      libsbml.reader object containing the SBML data
         """
         self.name = None
-        self.species_dict = OrderedDict()
+        self.metabolites_dict = OrderedDict()
+        self.macromolecules_dict = OrderedDict()
         self.reactions_dict = OrderedDict()
 
         # MATRICES
@@ -78,17 +80,9 @@ class RAMParser:
         # SPECIES
         for s in (model.species):
             s_id = s.getId()
-            if s_id in self.species_dict:
+            if s_id in self.metabolites_dict.keys() or s_id in self.macromolecules_dict.keys():
                 # funktioniert das so?
                 raise SBMLError('The species id ' + s_id + ' is not unique!')
-            self.species_dict[s_id] = {}
-            # get species attributes
-            self.species_dict[s_id]['name'] = s.getName()
-            self.species_dict[s_id]['compartment'] = s.getCompartment()
-            self.species_dict[s_id]['initialAmount'] = s.getInitialAmount()
-            self.species_dict[s_id]['constant'] = s.getConstant()
-            self.species_dict[s_id]['boundaryCondition'] = s.getBoundaryCondition()
-            self.species_dict[s_id]['hasOnlySubstanceUnits'] = s.getHasOnlySubstanceUnits()
 
             # get RAM species attributes
             annotation = s.getAnnotation()
@@ -103,8 +97,12 @@ class RAMParser:
                         break
                 if ram_element:  # False if string is empty
                     s_type = ram_element.getAttrValue('speciesType', url)
-                    if s_type == 'enzyme' or s_type == 'quota' or s_type == 'storage' or s_type == 'extracellular' or s_type == 'metabolite':
-                        self.species_dict[s_id]['speciesType'] = s_type
+                    if s_type == 'metabolite' or s_type == 'extracellular':
+                        self.metabolites_dict[s_id] = {}
+                        self.metabolites_dict[s_id]['speciesType'] = s_type
+                    elif s_type == 'enzyme' or s_type == 'quota' or s_type == 'storage':
+                        self.macromolecules_dict[s_id] = {}
+                        self.macromolecules_dict[s_id]['speciesType'] = s_type
                     else:
                         raise RAMError('unknown species type ' + s_type + ' found in the RAM annotation ' + s_id)
                     # or check consistency later when the species dictionary has been completed?
@@ -125,7 +123,6 @@ class RAMParser:
                             else:
                                 raise RAMError(
                                     'The molecular weight of species ' + s_id + ' is not set althought it is supposed to be a biomass species. Please correct the error in the SBML file')
-                    self.species_dict[s_id]['molecularWeight'] = weight
 
                     # try to import the objective weight (can be a string pointing to a paramter, int, or double)
                     try:
@@ -143,7 +140,12 @@ class RAMParser:
                             else:
                                 raise RAMError(
                                     'The objective weight of species ' + s_id + ' is not set althought it is supposed to be a biomass species. Please correct the error in the SBML file')
-                    self.species_dict[s_id]['objectiveWeight'] = oweight
+                    if s_type == 'metabolite' or s_type == 'extracellular':
+                        self.metabolites_dict[s_id]['molecularWeight'] = weight
+                        self.metabolites_dict[s_id]['objectiveWeight'] = oweight
+                    elif s_type == 'enzyme' or s_type == 'quota' or s_type == 'storage':
+                        self.macromolecules_dict[s_id]['molecularWeight'] = weight
+                        self.macromolecules_dict[s_id]['objectiveWeight'] = oweight
 
                     # Try to import the biomass percentage for quota macromolecules
                     if s_type == "quota":
@@ -158,10 +160,8 @@ class RAMParser:
                                     print('The parameter ' + biomass_string + ' has no value.')
                         if biomass < 0 or biomass > 1:
                             raise RAMError('The parameter ' + biomp_string + ' does not have a value between 0 and 1.')
-                        self.species_dict[s_id]['biomassPercentage'] = biomass
-                    else:
-                        self.species_dict[s_id]['biomassPercentage'] = 0.0
-                        # Hinweis, dass man das einfach so macht, ohne zu kontrollieren, ob es im Modell eines biomassP für eine nicht-quota species steht?
+                        self.macromolecules_dict[s_id]['biomassPercentage'] = biomass
+                        # Hinweis, dass man nicht kontrolliert, ob im Modell eine biomassP für eine nicht-quota species steht?
 
                 else:  # no RAM elements
                     raise SBMLError(
@@ -169,6 +169,22 @@ class RAMParser:
             else:  # no annotation
                 raise SBMLError(
                     'Species ' + s_id + ' does not have a RAM annotation. Stopping import.')
+
+            # get species attributes
+            if s_type == 'metabolite' or s_type == 'extracellular':
+                self.metabolites_dict[s_id]['name'] = s.getName()
+                self.metabolites_dict[s_id]['compartment'] = s.getCompartment()
+                self.metabolites_dict[s_id]['initialAmount'] = s.getInitialAmount()
+                self.metabolites_dict[s_id]['constant'] = s.getConstant()
+                self.metabolites_dict[s_id]['boundaryCondition'] = s.getBoundaryCondition()
+                self.metabolites_dict[s_id]['hasOnlySubstanceUnits'] = s.getHasOnlySubstanceUnits()
+            elif s_type == 'enzyme' or s_type == 'quota' or s_type == 'storage':
+                self.macromolecules_dict[s_id]['name'] = s.getName()
+                self.macromolecules_dict[s_id]['compartment'] = s.getCompartment()
+                self.macromolecules_dict[s_id]['initialAmount'] = s.getInitialAmount()
+                self.macromolecules_dict[s_id]['constant'] = s.getConstant()
+                self.macromolecules_dict[s_id]['boundaryCondition'] = s.getBoundaryCondition()
+                self.macromolecules_dict[s_id]['hasOnlySubstanceUnits'] = s.getHasOnlySubstanceUnits()
 
         # REACTIONS
         self.stoich = np.zeros((model.getNumSpecies(), model.getNumReactions()))  # stoich is the stoichiometric matrix
@@ -185,10 +201,16 @@ class RAMParser:
 
             # fill stoichiometric matrix
             for educt in r.getListOfReactants():
-                i = list(self.species_dict).index(educt.getSpecies())
+                try:
+                    i = list(self.metabolites_dict).index(educt.getSpecies())
+                except:
+                    i = list(self.macromolecules_dict).index(educt.getSpecies())
                 self.stoich[i, j] -= educt.getStoichiometry()
             for product in r.getListOfProducts():
-                i = list(self.species_dict).index(product.getSpecies())
+                try:
+                    i = list(self.metabolites_dict).index(educt.getSpecies())
+                except:
+                    i = list(self.macromolecules_dict).index(educt.getSpecies())
                 self.stoich[i, j] += product.getStoichiometry()
 
             # get gene association
@@ -201,12 +223,12 @@ class RAMParser:
                     gene_product = fbc_model.getGeneProduct(gene_product_id)  # object
                     enzyme = gene_product.getAssociatedSpecies()
                     if enzyme == '':
-                        if gene_product_id in self.species_dict:
+                        if gene_product_id in self.macromolecules_dict.keys():
                             self.reactions_dict[r_id]['geneProduct'] = gene_product_id
                         else:
                             raise RAMError('The reaction ' + r_id + ' has an empty fbc:geneProductRef()')
                     else:
-                        if enzyme in self.species_dict:
+                        if enzyme in self.macromolecules_dict.keys():
                             self.reactions_dict[r_id]['geneProduct'] = enzyme
                         else:
                             raise RAMError(
@@ -273,11 +295,9 @@ class RAMParser:
 
             j += 1
 
-        # Sortierung der stoichiometrischen Matrix??
-
         # delete boundary species from stoichiometric matrix (they are not modelled dynamically)
-        for species in self.species_dict:
-            if self.species_dict[species]['compartment'] == 'extracellular':
-                if self.species_dict[species]['constant'] or self.species_dict[species]['boundaryCondition']:
-                    index = list(self.species_dict).index(species)
+        for met in self.metabolites_dict:
+            if self.metabolites_dict[met]['compartment'] == 'extracellular':
+                if self.metabolites_dict[met]['constant'] or self.metabolites_dict[met]['boundaryCondition']:
+                    index = list(self.metabolites_dict).index(met)
                     self.stroich = np.delete(self.stoich, index)
