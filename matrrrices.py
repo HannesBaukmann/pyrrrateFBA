@@ -100,55 +100,30 @@ def construct_Hm(model):
                     list(model.macromolecules_dict.keys()).index(mm)] = model.reactions_dict[rxn]['maintenanceScaling'] * model.macromolecules_dict[mm]['initialAmount']
 
 
+def construct_Hb(model):
+    """
+    Construct the H_B matrix
+    """
+    # count number of quota and storage compounds
+    b = 0
+    for mm in model.macromolecules_dict.keys():
+        if model.macromolecules_dict[mm]['speciesType'] == 'quota':
+            b += 1
 
-    def __construct_Hb(self):
-        """
-        Construct the HB matrix
-        """
-        for specie_w in self.param_ob_weight:
-            if not specie_w in self.param_weight:
-                self.parameter_list[self.param_ob_weight[specie_w]] = [
-                    ['objective[' + str(self.species.index(specie_w)) + ']'], self.objective_weight[specie_w], [1], [1],
-                    'objective']
-            else:
-                self.parameter_list[self.param_ob_weight[specie_w]] = [
-                    ['objective[' + str(self.species.index(specie_w)) + ']'], self.objective_weight[specie_w], [1], [1],
-                    'ob_weight']
-        for specie_w in self.param_weight:
-            if not specie_w in self.param_ob_weight:
-                self.parameter_list[self.param_weight[specie_w]] = [[], self.molecular_weight[specie_w], [], [],
-                                                                    'weight']
-        if self.biomass_percentage:
-            self.HB_matrix = np.zeros((len(self.biomass_percentage), len(self.species)))
-            biomass_vector = np.zeros(len(self.species))
-            for j, specie in enumerate(self.species[-self.numbers['proteins']:]):
-                biomass_vector[j - self.numbers['proteins']] = self.molecular_weight[specie]
-            for i in self.param_biomp.keys():
-                self.parameter_list[self.param_biomp[i]] = [[], self.biomass_percentage[i], [], [], 'biom_percent']
-            for row, specie in enumerate(self.biomass_percentage.keys()):
-                for specie_w in self.param_weight:
-                    self.parameter_list[self.param_weight[specie_w]][0].append(
-                        'HB[' + str(row) + ',' + str(self.species.index(specie_w)) + ']')
-                    self.parameter_list[self.param_weight[specie_w]][2].append(1)
-                    if specie_w == specie:
-                        self.parameter_list[self.param_weight[specie_w]][3].append(self.biomass_percentage[specie] - 1)
-                    else:
-                        self.parameter_list[self.param_weight[specie_w]][3].append(self.biomass_percentage[specie])
-                for coloumn in range(self.numbers['proteins']):
-                    self.HB_matrix[row, coloumn - self.numbers['proteins']] = self.molecular_weight[
-                                                                                  self.species[coloumn - self.numbers['proteins']]] * \
-                                                                              self.biomass_percentage[specie]
-                    try:
-                        self.parameter_list[self.param_biomp[specie]][0].append(
-                            'HB[' + str(row) + ',' + str(coloumn - self.numbers['proteins']) + ']')
-                        self.parameter_list[self.param_biomp[specie]][2].append(1)
-                        if specie == self.species[coloumn - self.numbers['proteins']]:
-                            self.HB_matrix[row, coloumn - self.numbers['proteins']] = (self.biomass_percentage[specie] - 1) * \
-                                                                                      self.molecular_weight[specie]
-                            self.parameter_list[self.param_biomp[specie]][3].append(-1)
+    if b > 0:
+        model.HB_matrix = np.zeros((b, len(model.macromolecules_dict)))
+        r = 0  # row (quota) counter
+        if r < b:
+            for q in model.macromolecules_dict.keys():
+                if model.macromolecules_dict[q]['speciesType'] == 'quota':
+                    for mm in model.macromolecules_dict.keys():
+                        if mm == q:
+                            model.HB_matrix[r][list(model.macromolecules_dict.keys()).index(mm)] = \
+                            (model.macromolecules_dict[q]['biomassPercentage'] - 1) * model.macromolecules_dict[mm]['molecularWeight']
                         else:
-                            self.parameter_list[self.param_biomp[specie]][3].append(1)
-                    except KeyError:
-                        if specie == self.species[coloumn - self.numbers['proteins']]:
-                            self.HB_matrix[row, coloumn - self.numbers['proteins']] = (self.biomass_percentage[specie] - 1) * \
-                                                                                  self.molecular_weight[specie]
+                            model.HB_matrix[r][list(model.macromolecules_dict.keys()).index(mm)] = \
+                            model.macromolecules_dict[q]['biomassPercentage'] * model.macromolecules_dict[mm]['molecularWeight']
+                    r += 1
+    else:
+        print('The model does not seem to include quota compouds with the mandatory biomass percentage defined. Therefore, no HB matrix will be constructed.')
+        # take note that model.HB_matrix may not exist for some models!
