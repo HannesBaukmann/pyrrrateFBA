@@ -26,11 +26,18 @@ class Model(object):
         - HM                            maintenance constraint matrix
         """
 
+        self.stoich = stoich
+        self.name = name
+        self.metabolites_dict = metabolites
+        self.macromolecules_dict = macromolecules
+        self.reactions_dict = reactions
+        self.HC_matrix=HC
+        self.HE_matrix=HE
+        self.HB_matrix=HB
+        self.HM_matrix=HM
+
         # Create an empty variable to save the latest results of the simulation methods
         self.results = None
-
-        # Set the name of the model
-        self.name = name
 
         def print_numbers():
             pass
