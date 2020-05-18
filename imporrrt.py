@@ -123,7 +123,7 @@ class RAMParser:
                                 raise RAMError(
                                     'The molecular weight of species ' + s_id + ' is not set althought it is supposed to be a biomass species. Please correct the error in the SBML file')
 
-                    # try to import the objective weight (can be a string pointing to a paramter, int, or double)
+                    # try to import the objective weight (can be a string pointing to a parameter, int, or double)
                     try:
                         oweight = float(ram_element.getAttrValue('objectiveWeight', url))
                     except ValueError:
@@ -236,6 +236,12 @@ class RAMParser:
                     print('No gene product association given for reaction ' + r_id)
             else:
                 self.reactions_dict[r_id]['geneProduct'] = None
+
+            # get flux balance constraints
+            if reaction_fbc.getLowerFluxBound():
+                self.reactions_dict[r_id]['lowerFluxBound'] = reaction_fbc.getLowerFluxBound()
+            if reaction_fbc.getUpperFluxBound():
+                self.reactions_dict[r_id]['upperFluxBound'] = reaction_fbc.getLowerUpperBound()
 
             # get RAM reactions attributes
             annotation = r.getAnnotation()
