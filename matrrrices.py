@@ -87,10 +87,17 @@ def construct_HcHe(model):
             e = e + 1
 
 
-def __construct_Hm(self):
+def construct_Hm(model):
     """
-    Constructs the HM matrix
+    Constructs the H_M matrix
     """
+    model.HM_matrix = np.zeros((len(model.reactions_dict), len(model.macromolecules_dict)))
+
+    for rxn in model.reactions_dict.keys():
+        if model.reactions_dict[rxn]['maintenanceScaling'] > 0:
+            for mm in model.macromolecules_dict.keys():
+                model.HM_matrix[list(model.reactions_dict.keys()).index(rxn)][
+                    list(model.macromolecules_dict.keys()).index(mm)] = model.reactions_dict[rxn]['maintenanceScaling'] * model.macromolecules_dict[mm]['initialAmount']
 
 
 
