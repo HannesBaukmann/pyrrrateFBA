@@ -34,9 +34,7 @@ def readSBML(filename):
         parsed = RAMParser(document)
         # return the model object
         import pyrrrateModel
-        model = pyrrrateModel.rrrModel(parsed.stoich, parsed.name, metabolites=parsed.metabolites_dict, macromolecules=parsed.macromolecules_dict,
-                                       reactions=parsed.reactions_dict, HC=parsed.HC_matrix,
-                                       HE=parsed.HE_matrix, HB=parsed.HB_matrix, HM=parsed.HM_matrix)
+        model = pyrrrateModel.Model(parsed.stoich, parsed.name, metabolites=parsed.metabolites_dict, macromolecules=parsed.macromolecules_dict, reactions=parsed.reactions_dict, HC=parsed.HC_matrix, HE=parsed.HE_matrix, HB=parsed.HB_matrix, HM=parsed.HM_matrix)
         return model
     else:
         raise SBMLError(
