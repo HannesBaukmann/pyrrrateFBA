@@ -198,7 +198,6 @@ class RAMParser:
             # fill stoichiometric matrix
             j = list(model.reactions).index(r)
             for educt in r.getListOfReactants():
-                print(educt.getSpecies(), educt.species)
                 try:
                     i = list(self.metabolites_dict).index(educt.getSpecies())
                 except:
