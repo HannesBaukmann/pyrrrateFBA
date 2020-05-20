@@ -186,7 +186,6 @@ class RAMParser:
         # REACTIONS
         self.stoich = np.zeros((model.getNumSpecies(), model.getNumReactions()))  # stoich is the stoichiometric matrix
         # Loop over all reactions. gather stoichiometry, reversibility, kcats and gene associations
-        j = 0  # reaction counter
         for r in model.reactions:
             r_id = r.getId()
             if r_id in self.reactions_dict:
@@ -197,17 +196,20 @@ class RAMParser:
             #            self.reactions_dict[r_id]['fast'] = False
 
             # fill stoichiometric matrix
+            j = list(model.reactions).index(r)
             for educt in r.getListOfReactants():
+                print(educt.getSpecies(), educt.species)
                 try:
                     i = list(self.metabolites_dict).index(educt.getSpecies())
                 except:
-                    i = list(self.macromolecules_dict).index(educt.getSpecies())
+                    i = list(self.macromolecules_dict).index(educt.getSpecies()) + len(self.metabolites_dict)
+                print(i)
                 self.stoich[i, j] -= educt.getStoichiometry()
             for product in r.getListOfProducts():
                 try:
-                    i = list(self.metabolites_dict).index(educt.getSpecies())
+                    i = list(self.metabolites_dict).index(product.getSpecies())
                 except:
-                    i = list(self.macromolecules_dict).index(educt.getSpecies())
+                    i = list(self.macromolecules_dict).index(product.getSpecies()) + len(self.metabolites_dict)
                 self.stoich[i, j] += product.getStoichiometry()
 
             # get gene association
@@ -295,8 +297,6 @@ class RAMParser:
 
             if self.reactions_dict[r_id]['kcatForward'] == 0 and self.reactions_dict[r_id]['kcatBackward'] != 0:
                 raise RAMError('The reaction ' + rid + ' has no forward kcat value but a non-zero backward kcat. ')
-
-            j += 1
 
         # delete boundary species from stoichiometric matrix (they are not modelled dynamically)
         for met in self.metabolites_dict:
