@@ -34,7 +34,9 @@ def readSBML(filename):
         parsed = RAMParser(document)
         # return the model object
         import pyrrrateModel
-        model = pyrrrateModel.Model(parsed.stoich, parsed.name, metabolites=parsed.metabolites_dict, macromolecules=parsed.macromolecules_dict, reactions=parsed.reactions_dict, HC=parsed.HC_matrix, HE=parsed.HE_matrix, HB=parsed.HB_matrix, HM=parsed.HM_matrix)
+        model = pyrrrateModel.Model(parsed.stoich, parsed.name, metabolites=parsed.metabolites_dict,
+                                    macromolecules=parsed.macromolecules_dict, reactions=parsed.reactions_dict,
+                                    HC=parsed.HC_matrix, HE=parsed.HE_matrix, HB=parsed.HB_matrix, HM=parsed.HM_matrix)
         return model
     else:
         raise SBMLError(
@@ -121,7 +123,7 @@ class RAMParser:
                                 raise RAMError(
                                     'The molecular weight of species ' + s_id + ' is not set althought it is supposed to be a biomass species. Please correct the error in the SBML file')
 
-                    # try to import the objective weight (can be a string pointing to a parameter, int, or double)
+                    # try to import the objective weight (can be a string pointing to a paramter, int, or double)
                     try:
                         oweight = float(ram_element.getAttrValue('objectiveWeight', url))
                     except ValueError:
@@ -184,7 +186,8 @@ class RAMParser:
                 self.macromolecules_dict[s_id]['hasOnlySubstanceUnits'] = s.getHasOnlySubstanceUnits()
 
         # REACTIONS
-        self.stoich = np.zeros((model.getNumSpecies(), model.getNumReactions()))  # stoich is the stoichiometric matrix
+        self.stoich = np.zeros(
+            (len(self.metabolites_dict), model.getNumReactions()))  # stoich is the stoichiometric matrix
         # Loop over all reactions. gather stoichiometry, reversibility, kcats and gene associations
         for r in model.reactions:
             r_id = r.getId()
@@ -194,22 +197,6 @@ class RAMParser:
             # get reaction attributes
             self.reactions_dict[r_id]['reversible'] = r.getReversible()
             #            self.reactions_dict[r_id]['fast'] = False
-
-            # fill stoichiometric matrix
-            j = list(model.reactions).index(r)
-            for educt in r.getListOfReactants():
-                try:
-                    i = list(self.metabolites_dict).index(educt.getSpecies())
-                except:
-                    i = list(self.macromolecules_dict).index(educt.getSpecies()) + len(self.metabolites_dict)
-                print(i)
-                self.stoich[i, j] -= educt.getStoichiometry()
-            for product in r.getListOfProducts():
-                try:
-                    i = list(self.metabolites_dict).index(product.getSpecies())
-                except:
-                    i = list(self.macromolecules_dict).index(product.getSpecies()) + len(self.metabolites_dict)
-                self.stoich[i, j] += product.getStoichiometry()
 
             # get gene association
             fbc_model = model.getPlugin('fbc')
@@ -240,7 +227,7 @@ class RAMParser:
             if reaction_fbc.getLowerFluxBound():
                 self.reactions_dict[r_id]['lowerFluxBound'] = reaction_fbc.getLowerFluxBound()
             if reaction_fbc.getUpperFluxBound():
-                self.reactions_dict[r_id]['upperFluxBound'] = reaction_fbc.getLowerUpperBound()
+                self.reactions_dict[r_id]['upperFluxBound'] = reaction_fbc.getUpperFluxBound()
 
             # get RAM reactions attributes
             annotation = r.getAnnotation()
@@ -295,11 +282,25 @@ class RAMParser:
                         self.reactions_dict[r_id]['kcatBackward'] = 0.0
 
             if self.reactions_dict[r_id]['kcatForward'] == 0 and self.reactions_dict[r_id]['kcatBackward'] != 0:
-                raise RAMError('The reaction ' + rid + ' has no forward kcat value but a non-zero backward kcat. ')
+                raise RAMError('The reaction ' + r_id + ' has no forward kcat value but a non-zero backward kcat. ')
+
+            # fill stoichiometric matrix
+            # exclude quota reactions?
+            j = list(model.reactions).index(r)
+            for educt in r.getListOfReactants():
+                # only for metabolites
+                if educt.getSpecies() in self.metabolites_dict.keys():
+                    i = list(self.metabolites_dict).index(educt.getSpecies())
+                    self.stoich[i, j] -= educt.getStoichiometry()
+            for product in r.getListOfProducts():
+                if product.getSpecies() in self.metabolites_dict.keys():
+                    i = list(self.metabolites_dict).index(product.getSpecies())
+                    self.stoich[i, j] += product.getStoichiometry()
 
         # delete boundary species from stoichiometric matrix (they are not modelled dynamically)
+        boundary_id = []
         for met in self.metabolites_dict:
             if self.metabolites_dict[met]['compartment'] == 'extracellular':
-                if self.metabolites_dict[met]['constant'] or self.metabolites_dict[met]['boundaryCondition']:
-                    index = list(self.metabolites_dict).index(met)
-                    self.stroich = np.delete(self.stoich, index)
+                #                if self.metabolites_dict[met]['constant'] or self.metabolites_dict[met]['boundaryCondition']:
+                boundary_id.append(list(self.metabolites_dict).index(met))
+        self.stoich = np.delete(self.stoich, boundary_id, axis=0)
