@@ -82,8 +82,7 @@ class Model(object):
               + '\n\t regulatory proteins\t\t' \
               + '\n\t regulated reactions\t\t')
 
-
-    def fba(self, objective=None):
+    def fba(model, objective=None, maximize=True):
         """
         performs Flux Balance Analysis
         """
@@ -106,8 +105,9 @@ class Model(object):
             # check whether rxn exists
             brxns = [list(model.reactions_dict.keys()).index(objective)]
 
-        S = model.stoich  # stoichiometric matrix
+        S = model.stoich
         rows, cols = S.shape
+
         lb = [None] * cols  # lower bounds on v
         ub = [None] * cols  # upper bounds on v
 
@@ -116,17 +116,20 @@ class Model(object):
                 ub[index] = model.reactions_dict[rxn]['upperFluxBound']
             except KeyError:
                 ub[index] = 1000
-            if not model.reactions_dict[rxn]['reversible']:
-                lb[index] = 0
-            else:
+            if model.reactions_dict[rxn]['reversible']:
                 try:
                     lb[index] = model.reactions_dict[rxn]['lowerFluxBound']
                 except KeyError:
                     lb[index] = -1000
+            else:
+                lb[index] = 0
 
         # c vector objective function
         c = np.zeros(cols)
-        c[brxns] = 1
+        if maximize:
+            c[brxns] = 1
+        else:
+            c[brxns] = -1
 
         # save solutions
         sols = np.zeros(len(brxns))
