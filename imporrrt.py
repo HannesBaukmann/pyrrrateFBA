@@ -67,17 +67,17 @@ class RAMParser:
         self.HB_matrix = None  # Biomass composition constraints
 
         # MODEL
-        model = document.getModel()  # Returns the Model contained in this SBMLDocument, or None if no such model exists.
-        if not model:
+        sbmlmodel = document.getModel()  # Returns the Model contained in this SBMLDocument, or None if no such model exists.
+        if not sbmlmodel:
             raise SBMLError(
                 'The SBML file contains no model. Maybe the filename is wrong or the file does not follow SBML standards. Please run the SBML validator at http://sbml.org/Facilities/Validator/index.jsp to find the problem.')
 
-        self.name = model.getId()
+        self.name = sbmlmodel.getId()
 
-        # qual_model = model.getPlugin('qual')
+        # qual_model = sbmlmodel.getPlugin('qual')
 
         # SPECIES
-        for s in (model.species):
+        for s in sbmlmodel.species:
             s_id = s.getId()
             if s_id in self.metabolites_dict.keys() or s_id in self.macromolecules_dict.keys():
                 # funktioniert das so?
@@ -106,14 +106,14 @@ class RAMParser:
                         raise RAMError('unknown species type ' + s_type + ' found in the RAM annotation ' + s_id)
                     # or check consistency later when the species dictionary has been completed?
 
-                    # try to import the molecular weight (can be a string pointing to a paramter, int, or double)
+                    # try to import the molecular weight (can be a string pointing to a parameter, int, or double)
                     try:
                         weight = float(ram_element.getAttrValue('molecularWeight', url))
                     except ValueError:
                         weight_str = ram_element.getAttrValue('molecularWeight', url)
                         if weight_str:
                             try:
-                                weight = float(model.getParameter(weight_str).getValue())
+                                weight = float(sbmlmodel.getParameter(weight_str).getValue())
                             except AttributeError:
                                 raise RAMError('The parameter ' + weight_str + ' has no value.')
                         else:
@@ -130,7 +130,7 @@ class RAMParser:
                         oweight_str = ram_element.getAttrValue('objectiveWeight', url)
                         if oweight_str:
                             try:
-                                oweight = float(model.getParameter(oweight_str).getValue())
+                                oweight = float(sbmlmodel.getParameter(oweight_str).getValue())
                             except AttributeError:
                                 raise RAMError('The parameter ' + oweight_str + ' has no value.')
                         else:
@@ -154,7 +154,7 @@ class RAMParser:
                             biomass_string = ram_element.getAttrValue('biomassPercentage', url)
                             if biomass_string:
                                 try:
-                                    biomass = float(model.getParameter(biomp_string).getValue())
+                                    biomass = float(sbmlmodelmodel.getParameter(biomp_string).getValue())
                                 except AttributeError:
                                     print('The parameter ' + biomass_string + ' has no value.')
                         if biomass < 0 or biomass > 1:
@@ -187,9 +187,9 @@ class RAMParser:
 
         # REACTIONS
         self.stoich = np.zeros(
-            (len(self.metabolites_dict), model.getNumReactions()))  # stoich is the stoichiometric matrix
+            (len(self.metabolites_dict), sbmlmodel.getNumReactions()))  # stoich is the stoichiometric matrix
         # Loop over all reactions. gather stoichiometry, reversibility, kcats and gene associations
-        for r in model.reactions:
+        for r in sbmlmodel.reactions:
             r_id = r.getId()
             if r_id in self.reactions_dict:
                 raise SBMLError('The reaction id ' + r_id + ' is not unique!')
@@ -199,7 +199,7 @@ class RAMParser:
             #            self.reactions_dict[r_id]['fast'] = False
 
             # get gene association
-            fbc_model = model.getPlugin('fbc')
+            fbc_model = sbmlmodel.getPlugin('fbc')
             reaction_fbc = r.getPlugin('fbc')
             # (geht das irgendwie eleganter?)
             if reaction_fbc.getGeneProductAssociation():
@@ -249,7 +249,7 @@ class RAMParser:
                         main_str = ram_element.getAttrValue('maintenanceScaling', url)
                         if main_str:
                             try:
-                                main = float(model.getParameter(main_str).getValue())
+                                main = float(sbmlmodel.getParameter(main_str).getValue())
                             except AttributeError:
                                 raise RAMError('The parameter ' + main_str + ' has no value.')
                     self.reactions_dict[r_id]['maintenanceScaling'] = main
@@ -261,7 +261,7 @@ class RAMParser:
                         k_fwd_str = ram_element.getAttrValue('kcatForward', url)
                         if k_fwd_str:
                             try:
-                                k_fwd = float(model.getParameter(k_fwd_str).getValue())
+                                k_fwd = float(sbmlmodel.getParameter(k_fwd_str).getValue())
                             except AttributeError:
                                 raise RAMError('The parameter ' + k_fwd_str + ' has no value.')
                     self.reactions_dict[r_id]['kcatForward'] = k_fwd
@@ -274,7 +274,7 @@ class RAMParser:
                             k_bwd_str = ram_element.getAttrValue('kcatBackward', url)
                             if k_bwd_str:
                                 try:
-                                    k_bwd = float(model.getParameter(k_bwd_str).getValue())
+                                    k_bwd = float(sbmlmodel.getParameter(k_bwd_str).getValue())
                                 except AttributeError:
                                     raise RAMError('The parameter ' + k_bwd_str + ' has no value.')
                         self.reactions_dict[r_id]['kcatBackward'] = k_bwd
@@ -286,7 +286,7 @@ class RAMParser:
 
             # fill stoichiometric matrix
             # exclude quota reactions?
-            j = list(model.reactions).index(r)
+            j = list(sbmlmodel.reactions).index(r)
             for educt in r.getListOfReactants():
                 # only for metabolites
                 if educt.getSpecies() in self.metabolites_dict.keys():
