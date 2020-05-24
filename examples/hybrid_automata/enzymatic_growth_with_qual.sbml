@@ -282,7 +282,7 @@
       </reaction>
       <reaction id="RPdilution" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="R" stoichiometry="1" constant="true"></speciesReference>
+          <speciesReference species="RP" stoichiometry="1" constant="true"></speciesReference>
         </listOfReactants>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
