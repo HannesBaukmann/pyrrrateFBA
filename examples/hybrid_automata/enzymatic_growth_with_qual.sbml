@@ -26,8 +26,8 @@
       <compartment id="cytosol" name="cytosol. Collecting all non external components" spatialDimensions="3" size="1" constant="true" />
     </listOfCompartments>
     <qual:listOfQualitativeSpecies xmlns:qual="http://www.sbml.org/sbml/level3/version1/qual/version1">
-      <qual:qualitativeSpecies qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false" qual:id="G_RPbar"></qual:qualitativeSpecies>
-      <qual:qualitativeSpecies qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false" qual:id="G_T2bar" />
+      <qual:qualitativeSpecies qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false" qual:id="G_RPbar"/>
+      <qual:qualitativeSpecies qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false" qual:id="G_T2bar"/>
     </qual:listOfQualitativeSpecies>
     <listOfSpecies>
       <species id="C1" compartment="external" initialAmount="6000" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true"></species>
