@@ -59,6 +59,7 @@ class RAMParser:
         self.metabolites_dict = OrderedDict()
         self.macromolecules_dict = OrderedDict()
         self.reactions_dict = OrderedDict()
+        self.is_deFBA = True
 
         # MATRICES
         self.HC_matrix = None  # Enzyme Capacity Constraint matrix
@@ -164,10 +165,11 @@ class RAMParser:
 
                 else:  # no RAM elements
                     raise SBMLError(
-                        'Species ' + s_id + ' does not have a RAM annotation. Stopping import.')
-            else:  # no annotation
-                raise SBMLError(
-                    'Species ' + s_id + ' does not have a RAM annotation. Stopping import.')
+                        'Species ' + s_id + ' has a RAM annotation, but no RAM elements. Stopping import.')
+            # no annotation -> no deFBA
+            elif self.is_deFBA:
+                self.is_deFBA = False
+                print('Warning: species ' + s_id + ' has no RAM annotation. The input is no valid deFBA model.')
 
             # get species attributes
             if s_type == 'metabolite' or s_type == 'extracellular':
@@ -280,6 +282,10 @@ class RAMParser:
                         self.reactions_dict[r_id]['kcatBackward'] = k_bwd
                     else:
                         self.reactions_dict[r_id]['kcatBackward'] = 0.0
+            # no annotation -> no deFBA
+            elif self.is_deFBA:
+                self.is_deFBA = False
+                print('Warning: reaction ' + r_id + ' has no RAM annotation. The input is no valid deFBA model.')
 
             if self.reactions_dict[r_id]['kcatForward'] == 0 and self.reactions_dict[r_id]['kcatBackward'] != 0:
                 raise RAMError('The reaction ' + r_id + ' has no forward kcat value but a non-zero backward kcat. ')
