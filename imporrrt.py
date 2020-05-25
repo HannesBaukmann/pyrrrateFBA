@@ -171,21 +171,22 @@ class RAMParser:
                 self.is_deFBA = False
                 print('Warning: species ' + s_id + ' has no RAM annotation. The input is no valid deFBA model.')
 
-            # get species attributes
-            if s_type == 'metabolite' or s_type == 'extracellular':
-                self.metabolites_dict[s_id]['name'] = s.getName()
-                self.metabolites_dict[s_id]['compartment'] = s.getCompartment()
-                self.metabolites_dict[s_id]['initialAmount'] = s.getInitialAmount()
-                self.metabolites_dict[s_id]['constant'] = s.getConstant()
-                self.metabolites_dict[s_id]['boundaryCondition'] = s.getBoundaryCondition()
-                self.metabolites_dict[s_id]['hasOnlySubstanceUnits'] = s.getHasOnlySubstanceUnits()
-            elif s_type == 'enzyme' or s_type == 'quota' or s_type == 'storage':
-                self.macromolecules_dict[s_id]['name'] = s.getName()
-                self.macromolecules_dict[s_id]['compartment'] = s.getCompartment()
-                self.macromolecules_dict[s_id]['initialAmount'] = s.getInitialAmount()
-                self.macromolecules_dict[s_id]['constant'] = s.getConstant()
-                self.macromolecules_dict[s_id]['boundaryCondition'] = s.getBoundaryCondition()
-                self.macromolecules_dict[s_id]['hasOnlySubstanceUnits'] = s.getHasOnlySubstanceUnits()
+            if self.is_deFBA:
+                # get species attributes
+                if s_type == 'metabolite' or s_type == 'extracellular':
+                    self.metabolites_dict[s_id]['name'] = s.getName()
+                    self.metabolites_dict[s_id]['compartment'] = s.getCompartment()
+                    self.metabolites_dict[s_id]['initialAmount'] = s.getInitialAmount()
+                    self.metabolites_dict[s_id]['constant'] = s.getConstant()
+                    self.metabolites_dict[s_id]['boundaryCondition'] = s.getBoundaryCondition()
+                    self.metabolites_dict[s_id]['hasOnlySubstanceUnits'] = s.getHasOnlySubstanceUnits()
+                elif s_type == 'enzyme' or s_type == 'quota' or s_type == 'storage':
+                    self.macromolecules_dict[s_id]['name'] = s.getName()
+                    self.macromolecules_dict[s_id]['compartment'] = s.getCompartment()
+                    self.macromolecules_dict[s_id]['initialAmount'] = s.getInitialAmount()
+                    self.macromolecules_dict[s_id]['constant'] = s.getConstant()
+                    self.macromolecules_dict[s_id]['boundaryCondition'] = s.getBoundaryCondition()
+                    self.macromolecules_dict[s_id]['hasOnlySubstanceUnits'] = s.getHasOnlySubstanceUnits()
 
         # REACTIONS
         self.stoich = np.zeros(
@@ -198,38 +199,38 @@ class RAMParser:
             self.reactions_dict[r_id] = {}
             # get reaction attributes
             self.reactions_dict[r_id]['reversible'] = r.getReversible()
-            #            self.reactions_dict[r_id]['fast'] = False
 
             # get gene association
             fbc_model = sbmlmodel.getPlugin('fbc')
             reaction_fbc = r.getPlugin('fbc')
             # (geht das irgendwie eleganter?)
-            if reaction_fbc.getGeneProductAssociation():
-                try:
-                    gene_product_id = reaction_fbc.getGeneProductAssociation().all_elements[0].getGeneProduct()
-                    gene_product = fbc_model.getGeneProduct(gene_product_id)  # object
-                    enzyme = gene_product.getAssociatedSpecies()
-                    if enzyme == '':
-                        if gene_product_id in self.macromolecules_dict.keys():
-                            self.reactions_dict[r_id]['geneProduct'] = gene_product_id
+            if reaction_fbc:
+                if reaction_fbc.getGeneProductAssociation():
+                    try:
+                        gene_product_id = reaction_fbc.getGeneProductAssociation().all_elements[0].getGeneProduct()
+                        gene_product = fbc_model.getGeneProduct(gene_product_id)  # object
+                        enzyme = gene_product.getAssociatedSpecies()
+                        if enzyme == '':
+                            if gene_product_id in self.macromolecules_dict.keys():
+                                self.reactions_dict[r_id]['geneProduct'] = gene_product_id
+                            else:
+                                raise RAMError('The reaction ' + r_id + ' has an empty fbc:geneProductRef()')
                         else:
-                            raise RAMError('The reaction ' + r_id + ' has an empty fbc:geneProductRef()')
-                    else:
-                        if enzyme in self.macromolecules_dict.keys():
-                            self.reactions_dict[r_id]['geneProduct'] = enzyme
-                        else:
-                            raise RAMError(
-                                'fbc:geneAssociation for geneProduct ' + gene_product_id + ' is pointing to an unknown species')
-                except ValueError:
-                    print('No gene product association given for reaction ' + r_id)
-            else:
-                self.reactions_dict[r_id]['geneProduct'] = None
+                            if enzyme in self.macromolecules_dict.keys():
+                                self.reactions_dict[r_id]['geneProduct'] = enzyme
+                            else:
+                                raise RAMError(
+                                    'fbc:geneAssociation for geneProduct ' + gene_product_id + ' is pointing to an unknown species')
+                    except ValueError:
+                        print('No gene product association given for reaction ' + r_id)
+                else:
+                    self.reactions_dict[r_id]['geneProduct'] = None
 
-            # get flux balance constraints
-            if reaction_fbc.getLowerFluxBound():
-                self.reactions_dict[r_id]['lowerFluxBound'] = reaction_fbc.getLowerFluxBound()
-            if reaction_fbc.getUpperFluxBound():
-                self.reactions_dict[r_id]['upperFluxBound'] = reaction_fbc.getUpperFluxBound()
+                # get flux balance constraints
+                if reaction_fbc.getLowerFluxBound():
+                    self.reactions_dict[r_id]['lowerFluxBound'] = reaction_fbc.getLowerFluxBound()
+                if reaction_fbc.getUpperFluxBound():
+                    self.reactions_dict[r_id]['upperFluxBound'] = reaction_fbc.getUpperFluxBound()
 
             # get RAM reactions attributes
             annotation = r.getAnnotation()
@@ -282,13 +283,14 @@ class RAMParser:
                         self.reactions_dict[r_id]['kcatBackward'] = k_bwd
                     else:
                         self.reactions_dict[r_id]['kcatBackward'] = 0.0
+
+                    if self.reactions_dict[r_id]['kcatForward'] == 0 and self.reactions_dict[r_id]['kcatBackward'] != 0:
+                        raise RAMError(
+                            'The reaction ' + r_id + ' has no forward kcat value but a non-zero backward kcat. ')
             # no annotation -> no deFBA
             elif self.is_deFBA:
                 self.is_deFBA = False
                 print('Warning: reaction ' + r_id + ' has no RAM annotation. The input is no valid deFBA model.')
-
-            if self.reactions_dict[r_id]['kcatForward'] == 0 and self.reactions_dict[r_id]['kcatBackward'] != 0:
-                raise RAMError('The reaction ' + r_id + ' has no forward kcat value but a non-zero backward kcat. ')
 
             # fill stoichiometric matrix
             # exclude quota reactions?
