@@ -1,43 +1,21 @@
 class Model(object):
-    """
-    This class represents a biochemical reaction network, specifically the ODE of the form
-    zdot = S * v(z), where S is the stoichiometric matrix, v the reaction rate vector, and
-    x the species concentration vector.
-    The reactions vector consists of v=(v_y, v_x, v_p), with exchange reactions v_y,
-    metabolite transformations v_x, and biomass/enzyme production v_p.
-    Species vector consists of z=(y,x,p), with external species y, metabolites x, and
-    proteins p.
-    The information about catalyzing enzymes is encoded via H_c * v <= H_E * p.
-    Biomass composition constraint H_B * x <=0;
-    Maintenance constraints H_A *v \geq H_F p
-    """
 
-    def __init__(self, stoich, name, metabolites, macromolecules, reactions, HC=None, HE=None, HB=None, HM=None):
-        """
-        DeFbaModel constructor.
-
-        Required arguments:
-
-
-        Optional arguments:
-        - HC                            enzyme capacity constraint (ECC) matrix
-        - HE                            filter matrix to determine ECC constraint
-        - HB                            biomass composition matrix
-        - HM                            maintenance constraint matrix
-        """
-
-        self.stoich = stoich
-        self.name = name
-        self.metabolites_dict = metabolites
-        self.macromolecules_dict = macromolecules
-        self.reactions_dict = reactions
-        self.HC_matrix=HC
-        self.HE_matrix=HE
-        self.HB_matrix=HB
-        self.HM_matrix=HM
+    def __init__(self):
 
         # Create an empty variable to save the latest results of the simulation methods
         self.results = None
+
+        if self.is_deFBA:
+            import matrrrices
+
+            self.HC_matrix = None  # Enzyme Capacity Constraint matrix
+            self.HE_matrix = None  # Filter matrix for ECC matrix
+            self.HM_matrix = None  # Maintenance matrix
+            self.HB_matrix = None  # Biomass composition constraints
+
+            construct_HcHe(self)
+            construct_Hm(self)
+            construct_Hb(self)
 
     def print_numbers(model):
         extra = 0
