@@ -61,12 +61,6 @@ class RAMParser:
         self.reactions_dict = OrderedDict()
         self.is_deFBA = True
 
-        # MATRICES
-        self.HC_matrix = None  # Enzyme Capacity Constraint matrix
-        self.HE_matrix = None  # Filter matrix for ECC matrix
-        self.HM_matrix = None  # Maintenance matrix
-        self.HB_matrix = None  # Biomass composition constraints
-
         # MODEL
         sbmlmodel = document.getModel()  # Returns the Model contained in this SBMLDocument, or None if no such model exists.
         if not sbmlmodel:
