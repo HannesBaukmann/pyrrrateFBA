@@ -280,7 +280,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="RPdilution" reversible="false">
+      <reaction id="RPdegradation" reversible="false">
         <listOfReactants>
           <speciesReference species="RP" stoichiometry="1" constant="true"></speciesReference>
         </listOfReactants>
@@ -294,7 +294,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="Qdilution" reversible="false">
+      <reaction id="Qdegradation" reversible="false">
         <listOfReactants>
           <speciesReference species="Q" stoichiometry="1" constant="true"></speciesReference>
         </listOfReactants>
@@ -308,7 +308,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="Rdilution" reversible="false">
+      <reaction id="Rdegradation" reversible="false">
         <listOfReactants>
           <speciesReference species="R" stoichiometry="1" constant="true"></speciesReference>
         </listOfReactants>
@@ -322,7 +322,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="T1dilution" reversible="false">
+      <reaction id="T1degradation" reversible="false">
         <listOfReactants>
           <speciesReference species="T1" stoichiometry="1" constant="true"></speciesReference>
         </listOfReactants>
@@ -336,7 +336,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="T2dilution" reversible="false">
+      <reaction id="T2degradation" reversible="false">
         <listOfReactants>
           <speciesReference species="T2" stoichiometry="1" constant="true"></speciesReference>
         </listOfReactants>
