@@ -1,0 +1,527 @@
+\documentclass{article}
+
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[USenglish]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{fullpage}
+%\usepackage{todonotes}
+
+
+\makeatletter
+\providecommand*{\diff}%
+   {\@ifnextchar^{\DIfF}{\DIfF^{}}}
+\def\DIfF^#1{%
+   \mathop{\text{\mathstrut d}}%
+      \nolimits^{#1}\gobblespace}
+\def\gobblespace{%
+      \futurelet\diffarg\opspace}
+\def\opspace{%
+   \let\DiffSpace\!%
+   \ifx\diffarg(%
+      \let\DiffSpace\relax
+   \else
+      \ifx\diffarg[%
+         \let\DiffSpace\relax
+      \else
+         \ifx\diffarg\{%
+            \let\DiffSpace\relax
+         \fi\fi\fi\DiffSpace}
+\makeatother
+\newcommand{\intd}{\diff}%             differential "d"
+\newcommand{\defeq}{\mathrel{:=}}%     is per definition equal to
+\newcommand{\tp}{\top}%                transpose
+\newcommand{\kron}{\otimes}%           Kronecker product
+\newcommand{\setR}{\mathbb{R}}%        real numbers
+\newcommand{\expe}{\mathrm{e}}%        Eulers constant
+
+\newcommand{\vectorfont}[1]{\boldsymbol{#1}}%
+\newcommand{\greekvectorfont}[1]{\boldsymbol{#1}}%
+\newcommand{\matrixfont}[1]{\mathbf{#1}}%
+
+
+\newcommand{\bvec}{\vectorfont{b}}
+\newcommand{\fvec}{\vectorfont{f}}
+\newcommand{\gvec}{\vectorfont{g}}
+\newcommand{\hvec}{\vectorfont{h}}
+\newcommand{\uvec}{\vectorfont{u}}
+\newcommand{\yvec}{\vectorfont{y}}
+
+\newcommand{\tildeyvec}{\vectorfont{\tilde{y}}}
+
+\newcommand{\dyvec}{\vectorfont{\dot{y}}}
+%
+\newcommand{\Phivec}{\greekvectorfont{\Phi}}
+%
+\newcommand{\bfrakvec}{\vectorfont{\mathfrak{b}}}
+\newcommand{\ffrakvec}{\vectorfont{\mathfrak{f}}}
+\newcommand{\ufrakvec}{\vectorfont{\mathfrak{u}}}
+\newcommand{\xfrakvec}{\vectorfont{\mathfrak{x}}}
+\newcommand{\yfrakvec}{\vectorfont{\mathfrak{y}}}
+%
+\newcommand{\nullvec}{\greekvectorfont{0}}
+\newcommand{\lbvec}{\vectorfont{l\negthinspace b}}
+\newcommand{\ubvec}{\vectorfont{u\negthinspace b}}
+\newcommand{\lbfrakvec}{\vectorfont{\mathfrak{l\negthinspace b}}}
+\newcommand{\ubfrakvec}{\vectorfont{\mathfrak{u\negthinspace b}}}
+%
+\newcommand{\Bmat}{\matrixfont{B}}
+\newcommand{\Hmat}{\matrixfont{H}}
+\newcommand{\Imat}{\matrixfont{I}}%       identity matrix
+\newcommand{\Smat}{\matrixfont{S}}
+
+\newcommand{\Afrakmat}{\matrixfont{\mathfrak{A}}}
+
+\newcommand{\Nullmat}{\matrixfont{0}}
+
+
+
+\begin{document}
+
+\begin{center}
+	{\Large\textbf{Implementation Details for \texttt{cp\_linprog.py}}}
+\end{center}
+
+We have a linear optimal control problem of the form
+\begin{subequations}
+\begin{align}
+\min_{\uvec(\cdot), \yvec (\cdot)} &\int_{t_0}^{t_{\mathrm{end}}} \expe^{-\varphi \cdot t}\cdot \Phivec_1^{\tp} \yvec(t) \intd t + \Phivec_2^{\tp} \yvec(t_0) + \Phivec_3^{\tp} \cdot \yvec(t_{\mathrm{end}})
+\label{eq:OC_problem:obj}
+\\
+\text{s.\,t.} \quad
+\dyvec(t) &= \Smat_2 \cdot \uvec(t)
+\label{eq:OC_problem:dyn}
+\\
+\nullvec &= \Smat_1 \cdot \uvec(t)
+\label{eq:OC_problem:qssa}
+\\
+\lbvec &\leq \uvec (t)\leq \ubvec
+\label{eq:OC_problem:flux_bounds}
+\\
+\Hmat_{\yvec} \cdot \yvec(t)  + \Hmat_{\uvec}\cdot \uvec(t)&\leq \hvec
+\label{eq:OC_problem:mixed}
+\\
+\nullvec &\leq \yvec(t)
+\label{eq:OC_problem:pos}
+\\
+\Bmat_{\yvec_0} \cdot \yvec(t_0) + \Bmat_{\yvec_{\mathrm{end}}} \cdot \yvec(t_{\mathrm{end}}) &= \bvec_{\mathrm{bndry}}
+\label{eq:OC_problem:bndry}
+\end{align}
+\end{subequations}
+and want to approximate its solution using a complete parameterization approach with midpoint rule for the dynamics and trapezoidal rule for the Lagrange part of the objective.
+The result will be formulated as a large linear program
+\begin{equation}
+\begin{split}
+\min_{\xfrakvec} &\;\ffrakvec^{\tp} \cdot \xfrakvec\\
+\text{s.\,t.}\quad
+\Afrakmat_{\leq} \cdot \xfrakvec &\leq \bfrakvec_{\leq}
+\\
+\Afrakmat_{=} \cdot \xfrakvec &\leq \bfrakvec_{=}
+\\
+\lbfrakvec &\leq \xfrakvec \leq \ubfrakvec
+\end{split}
+\label{eq:final_LP}
+\end{equation}
+We start with the construction of two time grids, one (called $(t_i)_{i=1}^N$) for the dynamic variables $\yvec(\cdot)$ and one (called $(t_m^{\mathrm{s}})_{m=1/2}^{(N-1)+1/2}$) for the controls $\uvec(\cdot)$.
+The user-defined parameter $N \geq 2$ defines the number of time steps.
+In the program, these will be referenced as \texttt{tt} and \texttt{tt\_shift}.
+The entries of this time grids are defined via
+\begin{equation*}
+\begin{split}
+t_m &\defeq t_0 + m \cdot \Delta_t \,,~(m = 0,1,\ldots, N)\,,
+\\
+t_{m+1/2}^{\mathrm{s}} &\defeq \frac{t_m + t_{m+1}}{2}\,,~(m=0,1,\ldots,N-1)\,,
+\end{split}
+%\label{eq:}
+\end{equation*}
+where the time step size $\Delta_t$ is given by $\Delta_t \defeq \frac{t_{\mathrm{end}} - t_0}{N}$.
+We introduce approximations to the dynamic and discrete variables in a straightforward way
+\[
+\yvec_m \approx \yvec (t_m)\,,~(m=1,2,\ldots,N)\,\qquad
+\uvec_{m+1/2} \approx \uvec (t_{m+1/2}^{\mathrm{s}})\,,~(m=1,2,\ldots,N-1)\,.
+\]
+So, all approximations will be collected in two stacked vectors
+\begin{equation*}
+\begin{split}
+\yfrakvec &\defeq (\yvec_0^{\tp}, \yvec_1^{\tp} , \ldots , \yvec_{N}^{\tp})^{\tp}\,,
+\\
+\ufrakvec &\defeq (\uvec_{1/2}^{\tp}, \uvec_{1+1/2}^{\tp}, \ldots , \uvec_{(N-1)+1/2}^{\tp})^{\tp}\,.
+\end{split}
+%\label{eq:}
+\end{equation*}
+The vector $\xfrakvec$ in \eqref{eq:final_LP} consists of all the discrete approximations $\xfrakvec = (\yfrakvec^{\tp},\ufrakvec^{\tp})^{\tp}$.
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Formulation of the Linear Program}
+
+In case that (some of) the system matrices are constant in time (and we use an equidistant time grid), the LP-problem matrices $\Afrakmat_{\leq}$ and $\Afrakmat_{=}$ can efficiently be implemented using the Kronecker product:
+\begin{multline*}
+\kron \colon \setR^{m_A \times n_A} \times \setR^{m_B \times n_B} \to \setR^{m_A \cdot m_B \times n_A \cdot n_B}\\
+\text{with}\quad
+\begin{pmatrix} a_{11} & \cdots & a_{1,n_A} \\ \vdots \\ a_{m_A, 1} & \cdots & a_{m_A, n_A}\end{pmatrix}
+\kron B \defeq 
+\begin{pmatrix} a_{11}\cdot B & \cdots & a_{1,n_A}\cdot B \\ \vdots \\ a_{m_A, 1}\cdot B & \cdots & a_{m_A, n_A} \dot B\end{pmatrix}\,.
+\end{multline*}
+For the LP-problem matrices and vectors we will treat the part belonging to the dynamic variables and the ones belonging to the control variables separately.
+% ______________________________________________________________________________
+\subsubsection*{Objective}
+
+The Lagrange part will be approximated using the trapezoidal rule (on the dynamic time grid), i.\,e.:
+\[
+\int_{t_0}^{t_{\mathrm{end}}} f(t) \intd t
+\approx \Delta_t \cdot
+\left(\frac{f(t_0)}{2} + f(t_1) + f(t_2) + \cdots + f(t_{N-1} + \frac{f(t_N)}{2}) \right)
+\]
+That means, that the according part of the objective vector just collects the $\Phivec_1$ entries like
+\[
+\ffrakvec_{\yfrakvec,\mathrm{Lagrange}} \defeq \Delta_t \cdot 
+\begin{pmatrix} \frac{\expe^{-\varphi t_0} \cdot\Phivec_1^{\tp}}{2} & \expe^{-\varphi t_1} \cdot\Phivec_1^{\tp} & \cdots & \expe^{-\varphi t_{N-1}} \cdot\Phivec_1^{\tp} & \frac{\expe^{-\varphi t_N} \cdot\Phivec_1^{\tp}}{2}\end{pmatrix}^{\tp}
+\]
+For the Mayer part, we just have to add terms for the start and end point:
+\[
+\ffrakvec_{\yfrakvec,\mathrm{Mayer}} \defeq 
+\begin{pmatrix}
+	\Phivec_2^{\tp} & \nullvec^{\tp} & \Phivec_3^{\tp}
+\end{pmatrix}^{\tp}\,,
+\]
+such that the (dynamic part of the) objective vector of the resulting LP is given by
+\[
+\ffrakvec_{\yfrakvec} = \ffrakvec_{\yfrakvec,\mathrm{Lagrange}} + \ffrakvec_{\yfrakvec,\mathrm{Mayer}}\,.
+\]
+
+% ______________________________________________________________________________
+\subsubsection*{Dynamics}
+
+For the dynamics, we use the midpoint rule:
+\[
+\dyvec(t) = \fvec(t, \yvec(t), \uvec(t))\qquad\Rightarrow\qquad
+\yvec_{m+1} = \yvec_{m} + \Delta_t \cdot \fvec(t_{m+1/2}, \tildeyvec_{m+1}^{(1)}, \uvec_{m+1/2})\,\quad (m=0,1,\ldots,N-1)\,,
+\]
+where $\tildeyvec_{m+1}^{(1)}$ is the according intermediate value for the dynamic variables (that does not (yet) play a role here).
+In detail, the update equations for this scheme read
+\[
+\yvec_{m+1} = \yvec_m + \Delta_t \cdot \Smat_2 \cdot \uvec_{m+1/2}
+\quad\Leftrightarrow
+\yvec_m - \yvec_{m+1} + \Delta_t \cdot \Smat_2 \cdot \uvec_{m+1/2} = \nullvec\,,~(m = 0,1,\ldots,N-1)\,.
+\]
+In (large-) matrix form, all these equations read
+{\small
+\[
+\begin{pmatrix}
+\Imat_{n_{\yvec}} & -\Imat_{n_{\yvec}} & \Nullmat           & \cdots & \cdots & \Nullmat \\
+\Nullmat          & \Imat_{n_{\yvec}}  & -\Imat_{n_{\yvec}} & \cdots & \cdots & \Nullmat \\
+\vdots            &                    & \ddots             & \ddots &        & \vdots \\
+\Nullmat          & \cdots             & \cdots             & &\Imat_{n_{\yvec}} & -\Imat_{n_{\yvec}}
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+	\yvec_0 \\ \yvec_1 \\ \vdots \\ \yvec_N
+\end{pmatrix}
++
+\begin{pmatrix}
+	\Delta_t \cdot \Smat_2 & \Nullmat               & \cdots   & \Nullmat \\
+	\Nullmat               & \Delta_t \cdot \Smat_2 & \cdots   & \Nullmat \\
+	\vdots                 &                        & \ddots   & \vdots   \\
+	\Nullmat               & \cdots                 & \Nullmat & \Delta_t \cdot \Smat_2
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+	\uvec_{1/2} \\ \uvec_{1+1/2} \\ \vdots \\ \uvec_{(N-1)+1/2}
+\end{pmatrix}
+=
+\begin{pmatrix}
+	\nullvec \\
+	\nullvec \\
+	\vdots \\
+	\nullvec 
+\end{pmatrix}
+\]
+}
+With Kronecker-notation, this becomes
+\[
+\underbrace{
+\begin{pmatrix}
+	1      & -1     &  0     & \cdots & \cdots & 0 \\
+	0      &  1     & -1     & \cdots & \cdots & 0 \\
+	\vdots &        & \ddots & \ddots &        & \vdots \\
+	0      & \cdots & \cdots &        & 1      & -1
+\end{pmatrix}
+\kron \Imat_{n_{\yvec}} 
+}_{\Afrakmat_{\yvec,\mathrm{dyn}}} 
+\cdot 
+\underbrace{
+\begin{pmatrix}
+	\yvec_0 \\ \yvec_1 \\ \vdots \\ \yvec_N
+\end{pmatrix}
+}_{\yfrakvec}
++
+\underbrace{
+\Imat_{N} \kron \Delta_t \cdot \Smat_2
+}_{\Afrakmat_{\uvec, \mathrm{dyn}}}
+\cdot
+\underbrace{
+\begin{pmatrix}
+	\uvec_{1/2} \\ \uvec_{1+1/2} \\ \vdots \\ \uvec_{(N-1)+1/2}
+\end{pmatrix}
+}_{\ufrakvec}
+= \nullvec\,.
+\]
+% ______________________________________________________________________________
+\subsubsection*{Control Constraints (QSSA rows)}
+
+The constraints of the DAE system need to be fulfilled at the collocation points.
+For the midpoint rule, this is exactly the shifted time grid:
+\[
+\nullvec = \gvec (t, \yvec(t), \uvec(t))
+\qquad \Rightarrow\qquad
+\nullvec = \gvec(t_{m+1/2}^{\mathrm{s}}, \tildeyvec_{m+1}^{(1)}, \uvec_{m+1/2})\,~(m = 0,1,\ldots,N-1)\,.
+\]
+Since we again have no dependency on $\yvec(\cdot)$ in the right-hand-side, this can simply be stated as
+\[
+\nullvec = \Smat_1 \cdot \uvec_{m+1/2}\,~(m = 0,1,\ldots,N-1)\,.
+\]
+In (large) matrix form:
+\[
+\Nullmat 
+\cdot 
+\begin{pmatrix}
+	\yvec_0 \\ \yvec_1 \\ \vdots \\ \yvec_N
+\end{pmatrix}
++
+\begin{pmatrix}
+	\Smat_1  & \Nullmat & \cdots & \Nullmat \\
+	\Nullmat & \Smat_1  & \cdots & \Nullmat \\
+	\vdots   &          & \ddots & \vdots   \\
+	\Nullmat & \cdots   & \cdots & \Smat_1
+\end{pmatrix}
+\cdot 
+\begin{pmatrix}
+	\uvec_{1/2} \\ \uvec_{1+1/2} \\ \vdots \\ \uvec_{(N-1)+1/2}
+\end{pmatrix}
+= \nullvec
+\]
+and, again condensed using Kronecker-notation,
+\[
+\underbrace{\Nullmat}_{\Afrakmat_{\yvec,\mathrm{qssa}}} 
+\cdot 
+\underbrace{
+\begin{pmatrix}
+	\yvec_0 \\ \yvec_1 \\ \vdots \\ \yvec_N
+\end{pmatrix}
+}_{\yfrakvec}
++
+\underbrace{
+\Imat_{N} \kron \Smat_1
+}_{\Afrakmat_{\uvec, \mathrm{qssa}}}
+\cdot 
+\underbrace{
+\begin{pmatrix}
+	\uvec_{1/2} \\ \uvec_{1+1/2} \\ \vdots \\ \uvec_{(N-1)+1/2}
+\end{pmatrix}
+}_{\ufrakvec}
+= \nullvec\,.
+\]
+
+% ______________________________________________________________________________
+\subsubsection*{Control Bounds}
+
+The bounds on the control variables just need to be applied at very time step:
+\[
+\lbfrakvec_{\uvec}
+= \begin{pmatrix} 	\lbvec^{\tp} & \lbvec^{\tp} & \cdots & \lbvec^{\tp} \end{pmatrix}^{\tp}
+\,\quad
+\ubfrakvec_{\uvec}
+= \begin{pmatrix} 	\ubvec^{\tp} & \ubvec^{\tp} & \cdots & \ubvec^{\tp} \end{pmatrix}^{\tp}
+\]
+in order to implement
+\[
+\lbvec \leq \uvec_{m+1/2} \leq \ubvec \quad (m = 0, 1, \ldots,N-1)
+\]
+in the form $\lbfrakvec_{\uvec} \leq \ufrakvec \leq \ubfrakvec$.
+% ______________________________________________________________________________
+\subsubsection*{Mixed Constraints}
+
+The mixed constraints require that we first take a closer look at the Runge-Kutta updates inherent in the midpoint rule.
+The mixed constraints, just like the flux constraints, need to be enforced on the shifted time grid.
+That means, an inequality constraint of the form
+\[
+\nullvec \leq \gvec_{\leq} (t, \yvec(t), \uvec(t))
+\]
+is discretized to
+\begin{equation}
+\nullvec = \gvec (t_{m+1/2}^{\mathrm{s}}, \tildeyvec_{m+1}^{(1)}, \uvec_{m+1/2})\,,~(m = 0,1,\ldots,N-1)\,.
+\label{eq:inequality_at_colloc}
+\end{equation}
+Since the mixed inequalities explicitly contain the intermediate values $\tildeyvec_{m+1}^{(1)}$, we need to find a simple expression for them.
+Formally, they are introduced as
+\begin{align*}
+\tildeyvec_{m+1}^{(1)} &= \yvec_m + \Delta_t \cdot \frac{1}{2} \cdot \fvec (t_{m+1/2}^{\mathrm{s}}, \tildeyvec_{m+1}^{(1)}, \uvec_{m+1/2})
+  = \yvec_m + \Delta_t \cdot \frac{1}{2} \cdot \Smat_2 \cdot \uvec_{m+1/2}\,.
+\\
+\intertext{At the same time, we get from the discretization of the dynamic equations}
+\yvec_{m+1} &= \yvec_m + \Delta_t \cdot \Smat_2 \cdot \uvec_{m+1/2}\,,
+\end{align*}
+which allows us to eliminate the control variables, giving
+\[
+\tildeyvec_{m+1}^{(1)} = \frac{\yvec_m + \yvec_{m+1}}{2}\,~(m = 0,1,\ldots,N-1)\,.
+\]
+(This is exactly the collocation property of the midpoint rule.)
+So, \eqref{eq:inequality_at_colloc} can be simplified in case of the midpoint rule to
+\[
+\nullvec \leq \gvec_{\leq} \left(t_{m+1/2}^{\mathrm{s}}, \frac{\yvec_m+\yvec_{m+1}}{2}, \uvec_{m+1/2} \right)\,,~(m=0,1,\ldots,N-1).
+\]
+For the given linear structure of the mixed constraints \eqref{eq:OC_problem:mixed}, this reads
+\[
+\Hmat_{\yvec} \cdot \frac{\yvec_m+\yvec_{m+1}}{2}  + \Hmat_{\uvec}\cdot  \uvec_{m+1/2} \leq \hvec
+\]
+and can, once again, be restated as
+\[
+\frac{1}{2} \cdot
+\begin{pmatrix}
+	\Hmat_{\yvec} & \Hmat_{\yvec} & \Nullmat      & \cdots        & \Nullmat\\
+	\Nullmat      & \Hmat_{\yvec} & \Hmat_{\yvec} & \cdots        & \Nullmat\\
+	\vdots        &               & \ddots        & \ddots        & \vdots \\
+	\Nullmat      & \cdots        & \cdots        & \Hmat_{\yvec} & \Hmat_{\yvec}
+\end{pmatrix}
+\cdot 
+\begin{pmatrix} 	\yvec_0 \\ \yvec_1 \\ \vdots \\ \yvec_N \end{pmatrix}
++
+\begin{pmatrix}
+	\Hmat_{\uvec} & \Nullmat      & \cdots & \Nullmat \\
+	\Nullmat      & \Hmat_{\uvec} &        & \Nullmat \\
+	\vdots        &               & \ddots & \vdots   \\
+	\Nullmat      & \cdots        & \cdots & \Hmat_{\uvec}
+\end{pmatrix}
+\cdot 
+\begin{pmatrix}
+	\uvec_{1/2} \\ \uvec_{1+1/2} \\ \vdots \\ \uvec_{(N-1)+1/2}
+\end{pmatrix}
+\leq
+\begin{pmatrix} \hvec \\\hvec \\ \vdots \\\hvec \end{pmatrix}
+\]
+or in Kronecker form
+\[
+\underbrace{
+\frac{1}{2} \cdot \begin{pmatrix}
+	1       & 1      & 0      & \cdots  & 0 \\
+	0       & 1      & 1      & \cdots  & 0 \\
+	\vdots  &        & \ddots & \ddots  & \vdots \\
+	0       & \cdots & \cdots &  1      & 1
+\end{pmatrix}
+\kron \Hmat_{\yvec}
+}_{\Afrakmat_{\yvec,\mathrm{mix}}}
+\cdot
+\underbrace{
+\begin{pmatrix}
+	\yvec_0 \\ \yvec_1 \\ \vdots \\ \yvec_N
+\end{pmatrix}
+}_{\yfrakvec}
++
+\underbrace{
+\Imat_N \kron \Hmat_{\uvec}}_{\Afrakmat_{\uvec,\mathrm{mix}}}
+\cdot 
+\underbrace{
+\begin{pmatrix}
+	\uvec_{1/2} \\ \uvec_{1+1/2} \\ \vdots \\ \uvec_{(N-1)+1/2}
+\end{pmatrix}
+}_{\ufrakvec}
+\leq 
+\underbrace{
+\begin{pmatrix}
+	\hvec \\ \hvec\\ \vdots \\ \hvec
+\end{pmatrix}
+}_{\bfrakvec_{\mathrm{mix}}} \,.
+\]
+
+
+% ______________________________________________________________________________
+\subsubsection*{Positivity of Dynamic Variables}
+
+Requiring that the dynamic variables are positive at all time steps is simple. 
+We just implement them as lower bounds. 
+(Technically speaking, we would require positivity again for the intermediate values only but this is again equivalent.)
+\[
+\lbfrakvec_{\yvec} = 
+\begin{pmatrix} \nullvec_{n_{\yvec}}^{\tp} & \nullvec_{n_{\yvec}}^{\tp} & \cdots & \nullvec_{n_{\yvec}}^{\tp} \end{pmatrix}^{\tp}\,,\quad
+\ubfrakvec_{\yvec}=
+\begin{pmatrix} \infty & \infty & \cdots & \infty	 \end{pmatrix}^{\tp}\,.
+\]
+
+
+% ______________________________________________________________________________
+\subsubsection*{Boundary Conditions}
+
+Imposing the boundary constraints \eqref{eq:OC_problem:bndry} requires only to couple the initial and end approximations of the dynamical variables:
+\[
+\Bmat_{\yvec_0} \cdot \yvec_0 + \Bmat_{\yvec_{\mathrm{end}}} \cdot \yvec_N = \bvec_{\mathrm{bndry}}\,.
+\]
+For the LP form, this can be written in (large) matrix form
+\[
+\underbrace{
+\begin{pmatrix} \Bmat_{\yvec_0} & \Nullmat & \cdots & \Nullmat & \Bmat_{\yvec_{\mathrm{end}}}\end{pmatrix}
+}_{\Afrakmat_{\yvec,\mathrm{bndry}}}
+\cdot
+\underbrace{
+\begin{pmatrix}
+	\yvec_0 \\ \yvec_1 \\ \vdots \\ \yvec_N
+\end{pmatrix}
+}_{\yfrakvec}
++
+\underbrace{\Nullmat}_{\Afrakmat_{\uvec,\mathrm{bndry}}}
+\cdot 
+\underbrace{
+\begin{pmatrix}
+	\uvec_{1/2} \\ \uvec_{1+1/2} \\ \vdots \\ \uvec_{(N-1)+1/2}
+\end{pmatrix}
+}_{\ufrakvec}
+=
+\bvec_{\mathrm{bndry}}
+\]
+
+
+% ______________________________________________________________________________
+\subsubsection*{Putting it all together}
+
+For the final formulation of the LP, we collect all the information like
+\begin{align*}
+\ffrakvec &= \begin{pmatrix} \ffrakvec_{\yvec}^{\tp} & \nullvec^{\tp} \end{pmatrix}^{\tp}\,,
+\\
+\Afrakmat_{\leq} &= \begin{pmatrix} \Afrakmat_{\yvec,\mathrm{mix}}, \Afrakmat_{\uvec,\mathrm{mix}} \end{pmatrix}\,,
+\\
+\bfrakvec_{\leq} &= \bfrakvec_{\mathrm{mix}}
+\\
+\Afrakmat_{=} &= \begin{pmatrix} 
+                     \Afrakmat_{\yvec, \mathrm{dyn}} & \Afrakmat_{\uvec, \mathrm{dyn}} \\
+                     \Afrakmat_{\yvec, \mathrm{qssa}} & \Afrakmat_{\uvec, \mathrm{qssa}} \\
+                     \Afrakmat_{\yvec, \mathrm{bndry}} & \Afrakmat_{\uvec, \mathrm{bndry}}
+                 \end{pmatrix}
+\\
+\bfrakvec_{=} &= \begin{pmatrix} \nullvec^{\tp} & \nullvec^{\tp} & \bvec_{\mathrm{bndry}}^{\tp}\end{pmatrix}^{\tp}
+\\
+\lbfrakvec &= \begin{pmatrix} \lbfrakvec_{\yvec}^{\tp} & \lbfrakvec_{\uvec}^{\tp} \end{pmatrix}^{\tp}
+\\
+\ubfrakvec &= \begin{pmatrix} \ubfrakvec_{\yvec}^{\tp} & \ubfrakvec_{\uvec}^{\tp} \end{pmatrix}^{\tp}\,.
+\end{align*}
+
+
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix
+
+\subsection*{ToDos and Maybe's}
+
+\begin{itemize}
+  \item time-dependent matrices on almost all levels
+	\item more general time integration schemes
+	\item additional linear and constant terms in the dynamics and the control constraints (which would become mixed constraints then as well)
+	\item non-equidistant time grid
+	\item Add terms depending on controls in the objective and the boundary conditions
+	\item add quadratic terms in the objective
+	\item inequality mixed constraints/bounds on dynamic variables(?)
+\end{itemize}
+
+
+\end{document}
