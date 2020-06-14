@@ -51,7 +51,8 @@ def run_WOB_example():
 
     tt, tt_shift, sol_y, sol_u = cp_linprog(t_0, t_end, Phi1, Phi2, Phi3, S1,
                                             S2, lb, ub, h, Hy, Hu, By0,
-                                            Byend, b_bndry, N=N, varphi=0.01)
+                                            Byend, b_bndry, n_steps=N,
+                                            varphi=0.01)
 
     plt.subplot(2, 1, 1)
     plt.plot(tt, sol_y)
