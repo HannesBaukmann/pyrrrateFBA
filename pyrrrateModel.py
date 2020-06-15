@@ -29,31 +29,31 @@ class Model(object):
         spon = 0
         main = 0
 
-        for met in model.metabolites_dict.keys():
-            if model.metabolites_dict[met]['speciesType'] == 'extracellular':
+        for met in self.metabolites_dict.keys():
+            if self.metabolites_dict[met]['speciesType'] == 'extracellular':
                 extra += 1
 
-        for mm in model.macromolecules_dict.keys():
-            if model.macromolecules_dict[mm]['speciesType'] == 'quota':
+        for mm in self.macromolecules_dict.keys():
+            if self.macromolecules_dict[mm]['speciesType'] == 'quota':
                 quota += 1
-            elif model.macromolecules_dict[mm]['speciesType'] == 'storage':
+            elif self.macromolecules_dict[mm]['speciesType'] == 'storage':
                 stor += 1
 
-        for rxn in model.reactions_dict.keys():
-            if model.reactions_dict[rxn]['maintenanceScaling'] > 0.0:
+        for rxn in self.reactions_dict.keys():
+            if self.reactions_dict[rxn]['maintenanceScaling'] > 0.0:
                 main += 1
-            if not model.reactions_dict[rxn]['geneProduct']:
+            if not self.reactions_dict[rxn]['geneProduct']:
                 spon += 1
 
-        print('species\t\t\t\t' + str(len(model.metabolites_dict) + len(model.macromolecules_dict)) \
-              + '\n\t metabolites\t\t' + str(len(model.metabolites_dict)) \
+        print('species\t\t\t\t' + str(len(self.metabolites_dict) + len(self.macromolecules_dict)) \
+              + '\n\t metabolites\t\t' + str(len(self.metabolites_dict)) \
               + '\n\t\t extracellular\t' + str(extra) \
-              + '\n\t\t intracellular\t' + str(len(model.metabolites_dict) - extra) \
-              + '\n\t macromolecules\t\t' + str(len(model.macromolecules_dict)) \
-              + '\n\t\t enzymes\t' + str(len(model.macromolecules_dict) - quota - stor) \
+              + '\n\t\t intracellular\t' + str(len(self.metabolites_dict) - extra) \
+              + '\n\t macromolecules\t\t' + str(len(self.macromolecules_dict)) \
+              + '\n\t\t enzymes\t' + str(len(self.macromolecules_dict) - quota - stor) \
               + '\n\t\t quota\t\t' + str(quota) \
               + '\n\t\t storage\t' + str(stor) \
-              + '\n reactions\t\t\t' + str(len(model.reactions_dict)) \
+              + '\n reactions\t\t\t' + str(len(self.reactions_dict)) \
               + '\n\t uptake\t\t' \
               + '\n\t metabolic\t\t' \
               + '\n\t translation\t\t' \
@@ -64,7 +64,7 @@ class Model(object):
               + '\n\t regulatory proteins\t\t' \
               + '\n\t regulated reactions\t\t')
 
-    def fba(model, objective=None, maximize=True):
+    def fba(self, objective=None, maximize=True):
         """
         performs Flux Balance Analysis
         """
@@ -77,30 +77,30 @@ class Model(object):
 
         if not objective:
             # default objective is (first) biomass function
-            for rxn in model.reactions_dict.keys():
+            for rxn in self.reactions_dict.keys():
                 if 'biomass' in rxn:
-                    brxns = [list(model.reactions_dict.keys()).index(rxn)]
+                    brxns = [list(self.reactions_dict.keys()).index(rxn)]
             if not brxns:
                 print('Could not find biomass reaction. Please specify reaction flux to be optimized.')
                 return None
         else:
             # check whether rxn exists
-            brxns = [list(model.reactions_dict.keys()).index(objective)]
+            brxns = [list(self.reactions_dict.keys()).index(objective)]
 
-        S = model.stoich
+        S = self.stoich
         rows, cols = S.shape
 
         lb = [None] * cols  # lower bounds on v
         ub = [None] * cols  # upper bounds on v
 
-        for index, rxn in enumerate(model.reactions_dict.keys(), start=0):
+        for index, rxn in enumerate(self.reactions_dict.keys(), start=0):
             try:
-                ub[index] = model.reactions_dict[rxn]['upperFluxBound']
+                ub[index] = self.reactions_dict[rxn]['upperFluxBound']
             except KeyError:
                 ub[index] = 1000
-            if model.reactions_dict[rxn]['reversible']:
+            if self.reactions_dict[rxn]['reversible']:
                 try:
-                    lb[index] = model.reactions_dict[rxn]['lowerFluxBound']
+                    lb[index] = self.reactions_dict[rxn]['lowerFluxBound']
                 except KeyError:
                     lb[index] = -1000
             else:
