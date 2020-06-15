@@ -13,9 +13,9 @@ class Model(object):
             self.HM_matrix = None  # Maintenance matrix
             self.HB_matrix = None  # Biomass composition constraints
 
-            construct_HcHe(self)
-            construct_Hm(self)
-            construct_Hb(self)
+            matrrrices.construct_HcHe(self)
+            matrrrices.construct_Hm(self)
+            matrrrices.construct_Hb(self)
 
     def print_numbers(model):
         extra = 0
