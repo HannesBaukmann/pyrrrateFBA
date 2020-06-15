@@ -1,11 +1,15 @@
 class Model(object):
 
     def __init__(self, ram_model):
-
+        self.name = ram_model.name
+        self.metabolites_dict = ram_model.metabolites_dict
+        self.macromolecules_dict = ram_model.macromolecules_dict
+        self.reactions_dict = ram_model.reactions_dict
+        self.stoich = ram_model.stoich
         # Create an empty variable to save the latest results of the simulation methods
         self.results = None
 
-        if self.is_deFBA:
+        if ram_model.is_deFBA:
             import matrrrices
 
             self.HC_matrix = None  # Enzyme Capacity Constraint matrix
