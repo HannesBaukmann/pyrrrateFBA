@@ -1,6 +1,6 @@
 class Model(object):
 
-    def __init__(self):
+    def __init__(self, ram_model):
 
         # Create an empty variable to save the latest results of the simulation methods
         self.results = None
@@ -17,7 +17,7 @@ class Model(object):
             matrrrices.construct_Hm(self)
             matrrrices.construct_Hb(self)
 
-    def print_numbers(model):
+    def print_numbers(self):
         extra = 0
         quota = 0
         stor = 0
