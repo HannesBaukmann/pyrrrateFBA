@@ -59,6 +59,8 @@ class RAMParser:
         self.macromolecules_dict = OrderedDict()
         self.reactions_dict = OrderedDict()
         self.qualitative_species_dict = OrderedDict()
+        self.rules_left = []
+        self.rules_right = []
         self.is_deFBA = True
 
         # MODEL
@@ -304,6 +306,11 @@ class RAMParser:
                 #                if self.metabolites_dict[met]['constant'] or self.metabolites_dict[met]['boundaryCondition']:
                 boundary_id.append(list(self.metabolites_dict).index(met))
         self.stoich = np.delete(self.stoich, boundary_id, axis=0)
+
+        # RULES
+        for rule in sbmlmodel.getListOfRules():
+            self.rules_left.append(rule.getId())
+            self.rules_right.append(rule.getFormula())
 
         # QUALITATIVE SPECIES
         qual_model = sbmlmodel.getPlugin('qual')
