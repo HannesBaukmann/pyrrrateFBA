@@ -58,6 +58,7 @@ class RAMParser:
         self.metabolites_dict = OrderedDict()
         self.macromolecules_dict = OrderedDict()
         self.reactions_dict = OrderedDict()
+        self.qualitative_species_dict = OrderedDict()
         self.is_deFBA = True
 
         # MODEL
@@ -67,8 +68,6 @@ class RAMParser:
                 'The SBML file contains no model. Maybe the filename is wrong or the file does not follow SBML standards. Please run the SBML validator at http://sbml.org/Facilities/Validator/index.jsp to find the problem.')
 
         self.name = sbmlmodel.getId()
-
-        # qual_model = sbmlmodel.getPlugin('qual')
 
         # SPECIES
         for s in sbmlmodel.species:
@@ -305,3 +304,14 @@ class RAMParser:
                 #                if self.metabolites_dict[met]['constant'] or self.metabolites_dict[met]['boundaryCondition']:
                 boundary_id.append(list(self.metabolites_dict).index(met))
         self.stoich = np.delete(self.stoich, boundary_id, axis=0)
+
+        # QUALITATIVE SPECIES
+        qual_model = sbmlmodel.getPlugin('qual')
+
+        for q in qual_model.getListOfQualitativeSpecies():
+            q_id = q.getId()
+            self.qualitative_species_dict[q_id] = {}
+            self.qualitative_species_dict[q_id]['initialLevel'] = q.getInitialLevel()
+            self.qualitative_species_dict[q_id]['maxLevel'] = q.getMaxLevel()
+            self.qualitative_species_dict[q_id]['constant'] = q.getConstant()
+            # Warning, if constant is set to "true"?
