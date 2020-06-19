@@ -59,6 +59,7 @@ class RAMParser:
         self.macromolecules_dict = OrderedDict()
         self.reactions_dict = OrderedDict()
         self.qualitative_species_dict = OrderedDict()
+        self.events_dict = OrderedDict()
         self.rules_left = []
         self.rules_right = []
         self.is_deFBA = True
@@ -331,3 +332,25 @@ class RAMParser:
                 print("Warning: Qualitative Species " + q_id + " is constant. This will lead to errors when the level of " + q_id + " is changed.")
             self.qualitative_species_dict[q_id]['initialLevel'] = q.getInitialLevel()
             self.qualitative_species_dict[q_id]['maxLevel'] = q.getMaxLevel()
+
+
+        # EVENTS
+        for e in sbmlmodel.getListOfEvents():
+            e_id = e.getId()
+            self.events_dict[e_id] = {}
+            self.events_dict[e_id]['getUseValuesFromTriggerTime'] = e.getUseValuesFromTriggerTime()
+            if not e.getUseValuesFromTriggerTime():
+                print("Warning: Variable getUseValuesFromTriggerTime of event " + e_id + " is set to False, but should be True. Delays are not considered by this software.")
+            self.events_dict[e_id]['persistent'] = e.getTrigger().getPersistent()
+            if not e.getTrigger().getPersistent():
+                print("Warning: Variable persistent of trigger in event " + e_id + " is set to False, but should be True in order to allow for multiple events to happen at the same time.")
+            self.events_dict[e_id]['initialValue'] = e.getTrigger().getInitialValue()
+            if not e.getTrigger().getInitialValue():
+                print("Warning: Initial value of trigger element of event " + e_id + " is set to False, but should be True to prevent triggering at the initial time.")
+            self.events_dict[e_id]['trigger'] = sbml.formulaToString(e.getTrigger().getMath())
+
+            for ass in e.getListOfEventAssignments():
+                self.events_dict[e_id]['listOfAssignments'] = []
+                self.events_dict[e_id]['listOfAssignments'].append(ass.getVariable())
+                self.events_dict[e_id]['listOfEffects'] = []
+                self.events_dict[e_id]['listOfEffects'].append(sbml.formulaToString(ass.getMath()))
