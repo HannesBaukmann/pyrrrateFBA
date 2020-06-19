@@ -64,8 +64,8 @@ class Model(object):
               + '\n\t spontaneous\t\t' + str(spon) \
               + '\n\t maintenance\t\t' + str(main) \
               + '\n regulation\t\t\t\t' \
-              + '\n\t rules\t\t' \
-              + '\n\t regulatory proteins\t\t' \
+              + '\n\t rules\t\t' + str(len(self.events_dict)/2) \
+              + '\n\t regulatory proteins\t\t' + str(len(self.qualitative_species_dict)) \
               + '\n\t regulated reactions\t\t')
 
     def fba(self, objective=None, maximize=True):
