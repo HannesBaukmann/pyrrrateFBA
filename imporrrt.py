@@ -307,10 +307,18 @@ class RAMParser:
                 boundary_id.append(list(self.metabolites_dict).index(met))
         self.stoich = np.delete(self.stoich, boundary_id, axis=0)
 
+
         # RULES
         for rule in sbmlmodel.getListOfRules():
-            self.rules_left.append(rule.getId())
-            self.rules_right.append(rule.getFormula())
+            self.rules_left.append(rule.getVariable())
+            f = rule.getFormula()
+            if sbmlmodel.getParameter(f).getId() == f:
+                self.rules_right.append(f)
+                if sbmlmodel.getParameter(f).getConstant():
+                    print("Warning: Parameter " + f + " is constant. This will lead to errors when the value of " + f + " is changed.")
+            else:
+                raise SBMLError("Error: Boolean parameter corresponding to Qualitative Species" + rule.getVariable() + " not defined!")
+
 
         # QUALITATIVE SPECIES
         qual_model = sbmlmodel.getPlugin('qual')
@@ -320,6 +328,6 @@ class RAMParser:
             self.qualitative_species_dict[q_id] = {}
             self.qualitative_species_dict[q_id]['constant'] = q.getConstant()
             if q.getConstant():
-                print("Warning: Qualitative Species " + q_id + " is set to be constant. This will lead to errors when the level of " + q_id + " is changed.")
+                print("Warning: Qualitative Species " + q_id + " is constant. This will lead to errors when the level of " + q_id + " is changed.")
             self.qualitative_species_dict[q_id]['initialLevel'] = q.getInitialLevel()
             self.qualitative_species_dict[q_id]['maxLevel'] = q.getMaxLevel()
