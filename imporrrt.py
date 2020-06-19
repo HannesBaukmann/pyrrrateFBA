@@ -318,7 +318,8 @@ class RAMParser:
         for q in qual_model.getListOfQualitativeSpecies():
             q_id = q.getId()
             self.qualitative_species_dict[q_id] = {}
+            self.qualitative_species_dict[q_id]['constant'] = q.getConstant()
+            if q.getConstant():
+                print("Warning: Qualitative Species " + q_id + " is set to be constant. This will lead to errors when the level of " + q_id + " is changed.")
             self.qualitative_species_dict[q_id]['initialLevel'] = q.getInitialLevel()
             self.qualitative_species_dict[q_id]['maxLevel'] = q.getMaxLevel()
-            self.qualitative_species_dict[q_id]['constant'] = q.getConstant()
-            # Warning, if constant is set to "true"?
