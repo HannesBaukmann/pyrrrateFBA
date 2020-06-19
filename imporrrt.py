@@ -313,12 +313,14 @@ class RAMParser:
         for rule in sbmlmodel.getListOfRules():
             self.rules_left.append(rule.getVariable())
             f = rule.getFormula()
-            if sbmlmodel.getParameter(f).getId() == f:
-                self.rules_right.append(f)
-                if sbmlmodel.getParameter(f).getConstant():
-                    print("Warning: Parameter " + f + " is constant. This will lead to errors when the value of " + f + " is changed.")
-            else:
-                raise SBMLError("Error: Boolean parameter corresponding to Qualitative Species" + rule.getVariable() + " not defined!")
+            try:
+                par_id = sbmlmodel.getParameter(f).getId()
+                if par_id == f:
+                    self.rules_right.append(f)
+                    if sbmlmodel.getParameter(f).getConstant():
+                        print("Warning: Parameter " + f + " is constant. This will lead to errors when the value of " + f + " is changed.")
+            except AttributeError:
+                print("Error: Variable " + f + " not defined!")
 
 
         # QUALITATIVE SPECIES
