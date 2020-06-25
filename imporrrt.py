@@ -60,8 +60,7 @@ class RAMParser:
         self.reactions_dict = OrderedDict()
         self.qualitative_species_dict = OrderedDict()
         self.events_dict = OrderedDict()
-        self.rules_left = []
-        self.rules_right = []
+        self.rules_dict = OrderedDict()
         self.is_deFBA = True
 
         # MODEL
@@ -309,20 +308,6 @@ class RAMParser:
         self.stoich = np.delete(self.stoich, boundary_id, axis=0)
 
 
-        # RULES
-        for rule in sbmlmodel.getListOfRules():
-            self.rules_left.append(rule.getVariable())
-            f = rule.getFormula()
-            try:
-                par_id = sbmlmodel.getParameter(f).getId()
-                if par_id == f:
-                    self.rules_right.append(f)
-                    if sbmlmodel.getParameter(f).getConstant():
-                        print("Warning: Parameter " + f + " is constant. This will lead to errors when the value of " + f + " is changed.")
-            except AttributeError:
-                print("Error: Variable " + f + " not defined!")
-
-
         # QUALITATIVE SPECIES
         qual_model = sbmlmodel.getPlugin('qual')
 
@@ -334,6 +319,32 @@ class RAMParser:
                 print("Warning: Qualitative Species " + q_id + " is constant. This will lead to errors when the level of " + q_id + " is changed.")
             self.qualitative_species_dict[q_id]['initialLevel'] = q.getInitialLevel()
             self.qualitative_species_dict[q_id]['maxLevel'] = q.getMaxLevel()
+
+        # RULES
+        for rule in sbmlmodel.getListOfRules():
+            # import variable on the left-hand side
+            v = rule.getVariable()
+            if v not in self.qualitative_species_dict.keys():
+                try:
+                    par_id = sbmlmodel.getParameter(v).getId()
+                    if par_id == v:
+                        # variables that are changed by Rule should not be constant
+                        if sbmlmodel.getParameter(v).getConstant():
+                            print(
+                                "Warning: Parameter " + v + " is constant. This will lead to errors when the value of " + f + " is changed.")
+                except AttributeError:
+                    print("Error: Variable " + v + " not defined!")
+
+            # import variable(s) on right-hand side
+            for i in range(rule.getMath().getNumChildren()):
+                f = rule.getMath().getChild(i).getName()
+                if f not in self.qualitative_species_dict.keys():
+                    try:
+                        par_id = sbmlmodel.getParameter(f).getId()
+                    except AttributeError:
+                        print("Error: Variable " + f + " not defined!")
+
+            self.rules_dict[v] = {rule.getFormula()}
 
 
         # EVENTS
