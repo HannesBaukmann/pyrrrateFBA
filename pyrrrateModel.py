@@ -7,8 +7,7 @@ class Model(object):
         self.reactions_dict = ram_model.reactions_dict
         self.qualitative_species_dict = ram_model.qualitative_species_dict
         self.events_dict = ram_model.events_dict
-        self.rules_left = ram_model.rules_left
-        self.rules_right = ram_model.rules_right
+        self.rules_dict = ram_model.rules_dict
         self.stoich = ram_model.stoich
         # Create an empty variable to save the latest results of the simulation methods
         self.results = None
