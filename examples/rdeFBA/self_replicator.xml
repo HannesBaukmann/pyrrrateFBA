@@ -32,35 +32,35 @@
 <species id="T1" name="Transporter1" compartment="cytosol" initialAmount="0.001" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:species ram:molecularWeight="400.0" ram:objectiveWeight="400.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
+      <ram:species ram:molecularWeight="40000.0" ram:objectiveWeight="40000.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
 <species id="T2" name="Transporter2" compartment="cytosol" initialAmount="0.001" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:species ram:molecularWeight="1500.0" ram:objectiveWeight="1500.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
+      <ram:species ram:molecularWeight="150000.0" ram:objectiveWeight="150000.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
 <species id="R" name="Ribosome" compartment="cytosol" initialAmount="0.01" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:species ram:molecularWeight="7459.0" ram:objectiveWeight="7459.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
+      <ram:species ram:molecularWeight="745900.0" ram:objectiveWeight="745900.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
 <species id="RP" name="Regulatory Protein" compartment="cytosol" initialAmount="0.0" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:species ram:molecularWeight="300.0" ram:objectiveWeight="300.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
+      <ram:species ram:molecularWeight="30000.0" ram:objectiveWeight="30000.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
 <species id="Q" compartment="cytosol" initialAmount="0.15" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:species ram:molecularWeight="300.0" ram:objectiveWeight="300.0" ram:biomassPercentage="0.35" ram:speciesType="quota"/>
+      <ram:species ram:molecularWeight="30000.0" ram:objectiveWeight="30000.0" ram:biomassPercentage="0.35" ram:speciesType="quota"/>
     </ram:RAM>
   </annotation>
 </species>
@@ -146,6 +146,12 @@
     <speciesReference species="T1" stoichiometry="1.0" constant="true"/>
   </listOfProducts>
 </reaction>
+<reaction id="vT2" reversible="false" fbc:lowerFluxBound="fbc_vT2_fwd_lower" fbc:upperFluxBound="fbc_vT2_fwd">
+  <annotation>
+    <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
+      <ram:reaction ram:kcatForward="0.84" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+    </ram:RAM>
+  </annotation>
 <reaction id="vT2" reversible="false" fbc:upperFluxBound="fbc_vT2_fwd">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
@@ -162,6 +168,12 @@
     <speciesReference species="T2" stoichiometry="1.0" constant="true"/>
   </listOfProducts>
 </reaction>
+<reaction id="vRP" reversible="false" fbc:lowerFluxBound="fbc_vRP_fwd_lower" fbc:upperFluxBound="fbc_vRP_fwd">
+  <annotation>
+    <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
+      <ram:reaction ram:kcatForward="4.2" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+    </ram:RAM>
+  </annotation>
 <reaction id="vRP" reversible="false" fbc:upperFluxBound="fbc_vRP_fwd">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
@@ -252,11 +264,29 @@
       </apply>
     </math>
   </assignmentRule>
+  <assignmentRule variable="fbc_vT2_fwd_lower">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <times/>
+        <ci>e_T2</ci>
+        <ci>T2bar</ci>
+      </apply>
+    </math>
+  </assignmentRule>
   <assignmentRule variable="fbc_vRP_fwd">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
         <ci>bigM</ci>
+        <ci>RPbar</ci>
+      </apply>
+    </math>
+  </assignmentRule>
+  <assignmentRule variable="fbc_vRP_fwd_lower">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <times/>
+        <ci>e_RP</ci>
         <ci>RPbar</ci>
       </apply>
     </math>
@@ -351,8 +381,12 @@
 <listOfParameters>
   <parameter id="alpha" constant="true" value="0.03"/>
   <parameter id="gamma" constant="true" value="20"/>
+  <parameter id="e_T2" constant="true" value="0.01"/>
+  <parameter id="e_RP" constant="true" value="0.01"/>
   <parameter id="fbc_vT2_fwd" value="NaN" constant="false" />
+  <parameter id="fbc_vT2_fwd_lower" value="NaN" constant="false" />
   <parameter id="fbc_vRP_fwd" value="NaN" constant="false" />
+  <parameter id="fbc_vRP_fwd_lower" value="NaN" constant="false" />
   <parameter id="qual_con_RPbar" constant="false" value="NaN"/>
   <parameter id="qual_con_T2bar" constant="false" value="NaN"/>
   <parameter id="bigM" value="2000000000000.0" constant="true" />
