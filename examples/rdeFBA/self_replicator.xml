@@ -152,12 +152,6 @@
       <ram:reaction ram:kcatForward="0.84" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
-<reaction id="vT2" reversible="false" fbc:upperFluxBound="fbc_vT2_fwd">
-  <annotation>
-    <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="0.84" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
-    </ram:RAM>
-  </annotation>
   <fbc:geneProductAssociation fbc:id="R">
     <fbc:geneProductRef fbc:geneProduct="R"/>
   </fbc:geneProductAssociation>
@@ -169,12 +163,6 @@
   </listOfProducts>
 </reaction>
 <reaction id="vRP" reversible="false" fbc:lowerFluxBound="fbc_vRP_fwd_lower" fbc:upperFluxBound="fbc_vRP_fwd">
-  <annotation>
-    <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="4.2" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
-    </ram:RAM>
-  </annotation>
-<reaction id="vRP" reversible="false" fbc:upperFluxBound="fbc_vRP_fwd">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="4.2" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
