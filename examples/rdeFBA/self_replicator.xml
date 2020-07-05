@@ -239,7 +239,7 @@
 
 <qual:listOfQualitativeSpecies>
   <qual:qualitativeSpecies qual:id="RPbar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="T2bar" qual:initialLevel="0" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="T2bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
 </qual:listOfQualitativeSpecies>
 
 <listOfRules>
@@ -375,8 +375,8 @@
   <parameter id="fbc_vT2_fwd_lower" value="NaN" constant="false" />
   <parameter id="fbc_vRP_fwd" value="NaN" constant="false" />
   <parameter id="fbc_vRP_fwd_lower" value="NaN" constant="false" />
-  <parameter id="qual_con_RPbar" constant="false" value="NaN"/>
-  <parameter id="qual_con_T2bar" constant="false" value="NaN"/>
+  <parameter id="qual_con_RPbar" constant="false" value="1"/>
+  <parameter id="qual_con_T2bar" constant="false" value="1"/>
   <parameter id="bigM" value="2000000000000.0" constant="true" />
 </listOfParameters>
 </model>
