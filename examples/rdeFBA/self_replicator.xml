@@ -248,7 +248,7 @@
       <apply>
         <times/>
         <ci>bigM</ci>
-        <ci>T2bar</ci>
+        <ci>qual_con_T2bar</ci>
       </apply>
     </math>
   </assignmentRule>
@@ -257,7 +257,7 @@
       <apply>
         <times/>
         <ci>e_T2</ci>
-        <ci>T2bar</ci>
+        <ci>qual_con_T2bar</ci>
       </apply>
     </math>
   </assignmentRule>
@@ -266,7 +266,7 @@
       <apply>
         <times/>
         <ci>bigM</ci>
-        <ci>RPbar</ci>
+        <ci>qual_con_RPbar</ci>
       </apply>
     </math>
   </assignmentRule>
@@ -275,7 +275,7 @@
       <apply>
         <times/>
         <ci>e_RP</ci>
-        <ci>RPbar</ci>
+        <ci>qual_con_RPbar</ci>
       </apply>
     </math>
   </assignmentRule>
