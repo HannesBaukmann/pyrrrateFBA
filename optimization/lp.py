@@ -2,16 +2,17 @@
 Collection of routines for (Mixed Integer) Linear Programming
 """
 
-import gurobipy # TODO Make this dependent on installed/configured solvers
 import numpy as np
 import scipy.sparse as sp
+import gurobipy # TODO Make this dependent on installed/configured solvers
+
 
 # Module constants
 INFINITY = gurobipy.GRB.INFINITY
 OPTIMAL = gurobipy.GRB.OPTIMAL
+MINIMIZE = gurobipy.GRB.MINIMIZE
 
-
-class LPModel(object):
+class LPModel():
     """
     Simple wrapper class to handle various LP solvers in a unified way
     TODO - add more solvers, more options
@@ -105,7 +106,7 @@ def _sparse_model_setup_gurobi(model, fvec, amat, bvec, aeqmat, beq, lbvec,
      - More security checks: Are the system matrices really csr with sorted
         indices and are the dimensions correct in the first place?
     """
-    model.setObjective(gurobipy.GRB.MINIMIZE)
+    model.setObjective(MINIMIZE)
 
     n_x = lbvec.size - nbooles
     x_variables = [model.addVar(lb=lbvec[i],
