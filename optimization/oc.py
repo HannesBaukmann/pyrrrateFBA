@@ -6,13 +6,14 @@ import scipy.sparse as sp
 from . import lp as lp_wrapper
 
 
-def cp_linprog(t_0, t_end, phi1, phi2, phi3, smat1, smat2, lbvec, ubvec, hvec, hmaty, hmatu,
-               bmaty0, bmatyend, b_bndry, n_steps=101, varphi=0.0):
+def cp_linprog(t_0, t_end, phi1, phi2, phi3, smat1, smat2, smat3, smat4,
+               lbvec, ubvec, hvec, hmaty, hmatu, bmaty0, bmatyend, b_bndry, n_steps=101,
+               varphi=0.0):
     """
     Approximate the solution of the optimal control problem
      min int_{t_0}^{t_end} phi1^T y dt + phi2^T y_0 + phi3^T y_end
-     s.t. y' = smat2 u
-          0  = smat1 u
+     s.t. y' = smat2*u + smat4*y
+          0  = smat1*u + smat3*u
           lbvec <= u <= ubvec
           hmaty y + hmatu u <= hvec
           0 <= y
@@ -29,8 +30,10 @@ def cp_linprog(t_0, t_end, phi1, phi2, phi3, smat1, smat2, lbvec, ubvec, hvec, h
      - create/use a class for the time series data in the output
      - more security checks
      - add additional terms in objective and dynamics
-     - allow irregular time grid
+     - allow irregular time grid     
      - ...
+     @MAYBE
+     - create/use a class for the input(?)
     """
     n_y, n_u = smat2.shape
     n_qssa = smat1.shape[0]
@@ -56,13 +59,12 @@ def cp_linprog(t_0, t_end, phi1, phi2, phi3, smat1, smat2, lbvec, ubvec, hvec, h
 
     # Discretization of dynamics
     (aeqmat1_y, aeqmat1_u, beq1) = \
-      _inflate_constraints(-sp.eye(n_y), sp.eye(n_y), del_t*smat2,
-                           np.array(n_y*[0.0]), n_steps=n_steps)
+      _inflate_constraints(-sp.eye(n_y)+del_t*smat4, sp.eye(n_y)+del_t*smat4,
+                           del_t*smat2, np.array(n_y*[0.0]), n_steps=n_steps)
 
     # Discretization of QSSA rows (this is simplified and only works for constant smat1)
     (aeqmat2_y, aeqmat2_u, beq2) = \
-        _inflate_constraints(sp.csr_matrix((n_qssa, n_y)), sp.csr_matrix((n_qssa, n_y)),
-                             smat1, n_qssa*[0.0], n_steps=n_steps)
+        _inflate_constraints(-0.5*smat3, 0.5*smat3, smat1, n_qssa*[0.0], n_steps=n_steps)
 
     # Discretization of flux bounds @MAYBE: allow time dependency here
     lb_u = np.hstack(n_steps*[lbvec])

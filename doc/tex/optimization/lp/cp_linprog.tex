@@ -90,10 +90,10 @@ We have a linear optimal control problem of the form
 \label{eq:OC_problem:obj}
 \\
 \text{s.\,t.} \quad
-\dyvec(t) &= \Smat_2 \cdot \uvec(t)
+\dyvec(t) &= \Smat_2 \cdot \uvec(t) + \Smat_4 \cdot \yvec(t)
 \label{eq:OC_problem:dyn}
 \\
-\nullvec &= \Smat_1 \cdot \uvec(t)
+\nullvec &= \Smat_1 \cdot \uvec(t) + \Smat_3 \cdot \yvec(t)
 \label{eq:OC_problem:qssa}
 \\
 \lbvec &\leq \uvec (t)\leq \ubvec
@@ -199,27 +199,46 @@ For the dynamics, we use the midpoint rule:
 \dyvec(t) = \fvec(t, \yvec(t), \uvec(t))\qquad\Rightarrow\qquad
 \yvec_{m+1} = \yvec_{m} + \Delta_t \cdot \fvec(t_{m+1/2}, \tildeyvec_{m+1}^{(1)}, \uvec_{m+1/2})\,\quad (m=0,1,\ldots,N-1)\,,
 \]
-where $\tildeyvec_{m+1}^{(1)}$ is the according intermediate value for the dynamic variables (that does not (yet) play a role here).
+where 
+\[%begin{align*}
+\tildeyvec_{m+1}^{(1)} %&
+= \yvec_m + \frac{\Delta_t}{2} \cdot \fvec (t_{m+1/2}^s , \tildeyvec_{m+1}^{(1)}, u_{m+1/2})
+%\\
+%&
+= \yvec_m + \frac{\Delta_t}{2} \cdot \Smat_2 \cdot \uvec_{m+1/2} + \frac{\Delta_t}{2} \cdot \Smat_4 \cdot \tildeyvec_{m+1}^{(1)}
+\]%end{align*}
+is the according intermediate value for the dynamic variables (from the theory of Runge-Kutta methods).
 In detail, the update equations for this scheme read
 \[
-\yvec_{m+1} = \yvec_m + \Delta_t \cdot \Smat_2 \cdot \uvec_{m+1/2}
-\quad\Leftrightarrow
-\yvec_m - \yvec_{m+1} + \Delta_t \cdot \Smat_2 \cdot \uvec_{m+1/2} = \nullvec\,,~(m = 0,1,\ldots,N-1)\,.
+\yvec_{m+1} = \yvec_m + \Delta_t \cdot \Smat_2 \cdot \uvec_{m+1/2} + \Delta_t \cdot \Smat_4 \cdot \tildeyvec_{m+1}^{(1)}
+\]
+This can be used to eliminate the intermediate values:
+\[
+\tildeyvec_{m+1}^{(1)} = \frac{\yvec_m + \yvec_{m+1}}{2}\,\quad (m=0,1,\ldots, N-1)\,,
+\]
+which is in fact exactly the collocation property.
+%
+For the dynamic updates, this corresponds to the following
+\[
+%\quad\Leftrightarrow
+\left(\Imat_{n_{\yvec}} + \frac{\Delta_t}{2} \cdot \Smat_4 \right) \cdot \yvec_m - \left(\Imat_{n_{\yvec}}- \frac{\Delta_t}{2}\cdot \Smat_4 \right)\cdot\yvec_{m+1} + \Delta_t \cdot \Smat_2 \cdot \uvec_{m+1/2} = \nullvec\,,~(m = 0,1,\ldots,N-1)\,.
 \]
 In (large-) matrix form, all these equations read
 {\small
-\[
+\begin{multline*}
 \begin{pmatrix}
-\Imat_{n_{\yvec}} & -\Imat_{n_{\yvec}} & \Nullmat           & \cdots & \cdots & \Nullmat \\
-\Nullmat          & \Imat_{n_{\yvec}}  & -\Imat_{n_{\yvec}} & \cdots & \cdots & \Nullmat \\
+\Imat_{n_{\yvec}}+\frac{\Delta_t}{2}\cdot \Smat_4 & -\Imat_{n_{\yvec}}+\frac{\Delta_t}{2}\cdot \Smat_4 
+  & \Nullmat           & \cdots & \cdots & \Nullmat \\
+\Nullmat          & \Imat_{n_{\yvec}}+\frac{\Delta_t}{2}\cdot \Smat_4  & -\Imat_{n_{\yvec}}+\frac{\Delta_t}{2}\cdot \Smat_4 & \cdots & \cdots & \Nullmat \\
 \vdots            &                    & \ddots             & \ddots &        & \vdots \\
-\Nullmat          & \cdots             & \cdots             & &\Imat_{n_{\yvec}} & -\Imat_{n_{\yvec}}
+\Nullmat          & \cdots             & \cdots             & &\Imat_{n_{\yvec}}+\frac{\Delta_t}{2}\cdot \Smat_4 & -\Imat_{n_{\yvec}}+\frac{\Delta_t}{2}\cdot \Smat_4
 \end{pmatrix}
 \cdot
 \begin{pmatrix}
 	\yvec_0 \\ \yvec_1 \\ \vdots \\ \yvec_N
 \end{pmatrix}
 +
+\\
 \begin{pmatrix}
 	\Delta_t \cdot \Smat_2 & \Nullmat               & \cdots   & \Nullmat \\
 	\Nullmat               & \Delta_t \cdot \Smat_2 & \cdots   & \Nullmat \\
@@ -237,19 +256,11 @@ In (large-) matrix form, all these equations read
 	\vdots \\
 	\nullvec 
 \end{pmatrix}
-\]
+\end{multline*}
 }
 With Kronecker-notation, this becomes
 \[
-\underbrace{
-\begin{pmatrix}
-	1      & -1     &  0     & \cdots & \cdots & 0 \\
-	0      &  1     & -1     & \cdots & \cdots & 0 \\
-	\vdots &        & \ddots & \ddots &        & \vdots \\
-	0      & \cdots & \cdots &        & 1      & -1
-\end{pmatrix}
-\kron \Imat_{n_{\yvec}} 
-}_{\Afrakmat_{\yvec,\mathrm{dyn}}} 
+\Afrakmat_{\yvec,\mathrm{dyn}}
 \cdot 
 \underbrace{
 \begin{pmatrix}
@@ -266,8 +277,22 @@ With Kronecker-notation, this becomes
 	\uvec_{1/2} \\ \uvec_{1+1/2} \\ \vdots \\ \uvec_{(N-1)+1/2}
 \end{pmatrix}
 }_{\ufrakvec}
-= \nullvec\,.
+= \nullvec\,,
 \]
+where
+\[
+\Afrakmat_{\yvec,\mathrm{dyn}} = 
+\begin{pmatrix} \Imat_{N} & \Nullmat_{N,n_{\yvec}} \end{pmatrix} \kron \left(\Imat_{n_{\yvec}}+\frac{\Delta_t}{2}\cdot \Smat_4 \right)
++
+\begin{pmatrix} \Nullmat_{N,n_{\yvec}} &-\Imat_N \end{pmatrix} \kron \left(\Imat_{n_{\yvec}}-\frac{\Delta_t}{2}\cdot \Smat_4 \right)\,.
+%\begin{pmatrix}
+%	1      & -1     &  0     & \cdots & \cdots & 0 \\
+%	0      &  1     & -1     & \cdots & \cdots & 0 \\
+%	\vdots &        & \ddots & \ddots &        & \vdots \\
+%	0      & \cdots & \cdots &        & 1      & -1
+%\end{pmatrix}
+\]
+
 % ______________________________________________________________________________
 \subsubsection*{Control Constraints (QSSA rows)}
 
@@ -278,13 +303,24 @@ For the midpoint rule, this is exactly the shifted time grid:
 \qquad \Rightarrow\qquad
 \nullvec = \gvec(t_{m+1/2}^{\mathrm{s}}, \tildeyvec_{m+1}^{(1)}, \uvec_{m+1/2})\,~(m = 0,1,\ldots,N-1)\,.
 \]
-Since we again have no dependency on $\yvec(\cdot)$ in the right-hand-side, this can simply be stated as
+%Since we again have no dependency on $\yvec(\cdot)$ in the right-hand-side, his can simply be stated as
+Inserting the given constraint term, we get
 \[
-\nullvec = \Smat_1 \cdot \uvec_{m+1/2}\,~(m = 0,1,\ldots,N-1)\,.
+\nullvec = \Smat_1 \cdot \uvec_{m+1/2} + \Smat_3 \cdot \tildeyvec_{m+1}^{(1)}\,~(m = 0,1,\ldots,N-1)
+\]
+or with eliminated intermediates
+\[
+\nullvec = \Smat_1 \cdot \uvec_{m+1/2} + \frac{1}{2}\cdot \Smat_3 \cdot \yvec_m + \frac{1}{2}\cdot \Smat_3 \cdot \yvec_{m+1}\,.
 \]
 In (large) matrix form:
 \[
-\Nullmat 
+\frac{1}{2}\cdot 
+\begin{pmatrix}
+	\Smat_3  & -\Smat_3 & \Nullmat & \cdots & \cdots  & \Nullmat \\
+	\Nullmat & \Smat_3  & -\Smat_3 & \cdots & \cdots  & \Nullmat \\
+	\vdots   &          & \ddots   & \ddots &         & \vdots   \\
+	\Nullmat & \cdots   & \cdots   &        & \Smat_3 & \Smat_3
+\end{pmatrix}
 \cdot 
 \begin{pmatrix}
 	\yvec_0 \\ \yvec_1 \\ \vdots \\ \yvec_N
@@ -304,7 +340,16 @@ In (large) matrix form:
 \]
 and, again condensed using Kronecker-notation,
 \[
-\underbrace{\Nullmat}_{\Afrakmat_{\yvec,\mathrm{qssa}}} 
+\underbrace{
+\frac{1}{2} \cdot
+\begin{pmatrix}
+	1      & -1     &  0     & \cdots & \cdots & 0      \\
+	0      &  1     & -1     & \cdots & \cdots & 0      \\
+	\vdots &        & \ddots & \ddots &        & \vdots \\
+	0      & \cdots & \cdots &        & 1      & -1
+\end{pmatrix}
+\kron \Smat_3
+}_{\Afrakmat_{\yvec,\mathrm{qssa}}} 
 \cdot 
 \underbrace{
 \begin{pmatrix}
@@ -343,7 +388,7 @@ in the form $\lbfrakvec_{\uvec} \leq \ufrakvec \leq \ubfrakvec$.
 % ______________________________________________________________________________
 \subsubsection*{Mixed Constraints}
 
-The mixed constraints require that we first take a closer look at the Runge-Kutta updates inherent in the midpoint rule.
+%The mixed constraints require that we first take a closer look at the Runge-Kutta updates inherent in the midpoint rule.
 The mixed constraints, just like the flux constraints, need to be enforced on the shifted time grid.
 That means, an inequality constraint of the form
 \[
@@ -354,26 +399,28 @@ is discretized to
 \nullvec = \gvec (t_{m+1/2}^{\mathrm{s}}, \tildeyvec_{m+1}^{(1)}, \uvec_{m+1/2})\,,~(m = 0,1,\ldots,N-1)\,.
 \label{eq:inequality_at_colloc}
 \end{equation}
-Since the mixed inequalities explicitly contain the intermediate values $\tildeyvec_{m+1}^{(1)}$, we need to find a simple expression for them.
-Formally, they are introduced as
-\begin{align*}
-\tildeyvec_{m+1}^{(1)} &= \yvec_m + \Delta_t \cdot \frac{1}{2} \cdot \fvec (t_{m+1/2}^{\mathrm{s}}, \tildeyvec_{m+1}^{(1)}, \uvec_{m+1/2})
-  = \yvec_m + \Delta_t \cdot \frac{1}{2} \cdot \Smat_2 \cdot \uvec_{m+1/2}\,.
-\\
-\intertext{At the same time, we get from the discretization of the dynamic equations}
-\yvec_{m+1} &= \yvec_m + \Delta_t \cdot \Smat_2 \cdot \uvec_{m+1/2}\,,
-\end{align*}
-which allows us to eliminate the control variables, giving
-\[
-\tildeyvec_{m+1}^{(1)} = \frac{\yvec_m + \yvec_{m+1}}{2}\,~(m = 0,1,\ldots,N-1)\,.
-\]
-(This is exactly the collocation property of the midpoint rule.)
-So, \eqref{eq:inequality_at_colloc} can be simplified in case of the midpoint rule to
-\[
-\nullvec \leq \gvec_{\leq} \left(t_{m+1/2}^{\mathrm{s}}, \frac{\yvec_m+\yvec_{m+1}}{2}, \uvec_{m+1/2} \right)\,,~(m=0,1,\ldots,N-1).
-\]
+%Since the mixed inequalities explicitly contain the intermediate values $\tildeyvec_{m+1}^{(1)}$, we need to find a simple expression for them.
+%Formally, they are introduced as
+%\begin{align*}
+%\tildeyvec_{m+1}^{(1)} &= \yvec_m + \Delta_t \cdot \frac{1}{2} \cdot \fvec (t_{m+1/2}^{\mathrm{s}}, \tildeyvec_{m+1}^{(1)}, \uvec_{m+1/2})
+%  = \yvec_m + \Delta_t \cdot \frac{1}{2} \cdot \Smat_2 \cdot \uvec_{m+1/2}\,.
+%\\
+%\intertext{At the same time, we get from the discretization of the dynamic equations}
+%\yvec_{m+1} &= \yvec_m + \Delta_t \cdot \Smat_2 \cdot \uvec_{m+1/2}\,,
+%\end{align*}
+%which allows us to eliminate the control variables, giving
+%\[
+%\tildeyvec_{m+1}^{(1)} = \frac{\yvec_m + \yvec_{m+1}}{2}\,~(m = 0,1,\ldots,N-1)\,.
+%\]
+%(This is exactly the collocation property of the midpoint rule.)
+%So, \eqref{eq:inequality_at_colloc} can be simplified in case of the midpoint rule to
+%\[
+%\nullvec \leq \gvec_{\leq} \left(t_{m+1/2}^{\mathrm{s}}, \frac{\yvec_m+\yvec_{m+1}}{2}, \uvec_{m+1/2} \right)\,,~(m=0,1,\ldots,N-1).
+%\]
 For the given linear structure of the mixed constraints \eqref{eq:OC_problem:mixed}, this reads
 \[
+\Hmat_{\yvec} \cdot \tildeyvec_{m+1}^{(1)}  + \Hmat_{\uvec}\cdot  \uvec_{m+1/2}
+= 
 \Hmat_{\yvec} \cdot \frac{\yvec_m+\yvec_{m+1}}{2}  + \Hmat_{\uvec}\cdot  \uvec_{m+1/2} \leq \hvec
 \]
 and can, once again, be restated as
@@ -516,11 +563,12 @@ For the final formulation of the LP, we collect all the information like
 \begin{itemize}
   \item time-dependent matrices on almost all levels
 	\item more general time integration schemes
-	\item additional linear and constant terms in the dynamics and the control constraints (which would become mixed constraints then as well)
+	\item additional constant terms in the dynamics and the control constraints
 	\item non-equidistant time grid
 	\item Add terms depending on controls in the objective and the boundary conditions
 	\item add quadratic terms in the objective
 	\item inequality mixed constraints/bounds on dynamic variables(?)
+	\item Matrix $\Smat_3$ might actually destroy the problem structure if we want to use other algorithms than complete parameterization or eliminate the dependent flux variables later on. So: Is it really worth all this?
 \end{itemize}
 
 

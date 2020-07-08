@@ -16,6 +16,7 @@ def build_WOB_example():
     alpha = 2.0
     Kkat = 1.0
     P0 = 0.01
+    degredation_rate = 0.05
 
     Phi1 = np.array([0.0, -1.0])
     Phi2 = np.array([0.0, 0.0])
@@ -25,6 +26,9 @@ def build_WOB_example():
 
     S2 = sp.csr_matrix(np.array([[-1.0, 0.0], [0.0, 1.0]]))
 
+    S3 = sp.csr_matrix(np.array([[0.0, 0.0]]))
+
+    S4 = sp.csr_matrix(-degredation_rate*np.eye(2))
     lb = np.array([0.0, 0.0])
     ub = np.array(2*[lp_wrapper.INFINITY])
 
@@ -36,21 +40,21 @@ def build_WOB_example():
     Byend = sp.csr_matrix(np.zeros((2, 2), dtype=float))
     b_bndry = np.array([5.0, P0])
 
-    return Phi1, Phi2, Phi3, S1, S2, lb, ub, h, Hy, Hu, By0, Byend, b_bndry
+    return Phi1, Phi2, Phi3, S1, S2, S3, S4, lb, ub, h, Hy, Hu, By0, Byend, b_bndry
 
 
 def run_WOB_example():
     """
     Example call
     """
-    Phi1, Phi2, Phi3, S1, S2, lb, ub, h, Hy, Hu, By0, Byend, b_bndry = build_WOB_example()
+    Phi1, Phi2, Phi3, S1, S2, S3, S4, lb, ub, h, Hy, Hu, By0, Byend, b_bndry = build_WOB_example()
 
     t_0 = 0.0
     t_end = 10.0
     N = 201
 
     tt, tt_shift, sol_y, sol_u = cp_linprog(t_0, t_end, Phi1, Phi2, Phi3, S1,
-                                            S2, lb, ub, h, Hy, Hu, By0,
+                                            S2, S3, S4, lb, ub, h, Hy, Hu, By0,
                                             Byend, b_bndry, n_steps=N,
                                             varphi=0.01)
 
