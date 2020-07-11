@@ -151,35 +151,38 @@ def mi_cp_linprog(t_0, t_end, phi1, phi2, phi3, smat1, smat2, smat3, smat4,
      - create/use a class for the input(?)
     """
     n_y, n_u = smat2.shape
+    n_x = hbmatx.shape[0]
     n_qssa = smat1.shape[0]
-    n_ally = (n_steps+1)*n_y
-    n_allu = n_steps*n_u
+    n_ally = (n_steps + 1) * n_y
+    n_allu = n_steps * n_u
+    n_allx = (n_steps + 1) * n_x
     n_bndry = len(b_bndry)
 
-    tgrid = np.linspace(t_0, t_end, n_steps+1)
-    del_t = tgrid[1]-tgrid[0]
-    tt_shift = (tgrid[1:] + tgrid[:-1])/2.0 # time grid for controls
+    tgrid = np.linspace(t_0, t_end, n_steps + 1)
+    del_t = tgrid[1] - tgrid[0]
+    tt_shift = (tgrid[1:] + tgrid[:-1]) / 2.0  # time grid for controls
 
     # Discretization of objective
     # Lagrange part @MAYBE: add possib. for  more complicated objective
-    f_y = np.hstack([0.5*del_t*phi1,
-                     np.hstack((n_steps-1)*[del_t*phi1]),
-                     0.5*del_t*phi1])
-    expvals = np.exp(-varphi*tgrid)
+    f_y = np.hstack([0.5 * del_t * phi1,
+                     np.hstack((n_steps - 1) * [del_t * phi1]),
+                     0.5 * del_t * phi1])
+    expvals = np.exp(-varphi * tgrid)
     f_y *= np.repeat(expvals, n_y)
-    f_u = np.array(n_allu*[0.0])
+    f_u = np.array(n_allu * [0.0])
+    f_x = np.array(n_allx * [0.0])
     # Mayer part
     f_y[0:n_y] += phi2
-    f_y[n_steps*n_y:n_ally] += phi3
+    f_y[n_steps * n_y:n_ally] += phi3
 
     # Discretization of dynamics
     (aeqmat1_y, aeqmat1_u, beq1) = \
-      _inflate_constraints(-sp.eye(n_y)+del_t*smat4, sp.eye(n_y)+del_t*smat4,
-                           del_t*smat2, np.array(n_y*[0.0]), n_steps=n_steps)
+        _inflate_constraints(-sp.eye(n_y) + del_t * smat4, sp.eye(n_y) + del_t * smat4,
+                             del_t * smat2, np.array(n_y * [0.0]), n_steps=n_steps)
 
     # Discretization of QSSA rows (this is simplified and only works for constant smat1)
     (aeqmat2_y, aeqmat2_u, beq2) = \
-        _inflate_constraints(-0.5*smat3, 0.5*smat3, smat1, n_qssa*[0.0], n_steps=n_steps)
+        _inflate_constraints(-0.5 * smat3, 0.5 * smat3, smat1, n_qssa * [0.0], n_steps=n_steps)
 
     # Discretization of flux bounds @MAYBE: allow time dependency here
     lb_u = np.hstack(n_steps*[lbvec])
@@ -195,9 +198,8 @@ def mi_cp_linprog(t_0, t_end, phi1, phi2, phi3, smat1, smat2, smat3, smat4,
                                                       hvec, n_steps=n_steps)
 
     # Discretization of mixed Boolean constraints
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    # TODO !!!!!!!!!!!!!!!!!!!!!!!
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    (amat2_y, amat2_u, amat2_x, bineq2) = _inflate_more_constraints(0.5 * hbmaty, 0.5 * hbmaty, hbmatu,
+                                                                    0.5 * hbmatx, 0.5 * hbmatx, hbvec, n_steps=n_steps)
 
     # Discretization of equality boundary constraints @MAYBE: also inequality
     aeqmat3_y = sp.hstack([bmaty0, sp.csr_matrix((n_bndry, (n_steps-1)*n_y)), bmatyend])
@@ -206,7 +208,7 @@ def mi_cp_linprog(t_0, t_end, phi1, phi2, phi3, smat1, smat2, smat3, smat4,
 
     # Collect all data
     f_all = np.hstack([f_y, f_u])
-    fbar_all = np.array([0.0]*?????)# TODO !!!!!!!!!!!!!!!!!
+    fbar_all = f_x
 
     aeqmat = sp.bmat([[aeqmat1_y, aeqmat1_u],
                       [aeqmat2_y, aeqmat2_u],
@@ -215,11 +217,13 @@ def mi_cp_linprog(t_0, t_end, phi1, phi2, phi3, smat1, smat2, smat3, smat4,
     beq = np.hstack([beq1, beq2, beq3])
     lb_all = np.hstack([lb_y, lb_u])
     ub_all = np.hstack([ub_y, ub_u])
-    amat = sp.bmat([[amat1_y, amat1_u]], format='csr')
 
-    abarmat = sp.bmat()# TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!
+    amat = sp.bmat([[amat1_y, amat1_u]], format='csr')
+    abarmat = sp.bmat([[amat2_y, amat2_u, amat2_x]], format='csr')
 
     bineq = bineq1
+
+    bbarineq = bineq2
 
     # TODO: Create variable name creator function
     variable_names = ["y_"+str(j+1)+"_"+str(i) for i in range(n_steps+1) for j in range(n_y)]
@@ -256,3 +260,18 @@ def _inflate_constraints(amat, bmat, cmat, dvec, n_steps=1):
     dvec_all = np.hstack(n_steps*[dvec])
 
     return (amat_y, amat_u, dvec_all)
+
+
+def _inflate_more_constraints(amat, bmat, cmat, dmat, emat, fvec, n_steps=1):
+    """
+    amat*y_{m+1} + bmat*y_{m} + cmat*u_{m+1/2} + dmat*x_{m+1} + emat*x_{m} <relation> fvec
+    """
+
+    amat_y = sp.kron(sp.eye(n_steps, n_steps + 1), bmat) + \
+             sp.kron(sp.diags([1.0], 1, shape=(n_steps, n_steps + 1)), amat)
+    amat_u = sp.kron(sp.eye(n_steps), cmat)
+    amat_x = sp.kron(sp.eye(n_steps, n_steps + 1), emat) + \
+             sp.kron(sp.diags([1.0], 1, shape=(n_steps, n_steps + 1)), dmat)
+    fvec_all = np.hstack(n_steps * [fvec])
+
+    return (amat_y, amat_u, amat_x, fvec_all)
