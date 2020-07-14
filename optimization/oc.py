@@ -151,11 +151,11 @@ def mi_cp_linprog(t_0, t_end, phi1, phi2, phi3, smat1, smat2, smat3, smat4,
      - create/use a class for the input(?)
     """
     n_y, n_u = smat2.shape
-    n_x = hbmatx.shape[0]
+    n_x = hbmatx.shape[1]
     n_qssa = smat1.shape[0]
     n_ally = (n_steps + 1) * n_y
     n_allu = n_steps * n_u
-    n_allx = (n_steps + 1) * n_x
+    n_allx = n_steps * n_x
     n_bndry = len(b_bndry)
 
     tgrid = np.linspace(t_0, t_end, n_steps + 1)
@@ -198,8 +198,10 @@ def mi_cp_linprog(t_0, t_end, phi1, phi2, phi3, smat1, smat2, smat3, smat4,
                                                       hvec, n_steps=n_steps)
 
     # Discretization of mixed Boolean constraints
-    (amat2_y, amat2_u, amat2_x, bineq2) = _inflate_more_constraints(0.5 * hbmaty, 0.5 * hbmaty, hbmatu,
-                                                                    0.5 * hbmatx, 0.5 * hbmatx, hbvec, n_steps=n_steps)
+    (amat2_y, amat2_u, bineq2) = _inflate_constraints(0.5*hbmaty, 0.5*hbmaty, hbmatu,
+                                                      hbvec, n_steps=n_steps)
+    amat2_x = sp.kron(sp.eye(n_steps), hbmatx)
+    # TODO: Use some "_inflate"-mechanism
 
     # Discretization of equality boundary constraints @MAYBE: also inequality
     aeqmat3_y = sp.hstack([bmaty0, sp.csr_matrix((n_bndry, (n_steps-1)*n_y)), bmatyend])
@@ -218,30 +220,31 @@ def mi_cp_linprog(t_0, t_end, phi1, phi2, phi3, smat1, smat2, smat3, smat4,
     lb_all = np.hstack([lb_y, lb_u])
     ub_all = np.hstack([ub_y, ub_u])
 
-    amat = sp.bmat([[amat1_y, amat1_u]], format='csr')
-    abarmat = sp.bmat([[amat2_y, amat2_u, amat2_x]], format='csr')
+    amat = sp.bmat([[amat1_y, amat1_u], [amat2_y, amat2_u]], format='csr')
+    abarmat = sp.bmat([[sp.csr_matrix((bineq1.shape[0], n_allx))], [amat2_x]])
 
-    bineq = bineq1
-
-    bbarineq = bineq2
+    bineq = np.hstack([bineq1, bineq2])
 
     # TODO: Create variable name creator function
     variable_names = ["y_"+str(j+1)+"_"+str(i) for i in range(n_steps+1) for j in range(n_y)]
     variable_names += ["u_"+str(j+1)+"_"+str(i) for i in range(n_steps) for j in range(n_u)]
+    variable_names += ["x_"+str(j+1)+"_"+str(i) for i in range(n_steps) for j in range(n_x)]
 
     model = lp_wrapper.MILPModel(name="MIOC Model - Full par., midpoint rule")
     # TODO: Name should be derived from biological model
     model.sparse_mip_model_setup(f_all, fbar_all, amat, abarmat, bineq, aeqmat,
-                                 beq, lbvec, ubvec, variable_names)
+                                 beq, lb_all, ub_all, variable_names)
 
     model.optimize()
 
     if model.status == lp_wrapper.OPTIMAL:
         y_data = np.reshape(model.get_solution()[:n_ally], (n_steps+1, n_y))
-        u_data = np.reshape(model.get_solution()[n_ally:], (n_steps, n_u))
-        return tgrid, tt_shift, y_data, u_data
+        u_data = np.reshape(model.get_solution()[n_ally:n_ally+n_allu], (n_steps, n_u))
+        x_data = np.reshape(model.get_solution()[n_ally+n_allu:], (n_steps, n_x))
+        return tgrid, tt_shift, y_data, u_data, x_data
     # TODO: use cleverer output here
     print("No solution found")
+    return None
 
 
 

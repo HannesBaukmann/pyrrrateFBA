@@ -91,17 +91,17 @@
 \begin{document}
 
 \begin{center}
-	{\Large\textbf{Implementation Details for \texttt{mioc\_cp\_linprog} (in \texttt{oc.py})}}
+	{\Large\textbf{Implementation Details for \texttt{mi\_cp\_linprog} (in \texttt{oc.py})}}
 \end{center}
 
-We have a linear \textbf{m}ixed \textbf{i}nteger \textbf{o}ptimal \textbf{c}ontrol problem of the form
+We have a linear \textbf{m}ixed \textbf{i}nteger optimal control problem of the form
 \begin{subequations}
 \begin{align}
 \min_{\uvec(\cdot), \yvec (\cdot), \barxvec(\cdot)} &\int_{t_0}^{t_{\mathrm{end}}} \expe^{-\varphi \cdot t}\cdot \Phivec_1^{\tp} \cdot\yvec(t) \intd t + \Phivec_2^{\tp}\cdot \yvec(t_0) + \Phivec_3^{\tp} \cdot \yvec(t_{\mathrm{end}})
 \label{eq:OC_problem:obj}
 \\
 \text{s.\,t.} \quad
-\dyvec(t) &= \Smat_2 \cdot \uvec(t)
+\dyvec(t) &= \Smat_2 \cdot \uvec(t) + \Smat_4 \cdot \yvec(t)
 \label{eq:OC_problem:dyn}
 \\
 \nullvec &= \Smat_1 \cdot \uvec(t)
@@ -129,7 +129,6 @@ We have a linear \textbf{m}ixed \textbf{i}nteger \textbf{o}ptimal \textbf{c}ontr
 \label{eq:OC_problem:boole}
 \end{align}
 \end{subequations}
-\todo{Would it make more sense to use integer variables instead of Booleans?}
 and want to approximate its solution using a \textbf{c}omplete \textbf{p}arameterization approach with midpoint rule for the dynamics and trapezoidal rule for the Lagrange part of the objective.
 The result will be formulated as a large linear program
 \begin{equation}

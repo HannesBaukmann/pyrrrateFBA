@@ -5,8 +5,9 @@ Test the OC function milp_cp_linprog using the SR model from Lin's paper
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.sparse as sp
-from ..optimization.oc import cp_linprog
-from ..optimization import lp as lp_wrapper
+from ..optimization.oc import mi_cp_linprog
+from ..optimization.lp import INFINITY
+#from ..optimization import lp as lp_wrapper
 
 def build_SR_example():
     """
@@ -56,25 +57,27 @@ def build_SR_example():
                                  [0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0],
                                  [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]]))
 
-    S4 = sp.csr_matrix(np.array([[-1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                                 [0.0, -1.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                                 [0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0],
-                                 [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
-                                 [0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0],
-                                 [0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0],
-                                 [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]]))
+    S4 = sp.csr_matrix(-np.diag([0.0, 0.0, kdQ, kdR, kdT1, kdT2, kdRP]))
+    #S4 = sp.csr_matrix(np.array([[-1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    #                             [0.0, -1.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    #                             [0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0],
+    #                             [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
+    #                             [0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0],
+    #                             [0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+    #                             [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]]))
 
     lb = np.array(7 * [0.0])
     ub = np.array(7 * [INFINITY])
 
+    # Warum nutzen wir hier nicht Phi_Q?
     Hy = sp.csr_matrix(np.array([[0.0, 0.0, -195.0, 2610.65, 140.0, 525.0, 105.0],
                                  [0.0, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0],
                                  [0.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0],
                                  [0.0, 0.0, 0.0, -1.0, 0.0, 0.0, 0.0]]))
 
     Hu = sp.csr_matrix(np.array([[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                                 [1.0 / kT1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                                 [0.0, 1.0 / kT2, 0.0, 0.0, 0.0, 0.0, 0.0],
+                                 [1.0 / kC1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                                 [0.0, 1.0 / kC2, 0.0, 0.0, 0.0, 0.0, 0.0],
                                  [0.0, 0.0, 1.0 / kQ, 1.0 / kR, 1.0 / kT1, 1.0 / kT2, 1.0 / kRP]]))
 
     h = np.zeros(4, dtype=float)
@@ -122,14 +125,16 @@ def run_SR_example():
     Phi1, Phi2, Phi3, S1, S2, S3, S4, lb, ub, h, Hy, Hu, By0, HBy, HBu, HBx, hB, Byend, b_bndry = build_SR_example()
 
     t_0 = 0.0
-    t_end = 10.0
+    t_end = 50.0
     N = 201
 
-    tt, tt_shift, sol_y, sol_u = mi_cp_linprog(t_0, t_end, Phi1, Phi2, Phi3, S1, S2, S3, S4, lb, ub, h, Hy, Hu, By0,
+    tt, tt_shift, sol_y, sol_u, sol_x = mi_cp_linprog(t_0, t_end, Phi1, Phi2, Phi3, S1, S2, S3, S4, lb, ub, h, Hy, Hu, By0,
                                             HBy, HBu, HBx, hB, Byend, b_bndry, n_steps=N, varphi=0.01)
 
-    plt.subplot(2, 1, 1)
+    plt.subplot(3, 1, 1)
     plt.plot(tt, sol_y)
-    plt.subplot(2, 1, 2)
+    plt.subplot(3, 1, 2)
     plt.plot(tt_shift, sol_u)
+    plt.subplot(3, 1, 3)
+    plt.plot(tt_shift, sol_x)
     plt.show()
