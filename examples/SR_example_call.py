@@ -13,6 +13,16 @@ def build_SR_example():
     """
     Create Regulatory Self-Replicator model data
     """
+    # Molecular / Objective Weights
+    nQ = 300.0
+    nR = 7459.0
+    nT1 = 400.0
+    nT2 = 1500.0
+    nRP = 300.0
+
+    # Quota
+    PhiQ = 0.35
+
     # Turnover rates
     kC1 = 3000
     kC2 = 2000
@@ -27,29 +37,27 @@ def build_SR_example():
     kdR = 0.01
     kdT1 = 0.01
     kdT2 = 0.01
-    #kdRP = 0.2
+    # kdRP = 0.2
     kdRP = 0.1  # WHY ????????????????????????????????
 
     # Regulation Parameters
     epsilon_RP = 0.01
     epsilon_T2 = 0.01
-    epsilon_T2 = 0.001 # WHY ????????????????????????????????
-    epsilon_jump = 10.0**-8.0 # small positive number
+    epsilon_T2 = 0.001  # WHY ????????????????????????????????
+    epsilon_jump = 10.0 ** -8.0  # small positive number
     alpha = 0.03
     gamma = 20
 
     # Objective parameters
-    Phi1 = np.array([0.0, 0.0, -300.0, -7459.0, -400.0, -1500.0, -300.0])
+    Phi1 = np.array([0.0, 0.0, -nQ, -nR, -nT1, -nT2, -nRP])
     Phi2 = np.zeros(7, dtype=float)
     Phi3 = np.zeros(7, dtype=float)
 
-    #l = -INFINITY # That would destroy the internal numerics of the MILP solver
-    #u = INFINITY  # That would destroy the internal numerics of the MILP solver
-    l = -10.0**8
-    u = 10.0**8
+    l = -10.0 ** 8
+    u = 10.0 ** 8
 
     # QSSA matrix (only involving metabolite M)
-    S1 = sp.csr_matrix(np.array([[1.0, 1.0, -300.0, -7459.0, -400.0, -1500.0, -300.0]]))
+    S1 = sp.csr_matrix(np.array([[1.0, 1.0, -nQ, -nR, -nT1, -nT2, -nRP]]))
 
     # probably obsolete matrix couoling y's in the algebraic constraints
     S3 = sp.csr_matrix(np.zeros(7, dtype=float))
@@ -67,8 +75,7 @@ def build_SR_example():
     lb = np.array(7 * [0.0])
     ub = np.array(7 * [INFINITY])
 
-    # Warum nutzen wir hier noch immer nicht Phi_Q?
-    Hy = sp.csr_matrix(np.array([[0.0, 0.0, -195.0, 2610.65, 140.0, 525.0, 105.0],
+    Hy = sp.csr_matrix(np.array([[0.0, 0.0, (PhiQ - 1) * nQ, PhiQ * nR, PhiQ * nT1, PhiQ * nT2, PhiQ * nRP],
                                  [0.0, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0],
                                  [0.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0],
                                  [0.0, 0.0, 0.0, -1.0, 0.0, 0.0, 0.0]]))
@@ -99,18 +106,18 @@ def build_SR_example():
                                   [0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0]]))
 
     HBx = sp.csr_matrix(np.array([[-l, 0.0],
-                                  [-(epsilon_jump+u), 0.0],
+                                  [-(epsilon_jump + u), 0.0],
                                   [0.0, l],
-                                  [0.0, epsilon_jump+u],
+                                  [0.0, epsilon_jump + u],
                                   [epsilon_RP, 0.0],
                                   [-u, 0.0],
                                   [0.0, epsilon_T2],
                                   [0.0, -u]]))
 
-    hB = np.array([-gamma-l,
-                   gamma-epsilon_jump,
+    hB = np.array([-gamma - l,
+                   gamma - epsilon_jump,
                    -alpha,
-                   alpha+u,
+                   alpha + u,
                    0.0, 0.0, 0.0, 0.0])
 
     By0 = sp.csr_matrix(np.eye(7, dtype=float))
@@ -118,7 +125,7 @@ def build_SR_example():
     #                   C1     C2     Q      R     T1     T2     RP
     #                   0      1      2      3     4      5      6
     b_bndry = np.array([500.0, 1000.0, 0.15, 0.01, 0.001, 0.001, 0.0])
-    #b_bndry[3] = 20.0#*b_bndry[3]
+    # b_bndry[3] = 20.0#*b_bndry[3]
 
     return Phi1, Phi2, Phi3, S1, S2, S3, S4, lb, ub, h, Hy, Hu, By0, HBy, HBu, HBx, hB, Byend, b_bndry
 
