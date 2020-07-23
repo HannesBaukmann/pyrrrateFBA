@@ -55,6 +55,7 @@ class RAMParser:
         """
 
         self.name = None
+        self.extracellular_dict = OrderedDict()
         self.metabolites_dict = OrderedDict()
         self.macromolecules_dict = OrderedDict()
         self.reactions_dict = OrderedDict()
@@ -74,8 +75,7 @@ class RAMParser:
         # SPECIES
         for s in sbmlmodel.species:
             s_id = s.getId()
-            if s_id in self.metabolites_dict.keys() or s_id in self.macromolecules_dict.keys():
-                # funktioniert das so?
+            if s_id in self.extracellular_dict.keys() or s_id in self.macromolecules_dict.keys() or s_id in self.macromolecules_dict.keys():
                 raise SBMLError('The species id ' + s_id + ' is not unique!')
 
             # get RAM species attributes
@@ -91,7 +91,10 @@ class RAMParser:
                         break
                 if ram_element:  # False if string is empty
                     s_type = ram_element.getAttrValue('speciesType', url)
-                    if s_type == 'metabolite' or s_type == 'extracellular':
+                    if s_type == 'extracellular':
+                        self.extracellular_dict[s_id] = {}
+                        self.extracellular_dict[s_id]['speciesType'] = s_type
+                    elif s_type == 'metabolite':
                         self.metabolites_dict[s_id] = {}
                         self.metabolites_dict[s_id]['speciesType'] = s_type
                     elif s_type == 'enzyme' or s_type == 'quota' or s_type == 'storage':
@@ -134,7 +137,10 @@ class RAMParser:
                             else:
                                 raise RAMError(
                                     'The objective weight of species ' + s_id + ' is not set althought it is supposed to be a biomass species. Please correct the error in the SBML file')
-                    if s_type == 'metabolite' or s_type == 'extracellular':
+                    if s_type == 'extracellular':
+                        self.extracellular_dict[s_id]['molecularWeight'] = weight
+                        self.extracellular_dict[s_id]['objectiveWeight'] = oweight
+                    elif s_type == 'metabolite':
                         self.metabolites_dict[s_id]['molecularWeight'] = weight
                         self.metabolites_dict[s_id]['objectiveWeight'] = oweight
                     elif s_type == 'enzyme' or s_type == 'quota' or s_type == 'storage':
@@ -159,7 +165,7 @@ class RAMParser:
 
                 else:  # no RAM elements
                     raise SBMLError(
-                        'Species ' + s_id + ' has a RAM annotation, but no RAM elements. Stopping import.')
+                        'Species ' + s_id + ' has a RAM annotation, but no RAM elements. Aborting import.')
             # no annotation -> no deFBA
             elif self.is_deFBA:
                 self.is_deFBA = False
@@ -167,7 +173,14 @@ class RAMParser:
 
             if self.is_deFBA:
                 # get species attributes
-                if s_type == 'metabolite' or s_type == 'extracellular':
+                if s_type == 'extracellular':
+                    self.extracellular_dict[s_id]['name'] = s.getName()
+                    self.extracellular_dict[s_id]['compartment'] = s.getCompartment()
+                    self.extracellular_dict[s_id]['initialAmount'] = s.getInitialAmount()
+                    self.extracellular_dict[s_id]['constant'] = s.getConstant()
+                    self.extracellular_dict[s_id]['boundaryCondition'] = s.getBoundaryCondition()
+                    self.extracellular_dict[s_id]['hasOnlySubstanceUnits'] = s.getHasOnlySubstanceUnits()
+                elif s_type == 'metabolite':
                     self.metabolites_dict[s_id]['name'] = s.getName()
                     self.metabolites_dict[s_id]['compartment'] = s.getCompartment()
                     self.metabolites_dict[s_id]['initialAmount'] = s.getInitialAmount()
@@ -184,7 +197,7 @@ class RAMParser:
 
         # REACTIONS
         self.stoich = np.zeros(
-            (len(self.metabolites_dict), sbmlmodel.getNumReactions()))  # stoich is the stoichiometric matrix
+            (len(self.extracellular_dict)+len(self.metabolites_dict)+len(self.macromolecules_dict), sbmlmodel.getNumReactions()))  # stoich is the stoichiometric matrix
         # Loop over all reactions. gather stoichiometry, reversibility, kcats and gene associations
         for r in sbmlmodel.reactions:
             r_id = r.getId()
@@ -287,25 +300,27 @@ class RAMParser:
                 print('Warning: reaction ' + r_id + ' has no RAM annotation. The input is no valid deFBA model.')
 
             # fill stoichiometric matrix
-            # exclude quota reactions?
             j = list(sbmlmodel.reactions).index(r)
             for educt in r.getListOfReactants():
-                # only for metabolites
-                if educt.getSpecies() in self.metabolites_dict.keys():
-                    i = list(self.metabolites_dict).index(educt.getSpecies())
+                if educt.getSpecies() in self.extracellular_dict.keys():
+                    i = list(self.extracellular_dict).index(educt.getSpecies())
+                    self.stoich[i, j] -= educt.getStoichiometry()
+                elif educt.getSpecies() in self.metabolites_dict.keys():
+                    i = len(self.extracellular_dict) + list(self.metabolites_dict).index(educt.getSpecies())
+                    self.stoich[i, j] -= educt.getStoichiometry()
+                elif educt.getSpecies() in self.macromolecules_dict.keys():
+                    i = len(self.extracellular_dict) + len(self.metabolites_dict) + list(self.macromolecules_dict).index(educt.getSpecies())
                     self.stoich[i, j] -= educt.getStoichiometry()
             for product in r.getListOfProducts():
-                if product.getSpecies() in self.metabolites_dict.keys():
-                    i = list(self.metabolites_dict).index(product.getSpecies())
+                if product.getSpecies() in self.extracellular_dict.keys():
+                    i = list(self.extracellular_dict).index(product.getSpecies())
                     self.stoich[i, j] += product.getStoichiometry()
-
-        # delete boundary species from stoichiometric matrix (they are not modelled dynamically)
-        boundary_id = []
-        for met in self.metabolites_dict:
-            if self.metabolites_dict[met]['compartment'] == 'extracellular':
-                #                if self.metabolites_dict[met]['constant'] or self.metabolites_dict[met]['boundaryCondition']:
-                boundary_id.append(list(self.metabolites_dict).index(met))
-        self.stoich = np.delete(self.stoich, boundary_id, axis=0)
+                elif product.getSpecies() in self.metabolites_dict.keys():
+                    i = len(self.extracellular_dict) + list(self.metabolites_dict).index(product.getSpecies())
+                    self.stoich[i, j] += product.getStoichiometry()
+                elif product.getSpecies() in self.macromolecules_dict.keys():
+                    i = len(self.extracellular_dict) + len(self.metabolites_dict) + list(self.macromolecules_dict).index(product.getSpecies())
+                    self.stoich[i, j] += product.getStoichiometry()
 
 
         # QUALITATIVE SPECIES
