@@ -2,6 +2,7 @@ class Model(object):
 
     def __init__(self, ram_model):
         self.name = ram_model.name
+        self.extracellular_dict = ram_model.extracellular_dict
         self.metabolites_dict = ram_model.metabolites_dict
         self.macromolecules_dict = ram_model.macromolecules_dict
         self.reactions_dict = ram_model.reactions_dict
@@ -12,29 +13,13 @@ class Model(object):
         # Create an empty variable to save the latest results of the simulation methods
         self.results = None
 
-        if ram_model.is_deFBA:
-            import matrrrices
-
-            self.HC_matrix = None  # Enzyme Capacity Constraint matrix
-            self.HE_matrix = None  # Filter matrix for ECC matrix
-            self.HM_matrix = None  # Maintenance matrix
-            self.HB_matrix = None  # Biomass composition constraints
-
-            matrrrices.construct_HcHe(self)
-            matrrrices.construct_Hm(self)
-            matrrrices.construct_Hb(self)
 
     def print_numbers(self):
-        extra = 0
         quota = 0
         stor = 0
 
         spon = 0
         main = 0
-
-        for met in self.metabolites_dict.keys():
-            if self.metabolites_dict[met]['speciesType'] == 'extracellular':
-                extra += 1
 
         for mm in self.macromolecules_dict.keys():
             if self.macromolecules_dict[mm]['speciesType'] == 'quota':
@@ -48,10 +33,10 @@ class Model(object):
             if not self.reactions_dict[rxn]['geneProduct']:
                 spon += 1
 
-        print('species\t\t\t\t' + str(len(self.metabolites_dict) + len(self.macromolecules_dict)) \
-              + '\n\t metabolites\t\t' + str(len(self.metabolites_dict)) \
-              + '\n\t\t extracellular\t' + str(extra) \
-              + '\n\t\t intracellular\t' + str(len(self.metabolites_dict) - extra) \
+        print('species\t\t\t\t' + str(len(self.extracellular_dict) + len(self.metabolites_dict) + len(self.macromolecules_dict)) \
+              + '\n\t metabolites\t\t' + str(len(self.extracellular_dict) + len(self.metabolites_dict)) \
+              + '\n\t\t extracellular\t' + str(len(self.extracellular_dict)) \
+              + '\n\t\t intracellular\t' + str(len(self.metabolites_dict)) \
               + '\n\t macromolecules\t\t' + str(len(self.macromolecules_dict)) \
               + '\n\t\t enzymes\t' + str(len(self.macromolecules_dict) - quota - stor) \
               + '\n\t\t quota\t\t' + str(quota) \
