@@ -338,7 +338,7 @@ class RAMParser:
             # import variable(s) on right-hand side
             for i in range(rule.getMath().getNumChildren()):
                 f = rule.getMath().getChild(i).getName()
-                if f not in self.qualitative_species_dict.keys():
+                if f not in self.qualitative_species_dict.keys() and f not in self.macromolecules_dict.keys():
                     try:
                         par_id = sbmlmodel.getParameter(f).getId()
                     except AttributeError:
