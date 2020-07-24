@@ -118,26 +118,35 @@ def construct_Hb(model):
     """
     Construct the H_B matrix
     """
-    # count number of quota and storage compounds
-    b = 0
-    for mm in model.macromolecules_dict.keys():
-        if model.macromolecules_dict[mm]['speciesType'] == 'quota':
-            b += 1
 
-    if b > 0:
-        model.HB_matrix = np.zeros((b, len(model.macromolecules_dict)))
-        r = 0  # row (quota) counter
-        if r < b:
-            for q in model.macromolecules_dict.keys():
-                if model.macromolecules_dict[q]['speciesType'] == 'quota':
-                    for mm in model.macromolecules_dict.keys():
-                        if mm == q:
-                            model.HB_matrix[r][list(model.macromolecules_dict.keys()).index(mm)] = \
-                            (model.macromolecules_dict[q]['biomassPercentage'] - 1) * model.macromolecules_dict[mm]['molecularWeight']
+    # number of columns = number of macromolecules, plus dynamic extracellular species
+    # n_dynamic_extracellular is required as an offset
+    n_dynamic_extracellular = len(model.extracellular_dict)
+    for ext in model.extracellular_dict.keys():
+        if model.extracellular_dict[ext]['constant'] or model.extracellular_dict[ext]['boundaryCondition']:
+            n_dynamic_extracellular = n_dynamic_extracellular - 1
+    m = len(model.macromolecules_dict) + n_dynamic_extracellular
+
+    # number of rows = number of quota and storage compounds
+    n = 0
+    for macrom in model.macromolecules_dict.keys():
+        if model.macromolecules_dict[macrom]['speciesType'] == 'quota':
+            n += 1
+
+    if n > 0:
+        model.HB_matrix = np.zeros((n, m))
+        i = 0  # row (quota) counter
+        if i < n:  # stop iterating when all quota compounds have been considered
+            for quota in model.macromolecules_dict.keys():
+                if model.macromolecules_dict[quota]['speciesType'] == 'quota':
+                    for macrom in model.macromolecules_dict.keys():
+                        if macrom == quota:
+                            model.HB_matrix[i][n_dynamic_extracellular + list(model.macromolecules_dict.keys()).index(macrom)] = \
+                                (model.macromolecules_dict[quota]['biomassPercentage'] - 1) * model.macromolecules_dict[macrom]['molecularWeight']
                         else:
-                            model.HB_matrix[r][list(model.macromolecules_dict.keys()).index(mm)] = \
-                            model.macromolecules_dict[q]['biomassPercentage'] * model.macromolecules_dict[mm]['molecularWeight']
-                    r += 1
+                            model.HB_matrix[i][n_dynamic_extracellular + list(model.macromolecules_dict.keys()).index(macrom)] = \
+                                model.macromolecules_dict[quota]['biomassPercentage'] * model.macromolecules_dict[macrom]['molecularWeight']
+                    i += 1
     else:
-        print('The model does not seem to include quota compouds with the mandatory biomass percentage defined. Therefore, no HB matrix will be constructed.')
-        # take note that model.HB_matrix may not exist for some models!
+        print(
+            'The model does not include quota compounds with the mandatory biomass percentage defined. Therefore, no biomass composition constraint will be enforced.')
