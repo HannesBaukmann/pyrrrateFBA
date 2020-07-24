@@ -23,11 +23,25 @@ def construct_HcHe(model):
     n = sum(2 ** i for i in n_rev)  # number of rows in H_C and H_E
 
     # initialize matrices
-    model.HC_matrix = np.zeros((n, len(model.reactions_dict)))
-    model.HE_matrix = np.zeros((n, len(model.macromolecules_dict)))  # number of enzymes = number of columns in H_E
+    # number of columns in HC matrix = number of reactions, minus degradation reactions
+    m_HC = len(model.reactions_dict)
+    for rxn in model.reactions_dict.keys():
+        if np.isnan(model.reactions_dict[rxn]['kcatForward']):
+            m_HC = m_HC - 1
+
+    # number of columns in HE matrix = number of macromolecules, plus dynamic extracellular species
+    # n_dynamic_extracellular is required as an offset (extracellular metabolites cannot catalyze reactions)
+    n_dynamic_extracellular = len(model.extracellular_dict)
+    for ext in model.extracellular_dict.keys():
+        if model.extracellular_dict[ext]['constant'] or model.extracellular_dict[ext]['boundaryCondition']:
+            n_dynamic_extracellular = n_dynamic_extracellular - 1
+    m_HE = len(model.macromolecules_dict) + n_dynamic_extracellular
+
+    model.HC_matrix = np.zeros((n, m_HC))
+    model.HE_matrix = np.zeros((n, m_HE))
 
     # fill matrices
-    m = 0  # macromolecule counter
+    j = 0  # macromolecule counter
     e = 0  # enzyme counter
     i = 0  # row counter
 
@@ -38,10 +52,9 @@ def construct_HcHe(model):
         # n_rev contains a number for each catalytically active enzyme
         if e < len(n_rev):
             # increment macromolecule counter
-            m = m + 1
-            j = 0  # reversible-reaction-per-enzyme counter
+            c_rev = 0  # reversible-reaction-per-enzyme counter
             # iterate over reactions
-            if j <= n_rev[e]:
+            if c_rev <= n_rev[e]:
                 for rxn, key in model.reactions_dict.items():
                     # if there is a reaction catalyzed by this macromolecule (i.e. it is a true enzyme)
                     if model.reactions_dict[rxn]['geneProduct'] == enzyme:
@@ -56,23 +69,23 @@ def construct_HcHe(model):
                                     model.HC_matrix[i + r][
                                         list(model.reactions_dict.keys()).index(rxn)] = np.reciprocal(
                                         model.reactions_dict[rxn]['kcatForward'])
-                                    model.HE_matrix[i + r][m] = 1
+                                    model.HE_matrix[i + r][j+n_dynamic_extracellular] = 1
                                     r = r + 1
                                     # true after half of the combinations for the first reversible reaction
                                     # true after 1/4 of the combinations for the second reversible reaction
                                     # and so on.
-                                    if np.mod(r, 2 ** n_rev[e] / 2 ** (j + 1)) == 0:
+                                    if np.mod(r, 2 ** n_rev[e] / 2 ** (c_rev + 1)) == 0:
                                         fwd = False
                                 else:
                                     model.HC_matrix[i + r][
                                         list(model.reactions_dict.keys()).index(rxn)] = -1 * np.reciprocal(
                                         model.reactions_dict[rxn]['kcatBackward'])
-                                    model.HE_matrix[i + r][m] = 1
+                                    model.HE_matrix[i + r][j+n_dynamic_extracellular] = -1
                                     r = r + 1
                                     # as above, fwd will be switched after 1/2, 1/4, ... of the possible combinations
-                                    if np.mod(r, 2 ** n_rev[e] / 2 ** (j + 1)) == 0:
+                                    if np.mod(r, 2 ** n_rev[e] / 2 ** (c_rev + 1)) == 0:
                                         fwd = True
-                            j = j + 1
+                            c_rev = c_rev + 1
                         # irreversible reactions
                         else:
                             # simply enter 1/k_cat for each combination
@@ -81,10 +94,11 @@ def construct_HcHe(model):
                                 model.HC_matrix[i + r][
                                     list(model.reactions_dict.keys()).index(rxn)] = np.reciprocal(
                                     model.reactions_dict[rxn]['kcatForward'])
-                                model.HE_matrix[i + r][m] = 1
+                                model.HE_matrix[i + r][j+n_dynamic_extracellular] = -1
         if enzyme_catalyzes_anything:
             i = i + 2 ** n_rev[e]
             e = e + 1
+        j = j + 1 # next macromolecule
 
 
 def construct_Hm(model):
