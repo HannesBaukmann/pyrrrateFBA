@@ -178,54 +178,54 @@
     <speciesReference species="RP" stoichiometry="1.0" constant="true"/>
   </listOfProducts>
 </reaction>
-<reaction id="degQ" reversible="false">
+<reaction id="kdQ" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="NaN" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <listOfReactants>
-    <speciesReference species="Q" stoichiometry="kdQ" constant="true"/>
+    <speciesReference species="Q" stoichiometry="0.01" constant="true"/>
   </listOfReactants>
 </reaction>
-<reaction id="degR" reversible="false">
+<reaction id="kdR" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="NaN" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <listOfReactants>
-    <speciesReference species="R" stoichiometry="kdR" constant="true"/>
+    <speciesReference species="R" stoichiometry="0.01" constant="true"/>
   </listOfReactants>
 </reaction>
-<reaction id="degT1" reversible="false">
+<reaction id="kdT1" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="NaN" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <listOfReactants>
-    <speciesReference species="T1" stoichiometry="kdT1" constant="true"/>
+    <speciesReference species="T1" stoichiometry="0.01" constant="true"/>
   </listOfReactants>
 </reaction>
-<reaction id="degT2" reversible="false">
+<reaction id="kdT2" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="NaN" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <listOfReactants>
-    <speciesReference species="T2" stoichiometry="kdT2" constant="true"/>
+    <speciesReference species="T2" stoichiometry="0.01" constant="true"/>
   </listOfReactants>
 </reaction>
-<reaction id="degRP" reversible="false">
+<reaction id="kdRP" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="NaN" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <listOfReactants>
-    <speciesReference species="RP" stoichiometry="kdRP" constant="true"/>
+    <speciesReference species="RP" stoichiometry="0.2" constant="true"/>
   </listOfReactants>
 </reaction>
 </listOfReactions>
@@ -371,11 +371,6 @@
   <parameter id="gamma" constant="true" value="20"/>
   <parameter id="e_T2" constant="true" value="0.01"/>
   <parameter id="e_RP" constant="true" value="0.01"/>
-  <parameter id="kdQ" constant="true" value="0.01"/>
-  <parameter id="kdR" constant="true" value="0.01"/>
-  <parameter id="kdT1" constant="true" value="0.01"/>
-  <parameter id="kdT2" constant="true" value="0.01"/>
-  <parameter id="kdRP" constant="true" value="0.2"/>
   <parameter id="fbc_vT2_fwd" value="NaN" constant="false" />
   <parameter id="fbc_vT2_fwd_lower" value="NaN" constant="false" />
   <parameter id="fbc_vRP_fwd" value="NaN" constant="false" />
