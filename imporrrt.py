@@ -196,10 +196,9 @@ class RAMParser:
                     self.macromolecules_dict[s_id]['hasOnlySubstanceUnits'] = s.getHasOnlySubstanceUnits()
 
         # REACTIONS
-        self.stoich = np.zeros(
-            (len(self.extracellular_dict) + len(self.metabolites_dict) + len(self.macromolecules_dict),
-             sbmlmodel.getNumReactions()))  # stoich is the stoichiometric matrix
-        self.stoich_degradation = np.zeros((len(self.macromolecules_dict), len(self.macromolecules_dict)))
+        n_spec = len(self.extracellular_dict)+len(self.metabolites_dict)+len(self.macromolecules_dict)
+        self.stoich = np.zeros((n_spec, sbmlmodel.getNumReactions()))
+        self.stoich_degradation = np.zeros((n_spec, n_spec))
 
         # Loop over all reactions. gather stoichiometry, reversibility, kcats and gene associations
         for r in sbmlmodel.reactions:
@@ -312,13 +311,13 @@ class RAMParser:
                     i = len(self.extracellular_dict) + list(self.metabolites_dict).index(educt.getSpecies())
                     self.stoich[i, j] -= educt.getStoichiometry()
                 elif educt.getSpecies() in self.macromolecules_dict.keys():
-                    i = len(self.extracellular_dict) + len(self.metabolites_dict) + list(
-                        self.macromolecules_dict).index(educt.getSpecies())
-                    self.stoich[i, j] -= educt.getStoichiometry()
-                    # degradation reactions are additionaly stores in stoich_degradation
+                    i = len(self.extracellular_dict) + len(self.metabolites_dict) + list(self.macromolecules_dict).index(educt.getSpecies())
+                    # degradation reactions are stored in stoich_degradation
                     if np.isnan(self.reactions_dict[r.getId()]['kcatForward']):
-                        d = list(self.macromolecules_dict).index(educt.getSpecies())
-                        self.stoich_degradation[d, d] -= educt.getStoichiometry()
+                        self.stoich_degradation[i, i] -= educt.getStoichiometry()
+                    else:
+                        self.stoich[i, j] -= educt.getStoichiometry()
+
             for product in r.getListOfProducts():
                 if product.getSpecies() in self.extracellular_dict.keys():
                     i = list(self.extracellular_dict).index(product.getSpecies())
