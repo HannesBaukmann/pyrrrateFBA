@@ -296,7 +296,7 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <leq/>
+        <lt/>
         <ci>C1</ci>
         <ci>gamma</ci>
       </apply>
@@ -314,7 +314,7 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <gt/>
+        <geq/>
         <ci>C1</ci>
         <ci>gamma</ci>
       </apply>
@@ -332,7 +332,7 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <leq/>
+        <lt/>
         <ci>RP</ci>
         <ci>alpha</ci>
       </apply>
@@ -350,7 +350,7 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <gt/>
+        <geq/>
         <ci>RP</ci>
         <ci>alpha</ci>
       </apply>
