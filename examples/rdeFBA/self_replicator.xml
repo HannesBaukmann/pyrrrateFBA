@@ -178,54 +178,54 @@
     <speciesReference species="RP" stoichiometry="1.0" constant="true"/>
   </listOfProducts>
 </reaction>
-<reaction id="degQ" reversible="false" fbc:lowerFluxBound="kdQ_law">
+<reaction id="degQ" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="NaN" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <listOfReactants>
-    <speciesReference species="Q" stoichiometry="1" constant="true"/>
+    <speciesReference species="Q" stoichiometry="kdQ" constant="true"/>
   </listOfReactants>
 </reaction>
-<reaction id="degR" reversible="false" fbc:lowerFluxBound="kdR_law">
+<reaction id="degR" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="NaN" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <listOfReactants>
-    <speciesReference species="R" stoichiometry="1" constant="true"/>
+    <speciesReference species="R" stoichiometry="kdR" constant="true"/>
   </listOfReactants>
 </reaction>
-<reaction id="degT1" reversible="false" fbc:lowerFluxBound="kdT1_law">
+<reaction id="degT1" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="NaN" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <listOfReactants>
-    <speciesReference species="T1" stoichiometry="1" constant="true"/>
+    <speciesReference species="T1" stoichiometry="kdT1" constant="true"/>
   </listOfReactants>
 </reaction>
-<reaction id="degT2" reversible="false" fbc:lowerFluxBound="kdT2_law">
+<reaction id="degT2" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="NaN" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <listOfReactants>
-    <speciesReference species="T2" stoichiometry="1" constant="true"/>
+    <speciesReference species="T2" stoichiometry="kdT2" constant="true"/>
   </listOfReactants>
 </reaction>
-<reaction id="degRP" reversible="false" fbc:lowerFluxBound="kdRP_law">
+<reaction id="degRP" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="NaN" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <listOfReactants>
-    <speciesReference species="RP" stoichiometry="1" constant="true"/>
+    <speciesReference species="RP" stoichiometry="kdRP" constant="true"/>
   </listOfReactants>
 </reaction>
 </listOfReactions>
@@ -289,51 +289,6 @@
     <ci>qual_con_T2bar</ci>
   </math>
 </assignmentRule>
-  <assignmentRule variable="kdQ_law">
-    <math xmlns="http://www.w3.org/1998/Math/MathML">
-      <apply>
-        <times/>
-        <ci>Q</ci>
-        <ci>kdQ</ci>
-      </apply>
-    </math>
-  </assignmentRule>
-  <assignmentRule variable="kdR_law">
-    <math xmlns="http://www.w3.org/1998/Math/MathML">
-      <apply>
-        <times/>
-        <ci>R</ci>
-        <ci>kdR</ci>
-      </apply>
-    </math>
-  </assignmentRule>
-  <assignmentRule variable="kdT1_law">
-    <math xmlns="http://www.w3.org/1998/Math/MathML">
-      <apply>
-        <times/>
-        <ci>T1</ci>
-        <ci>kdT1</ci>
-      </apply>
-    </math>
-  </assignmentRule>
-  <assignmentRule variable="kdT2_law">
-    <math xmlns="http://www.w3.org/1998/Math/MathML">
-      <apply>
-        <times/>
-        <ci>T2</ci>
-        <ci>kdT2</ci>
-      </apply>
-    </math>
-  </assignmentRule>
-  <assignmentRule variable="kdRP_law">
-    <math xmlns="http://www.w3.org/1998/Math/MathML">
-      <apply>
-        <times/>
-        <ci>RP</ci>
-        <ci>kdRP</ci>
-      </apply>
-    </math>
-  </assignmentRule>
 </listOfRules>
 
 <listOfEvents>
@@ -425,11 +380,6 @@
   <parameter id="fbc_vT2_fwd_lower" value="NaN" constant="false" />
   <parameter id="fbc_vRP_fwd" value="NaN" constant="false" />
   <parameter id="fbc_vRP_fwd_lower" value="NaN" constant="false" />
-  <parameter id="kdQ_law" value="NaN" constant="false" />
-  <parameter id="kdR_law" value="NaN" constant="false" />
-  <parameter id="kdT1_law" value="NaN" constant="false" />
-  <parameter id="kdT2_law" value="NaN" constant="false" />
-  <parameter id="kdRP_law" value="NaN" constant="false" />
   <parameter id="qual_con_RPbar" constant="false" value="NaN"/>
   <parameter id="qual_con_T2bar" constant="false" value="NaN"/>
   <parameter id="bigM" value="2000000000000.0" constant="true" />
