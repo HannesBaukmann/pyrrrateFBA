@@ -292,24 +292,6 @@
 </listOfRules>
 
 <listOfEvents>
-<event id="low_C1" useValuesFromTriggerTime="true">
-  <trigger persistent="true" initialValue="true">
-    <math xmlns="http://www.w3.org/1998/Math/MathML">
-      <apply>
-        <lt/>
-        <ci>C1</ci>
-        <ci>gamma</ci>
-      </apply>
-    </math>
-  </trigger>
-  <listOfEventAssignments>
-    <eventAssignment variable="qual_con_RPbar">
-      <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <cn type="integer">0</cn>
-      </math>
-    </eventAssignment>
-  </listOfEventAssignments>
-</event>
 <event id="high_C1" useValuesFromTriggerTime="true">
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -322,24 +304,6 @@
   </trigger>
   <listOfEventAssignments>
     <eventAssignment variable="qual_con_RPbar">
-      <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <cn type="integer">1</cn>
-      </math>
-    </eventAssignment>
-  </listOfEventAssignments>
-</event>
-<event id="low_RP" useValuesFromTriggerTime="true">
-  <trigger persistent="true" initialValue="true">
-    <math xmlns="http://www.w3.org/1998/Math/MathML">
-      <apply>
-        <lt/>
-        <ci>RP</ci>
-        <ci>alpha</ci>
-      </apply>
-    </math>
-  </trigger>
-  <listOfEventAssignments>
-    <eventAssignment variable="qual_con_T2bar">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
         <cn type="integer">1</cn>
       </math>
