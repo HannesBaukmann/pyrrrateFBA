@@ -10,6 +10,7 @@ class Model(object):
         self.events_dict = ram_model.events_dict
         self.rules_dict = ram_model.rules_dict
         self.stoich = ram_model.stoich
+        self.stoich_degradation = ram_model.stoich_degradation
         # Create an empty variable to save the latest results of the simulation methods
         self.results = None
 
@@ -45,6 +46,7 @@ class Model(object):
               + '\n\t uptake\t\t' \
               + '\n\t metabolic\t\t' \
               + '\n\t translation\t\t' \
+              + '\n\t degradation\t\t' str(np.count_nonzero(self.stoich_degradation)) \
               + '\n\t spontaneous\t\t' + str(spon) \
               + '\n\t maintenance\t\t' + str(main) \
               + '\n regulation\t\t\t\t' \

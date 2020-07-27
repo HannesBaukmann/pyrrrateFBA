@@ -197,7 +197,10 @@ class RAMParser:
 
         # REACTIONS
         self.stoich = np.zeros(
-            (len(self.extracellular_dict)+len(self.metabolites_dict)+len(self.macromolecules_dict), sbmlmodel.getNumReactions()))  # stoich is the stoichiometric matrix
+            (len(self.extracellular_dict) + len(self.metabolites_dict) + len(self.macromolecules_dict),
+             sbmlmodel.getNumReactions()))  # stoich is the stoichiometric matrix
+        self.stoich_degradation = np.zeros((len(self.macromolecules_dict), len(self.macromolecules_dict)))
+
         # Loop over all reactions. gather stoichiometry, reversibility, kcats and gene associations
         for r in sbmlmodel.reactions:
             r_id = r.getId()
@@ -299,7 +302,7 @@ class RAMParser:
                 self.is_deFBA = False
                 print('Warning: reaction ' + r_id + ' has no RAM annotation. The input is no valid deFBA model.')
 
-            # fill stoichiometric matrix
+            # fill stoichiometric matrix (and degradation stoichiometric matrix)
             j = list(sbmlmodel.reactions).index(r)
             for educt in r.getListOfReactants():
                 if educt.getSpecies() in self.extracellular_dict.keys():
@@ -309,8 +312,13 @@ class RAMParser:
                     i = len(self.extracellular_dict) + list(self.metabolites_dict).index(educt.getSpecies())
                     self.stoich[i, j] -= educt.getStoichiometry()
                 elif educt.getSpecies() in self.macromolecules_dict.keys():
-                    i = len(self.extracellular_dict) + len(self.metabolites_dict) + list(self.macromolecules_dict).index(educt.getSpecies())
+                    i = len(self.extracellular_dict) + len(self.metabolites_dict) + list(
+                        self.macromolecules_dict).index(educt.getSpecies())
                     self.stoich[i, j] -= educt.getStoichiometry()
+                    # degradation reactions are additionaly stores in stoich_degradation
+                    if np.isnan(self.reactions_dict[r.getId()]['kcatForward']):
+                        d = list(self.macromolecules_dict).index(educt.getSpecies())
+                        self.stoich_degradation[d, d] -= educt.getStoichiometry()
             for product in r.getListOfProducts():
                 if product.getSpecies() in self.extracellular_dict.keys():
                     i = list(self.extracellular_dict).index(product.getSpecies())
@@ -319,9 +327,9 @@ class RAMParser:
                     i = len(self.extracellular_dict) + list(self.metabolites_dict).index(product.getSpecies())
                     self.stoich[i, j] += product.getStoichiometry()
                 elif product.getSpecies() in self.macromolecules_dict.keys():
-                    i = len(self.extracellular_dict) + len(self.metabolites_dict) + list(self.macromolecules_dict).index(product.getSpecies())
+                    i = len(self.extracellular_dict) + len(self.metabolites_dict) + list(
+                        self.macromolecules_dict).index(product.getSpecies())
                     self.stoich[i, j] += product.getStoichiometry()
-
 
         # QUALITATIVE SPECIES
         qual_model = sbmlmodel.getPlugin('qual')
@@ -331,7 +339,8 @@ class RAMParser:
             self.qualitative_species_dict[q_id] = {}
             self.qualitative_species_dict[q_id]['constant'] = q.getConstant()
             if q.getConstant():
-                print("Warning: Qualitative Species " + q_id + " is constant. This will lead to errors when the level of " + q_id + " is changed.")
+                print(
+                    "Warning: Qualitative Species " + q_id + " is constant. This will lead to errors when the level of " + q_id + " is changed.")
             self.qualitative_species_dict[q_id]['initialLevel'] = q.getInitialLevel()
             self.qualitative_species_dict[q_id]['maxLevel'] = q.getMaxLevel()
 
@@ -353,7 +362,7 @@ class RAMParser:
             # import variable(s) on right-hand side
             for i in range(rule.getMath().getNumChildren()):
                 f = rule.getMath().getChild(i).getName()
-                if f not in self.qualitative_species_dict.keys() and f not in self.macromolecules_dict.keys():
+                if f not in self.qualitative_species_dict.keys():
                     try:
                         par_id = sbmlmodel.getParameter(f).getId()
                     except AttributeError:
@@ -361,20 +370,22 @@ class RAMParser:
 
             self.rules_dict[v] = {rule.getFormula()}
 
-
         # EVENTS
         for e in sbmlmodel.getListOfEvents():
             e_id = e.getId()
             self.events_dict[e_id] = {}
             self.events_dict[e_id]['getUseValuesFromTriggerTime'] = e.getUseValuesFromTriggerTime()
             if not e.getUseValuesFromTriggerTime():
-                print("Warning: Variable getUseValuesFromTriggerTime of event " + e_id + " is set to False, but should be True. Delays are not considered by this software.")
+                print(
+                    "Warning: Variable getUseValuesFromTriggerTime of event " + e_id + " is set to False, but should be True. Delays are not considered by this software.")
             self.events_dict[e_id]['persistent'] = e.getTrigger().getPersistent()
             if not e.getTrigger().getPersistent():
-                print("Warning: Variable persistent of trigger in event " + e_id + " is set to False, but should be True in order to allow for multiple events to happen at the same time.")
+                print(
+                    "Warning: Variable persistent of trigger in event " + e_id + " is set to False, but should be True in order to allow for multiple events to happen at the same time.")
             self.events_dict[e_id]['initialValue'] = e.getTrigger().getInitialValue()
             if not e.getTrigger().getInitialValue():
-                print("Warning: Initial value of trigger element of event " + e_id + " is set to False, but should be True to prevent triggering at the initial time.")
+                print(
+                    "Warning: Initial value of trigger element of event " + e_id + " is set to False, but should be True to prevent triggering at the initial time.")
             self.events_dict[e_id]['trigger'] = sbml.formulaToString(e.getTrigger().getMath())
 
             for ass in e.getListOfEventAssignments():
@@ -382,3 +393,4 @@ class RAMParser:
                 self.events_dict[e_id]['listOfAssignments'].append(ass.getVariable())
                 self.events_dict[e_id]['listOfEffects'] = []
                 self.events_dict[e_id]['listOfEffects'].append(sbml.formulaToString(ass.getMath()))
+                
