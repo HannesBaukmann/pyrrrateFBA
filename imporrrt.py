@@ -1,3 +1,4 @@
+import re
 import numpy as np
 from collections import OrderedDict
 
@@ -385,11 +386,19 @@ class RAMParser:
             if not e.getTrigger().getInitialValue():
                 print(
                     "Warning: Initial value of trigger element of event " + e_id + " is set to False, but should be True to prevent triggering at the initial time.")
-            self.events_dict[e_id]['trigger'] = sbml.formulaToString(e.getTrigger().getMath())
+            print(sbml.formulaToString(e.getTrigger().getMath()))
+            trigger = re.split('\(|, |\)', sbml.formulaToString(e.getTrigger().getMath()))
+            self.events_dict[e_id]['variable'] = trigger[1]
+            self.events_dict[e_id]['relation'] = trigger[0]
+            try:
+                threshold = float(sbmlmodel.getParameter(trigger[2]).getValue())
+            except AttributeError:
+                raise SBMLError('The parameter ' + trigger[2] + ' has no value.')
+            self.events_dict[e_id]['threshold'] = threshold
 
             for ass in e.getListOfEventAssignments():
                 self.events_dict[e_id]['listOfAssignments'] = []
                 self.events_dict[e_id]['listOfAssignments'].append(ass.getVariable())
                 self.events_dict[e_id]['listOfEffects'] = []
-                self.events_dict[e_id]['listOfEffects'].append(sbml.formulaToString(ass.getMath()))
+                self.events_dict[e_id]['listOfEffects'].append(int(sbml.formulaToString(ass.getMath())))
                 
