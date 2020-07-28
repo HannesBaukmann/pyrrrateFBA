@@ -358,17 +358,22 @@ class RAMParser:
                                 "Warning: Parameter " + v + " is constant. This will lead to errors when the value of " + f + " is changed.")
                 except AttributeError:
                     print("Error: Variable " + v + " not defined!")
+            self.rules_dict[v] = {}
 
-            # import variable(s) on right-hand side
-            for i in range(rule.getMath().getNumChildren()):
-                f = rule.getMath().getChild(i).getName()
-                if f not in self.qualitative_species_dict.keys():
+            # import variables on right-hand side (don't import equalizations for qualitative species)
+            if rule.getMath().getNumChildren() == 2:  # other cases??
+                for i in range(rule.getMath().getNumChildren()):
+                    # check whether parameter is defined
+                    name = rule.getMath().getChild(i).getName()
                     try:
-                        par_id = sbmlmodel.getParameter(f).getId()
-                    except AttributeError:
-                        print("Error: Variable " + f + " not defined!")
-
-            self.rules_dict[v] = {rule.getFormula()}
+                        par_id = sbmlmodel.getParameter(name).getId()
+                        if np.isnan(sbmlmodel.getParameter(par_id).getValue()):
+                            self.rules_dict[v]['bool_parameter'] = par_id
+                        else:
+                            thr = float(sbmlmodel.getParameter(par_id).getValue())
+                            self.rules_dict[v]['threshold'] = thr
+                    except KeyError:
+                        print("Error: Variable " + par_id + " not defined!")
 
         # EVENTS
         for e in sbmlmodel.getListOfEvents():
@@ -386,7 +391,6 @@ class RAMParser:
             if not e.getTrigger().getInitialValue():
                 print(
                     "Warning: Initial value of trigger element of event " + e_id + " is set to False, but should be True to prevent triggering at the initial time.")
-            print(sbml.formulaToString(e.getTrigger().getMath()))
             trigger = re.split('\(|, |\)', sbml.formulaToString(e.getTrigger().getMath()))
             self.events_dict[e_id]['variable'] = trigger[1]
             self.events_dict[e_id]['relation'] = trigger[0]
@@ -401,4 +405,3 @@ class RAMParser:
                 self.events_dict[e_id]['listOfAssignments'].append(ass.getVariable())
                 self.events_dict[e_id]['listOfEffects'] = []
                 self.events_dict[e_id]['listOfEffects'].append(int(sbml.formulaToString(ass.getMath())))
-                
