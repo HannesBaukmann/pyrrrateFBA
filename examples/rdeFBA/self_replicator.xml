@@ -247,7 +247,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>bigM</ci>
+        <ci>u_T2</ci>
         <ci>qual_con_T2bar</ci>
       </apply>
     </math>
@@ -265,7 +265,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>bigM</ci>
+        <ci>u_RP</ci>
         <ci>qual_con_RPbar</ci>
       </apply>
     </math>
@@ -335,13 +335,14 @@
   <parameter id="gamma" constant="true" value="20"/>
   <parameter id="e_T2" constant="true" value="0.01"/>
   <parameter id="e_RP" constant="true" value="0.01"/>
+  <parameter id="u_T2" constant="true" value="100000000"/>
+  <parameter id="u_RP" constant="true" value="100000000"/>
   <parameter id="fbc_vT2_fwd" value="NaN" constant="false" />
   <parameter id="fbc_vT2_fwd_lower" value="NaN" constant="false" />
   <parameter id="fbc_vRP_fwd" value="NaN" constant="false" />
   <parameter id="fbc_vRP_fwd_lower" value="NaN" constant="false" />
   <parameter id="qual_con_RPbar" constant="false" value="NaN"/>
   <parameter id="qual_con_T2bar" constant="false" value="NaN"/>
-  <parameter id="bigM" value="2000000000000.0" constant="true" />
 </listOfParameters>
 </model>
 </sbml>
