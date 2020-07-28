@@ -196,8 +196,52 @@ class RAMParser:
                     self.macromolecules_dict[s_id]['boundaryCondition'] = s.getBoundaryCondition()
                     self.macromolecules_dict[s_id]['hasOnlySubstanceUnits'] = s.getHasOnlySubstanceUnits()
 
-        # REACTIONS
-        n_spec = len(self.extracellular_dict)+len(self.metabolites_dict)+len(self.macromolecules_dict)
+        # QUALITATIVE SPECIES
+        qual_model = sbmlmodel.getPlugin('qual')
+
+        for q in qual_model.getListOfQualitativeSpecies():
+            q_id = q.getId()
+            self.qualitative_species_dict[q_id] = {}
+            self.qualitative_species_dict[q_id]['constant'] = q.getConstant()
+            if q.getConstant():
+                print(
+                    "Warning: Qualitative Species " + q_id + " is constant. This will lead to errors when the level of " + q_id + " is changed.")
+            self.qualitative_species_dict[q_id]['initialLevel'] = q.getInitialLevel()
+            self.qualitative_species_dict[q_id]['maxLevel'] = q.getMaxLevel()
+
+        # RULES
+        for rule in sbmlmodel.getListOfRules():
+            # import variable on the left-hand side
+            v = rule.getVariable()
+            if v not in self.qualitative_species_dict.keys():
+                try:
+                    par_id = sbmlmodel.getParameter(v).getId()
+                    if par_id == v:
+                        # variables that are changed by Rule should not be constant
+                        if sbmlmodel.getParameter(v).getConstant():
+                            print(
+                                "Warning: Parameter " + v + " is constant. This will lead to errors when the value of " + f + " is changed.")
+                except AttributeError:
+                    print("Error: Variable " + v + " not defined!")
+            self.rules_dict[v] = {}
+
+            # import variables on right-hand side (don't import equalizations for qualitative species)
+            if rule.getMath().getNumChildren() == 2:  # other cases??
+                for i in range(rule.getMath().getNumChildren()):
+                    # check whether parameter is defined
+                    name = rule.getMath().getChild(i).getName()
+                    try:
+                        par_id = sbmlmodel.getParameter(name).getId()
+                        if np.isnan(sbmlmodel.getParameter(par_id).getValue()):
+                            self.rules_dict[v]['bool_parameter'] = par_id
+                        else:
+                            thr = float(sbmlmodel.getParameter(par_id).getValue())
+                            self.rules_dict[v]['threshold'] = thr
+                    except KeyError:
+                        print("Error: Variable " + par_id + " not defined!")
+
+                        # REACTIONS
+        n_spec = len(self.extracellular_dict) + len(self.metabolites_dict) + len(self.macromolecules_dict)
         self.stoich = np.zeros((n_spec, sbmlmodel.getNumReactions()))
         self.stoich_degradation = np.zeros((n_spec, n_spec))
 
@@ -238,9 +282,27 @@ class RAMParser:
 
                 # get flux balance constraints
                 if reaction_fbc.getLowerFluxBound():
-                    self.reactions_dict[r_id]['lowerFluxBound'] = reaction_fbc.getLowerFluxBound()
+                    lb_par = reaction_fbc.getLowerFluxBound()
+                    try:
+                        # import of simple flux bounds
+                        lb = float(lb_par)
+                        self.reactions_dict[r_id]['lowerFluxBound'] = lb
+                    except ValueError:
+                        # finalize import of rules to regulate reactions
+                        self.rules_dict[lb_par]['reactionID'] = r_id
+                        self.rules_dict[lb_par]['direction'] = 'lower'
+                        self.reactions_dict[r_id]['lowerFluxBound_rule'] = lb_par
                 if reaction_fbc.getUpperFluxBound():
-                    self.reactions_dict[r_id]['upperFluxBound'] = reaction_fbc.getUpperFluxBound()
+                    ub_par = reaction_fbc.getUpperFluxBound()
+                    try:
+                        # import of simple flux bounds
+                        ub = float(ub_par)
+                        self.reactions_dict[r_id]['upperFluxBound'] = ub
+                    except ValueError:
+                        # finalize import of rules to regulate reactions
+                        self.rules_dict[ub_par]['reactionID'] = r_id
+                        self.rules_dict[ub_par]['direction'] = 'upper'
+                        self.reactions_dict[r_id]['upperFluxBound_rule'] = ub_par
 
             # get RAM reactions attributes
             annotation = r.getAnnotation()
@@ -312,7 +374,8 @@ class RAMParser:
                     i = len(self.extracellular_dict) + list(self.metabolites_dict).index(educt.getSpecies())
                     self.stoich[i, j] -= educt.getStoichiometry()
                 elif educt.getSpecies() in self.macromolecules_dict.keys():
-                    i = len(self.extracellular_dict) + len(self.metabolites_dict) + list(self.macromolecules_dict).index(educt.getSpecies())
+                    i = len(self.extracellular_dict) + len(self.metabolites_dict) + list(
+                        self.macromolecules_dict).index(educt.getSpecies())
                     # degradation reactions are stored in stoich_degradation
                     if np.isnan(self.reactions_dict[r.getId()]['kcatForward']):
                         self.stoich_degradation[i, i] -= educt.getStoichiometry()
@@ -330,50 +393,6 @@ class RAMParser:
                     i = len(self.extracellular_dict) + len(self.metabolites_dict) + list(
                         self.macromolecules_dict).index(product.getSpecies())
                     self.stoich[i, j] += product.getStoichiometry()
-
-        # QUALITATIVE SPECIES
-        qual_model = sbmlmodel.getPlugin('qual')
-
-        for q in qual_model.getListOfQualitativeSpecies():
-            q_id = q.getId()
-            self.qualitative_species_dict[q_id] = {}
-            self.qualitative_species_dict[q_id]['constant'] = q.getConstant()
-            if q.getConstant():
-                print(
-                    "Warning: Qualitative Species " + q_id + " is constant. This will lead to errors when the level of " + q_id + " is changed.")
-            self.qualitative_species_dict[q_id]['initialLevel'] = q.getInitialLevel()
-            self.qualitative_species_dict[q_id]['maxLevel'] = q.getMaxLevel()
-
-        # RULES
-        for rule in sbmlmodel.getListOfRules():
-            # import variable on the left-hand side
-            v = rule.getVariable()
-            if v not in self.qualitative_species_dict.keys():
-                try:
-                    par_id = sbmlmodel.getParameter(v).getId()
-                    if par_id == v:
-                        # variables that are changed by Rule should not be constant
-                        if sbmlmodel.getParameter(v).getConstant():
-                            print(
-                                "Warning: Parameter " + v + " is constant. This will lead to errors when the value of " + f + " is changed.")
-                except AttributeError:
-                    print("Error: Variable " + v + " not defined!")
-            self.rules_dict[v] = {}
-
-            # import variables on right-hand side (don't import equalizations for qualitative species)
-            if rule.getMath().getNumChildren() == 2:  # other cases??
-                for i in range(rule.getMath().getNumChildren()):
-                    # check whether parameter is defined
-                    name = rule.getMath().getChild(i).getName()
-                    try:
-                        par_id = sbmlmodel.getParameter(name).getId()
-                        if np.isnan(sbmlmodel.getParameter(par_id).getValue()):
-                            self.rules_dict[v]['bool_parameter'] = par_id
-                        else:
-                            thr = float(sbmlmodel.getParameter(par_id).getValue())
-                            self.rules_dict[v]['threshold'] = thr
-                    except KeyError:
-                        print("Error: Variable " + par_id + " not defined!")
 
         # EVENTS
         for e in sbmlmodel.getListOfEvents():
