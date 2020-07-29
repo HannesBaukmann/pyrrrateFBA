@@ -1,152 +1,408 @@
-import numpy as np
+class Matrrrices:
 
-def construct_HcHe(model):
-    """
-    Construct matrices for enzyme capacity constraints: H_C and filter matrix H_E
-    """
-    # calculate number of rows in H_C and H_E:
-    n_rev = []  # list containing number of reversible rxns per enzyme
+    def __init__(self, model):
+        self.construct_vectors(model)
+        self.construct_objective(model)
+        self.construct_boundary(model)
+        self.construct_reactions(model)
+        self.construct_flux_bounds(model)
+        self.construct_mixed(model)
+        self.construct_fullmixed(model)
 
-    # iterate over enzymes
-    for enzyme in model.macromolecules_dict.keys():
-        e_rev = 0  # number of reversible reactions catalyzed by this enzyme
-        enzyme_catalyzed_anything = False
-        # iterate over reactions
+    def construct_vectors(self, model):
+        """
+        construct vectors containing the IDs of dynamical species, reactions, and boolean variables, respectively
+        """
+
+        # species vector y contains only dynamical species, i.e.:
+        y_vec = []
+        # dynamical external species
+        for ext in model.extracellular_dict.keys():
+            if not model.extracellular_dict[ext]['constant'] and not model.extracellular_dict[ext]['boundaryCondition']:
+                y_vec.append(ext)
+        # and all macromolecular species
+        y_vec = y_vec + list(model.macromolecules_dict.keys())
+
+        # reactions vector u contains all reactions except for degradation reactions
+        u_vec = []
         for rxn in model.reactions_dict.keys():
-            if model.reactions_dict[rxn]['geneProduct'] == enzyme:
-                enzyme_catalyzed_anything = True
-                if model.reactions_dict[rxn]['reversible']:
-                    e_rev = e_rev + 1
-        if enzyme_catalyzed_anything:
-            n_rev.append(e_rev)
+            if np.isfinite(model.reactions_dict[rxn]['kcatForward']):
+                u_vec.append(rxn)
 
-    n = sum(2 ** i for i in n_rev)  # number of rows in H_C and H_E
+        # boolean variables species vector x contains all boolean variables
+        # can occur multiple times in different rules/events
+        x_vec = []
+        # first iterate through events for boolean variables controlled by continuous variables
+        for event in model.events_dict.keys():
+            for variable in model.events_dict[event]['listOfAssignments']:
+                if variable not in x_vec:
+                    x_vec.append(variable)
+        # then interate through rules for boolean variables regulating fluxes
+        for rule in model.rules_dict.keys():
+            try:
+                parameter = model.rules_dict[rule]['bool_parameter']
+                if parameter not in x_vec:
+                    x_vec.append(parameter)
+            except KeyError:
+                pass
 
-    # initialize matrices
-    # number of columns in HC matrix = number of reactions, minus degradation reactions
-    m_HC = len(model.reactions_dict)
-    for rxn in model.reactions_dict.keys():
-        if np.isnan(model.reactions_dict[rxn]['kcatForward']):
-            m_HC = m_HC - 1
+        self.y_vec = y_vec
+        self.u_vec = u_vec
+        self.x_vec = x_vec
 
-    # number of columns in HE matrix = number of macromolecules, plus dynamic extracellular species
-    # n_dynamic_extracellular is required as an offset (extracellular metabolites cannot catalyze reactions)
-    n_dynamic_extracellular = len(model.extracellular_dict)
-    for ext in model.extracellular_dict.keys():
-        if model.extracellular_dict[ext]['constant'] or model.extracellular_dict[ext]['boundaryCondition']:
-            n_dynamic_extracellular = n_dynamic_extracellular - 1
-    m_HE = len(model.macromolecules_dict) + n_dynamic_extracellular
+    def construct_objective(self, model, phi2=None, phi3=None):
+        """
+        constructs objective vectors Phi_1, Phi_2 and Phi_3.
+        """
 
-    model.HC_matrix = np.zeros((n, m_HC))
-    model.HE_matrix = np.zeros((n, m_HE))
+        self.phi1 = np.zeros(len(self.y_vec), dtype=float)
 
-    # fill matrices
-    j = 0  # macromolecule counter
-    e = 0  # enzyme counter
-    i = 0  # row counter
+        for macrom in model.macromolecules_dict.keys():
+            self.phi1[self.y_vec.index(macrom)] = model.macromolecules_dict[macrom]['objectiveWeight']
 
-    # iterate over enzymes
-    for enzyme in model.macromolecules_dict.keys():
-        # if macromolecule doesn't catalyze any reaction (e.g. transcription factors), it won't be regarded
-        enzyme_catalyzes_anything = False
-        # n_rev contains a number for each catalytically active enzyme
-        if e < len(n_rev):
-            # increment macromolecule counter
-            c_rev = 0  # reversible-reaction-per-enzyme counter
-            # iterate over reactions
-            if c_rev <= n_rev[e]:
-                for rxn, key in model.reactions_dict.items():
-                    # if there is a reaction catalyzed by this macromolecule (i.e. it is a true enzyme)
-                    if model.reactions_dict[rxn]['geneProduct'] == enzyme:
-                        enzyme_catalyzes_anything = True
-                        # reversible reactions
-                        if model.reactions_dict[rxn]['reversible']:
-                            # boolean variable specifies whether to include forward or backward k_cat
-                            fwd = True
-                            # in order to cover all possible combinations of reaction fluxes
-                            for r in range(2 ** n_rev[e]):
-                                if fwd:
-                                    model.HC_matrix[i + r][
-                                        list(model.reactions_dict.keys()).index(rxn)] = np.reciprocal(
-                                        model.reactions_dict[rxn]['kcatForward'])
-                                    model.HE_matrix[i + r][j+n_dynamic_extracellular] = 1
-                                    r = r + 1
-                                    # true after half of the combinations for the first reversible reaction
-                                    # true after 1/4 of the combinations for the second reversible reaction
-                                    # and so on.
-                                    if np.mod(r, 2 ** n_rev[e] / 2 ** (c_rev + 1)) == 0:
-                                        fwd = False
-                                else:
-                                    model.HC_matrix[i + r][
-                                        list(model.reactions_dict.keys()).index(rxn)] = -1 * np.reciprocal(
-                                        model.reactions_dict[rxn]['kcatBackward'])
-                                    model.HE_matrix[i + r][j+n_dynamic_extracellular] = -1
-                                    r = r + 1
-                                    # as above, fwd will be switched after 1/2, 1/4, ... of the possible combinations
-                                    if np.mod(r, 2 ** n_rev[e] / 2 ** (c_rev + 1)) == 0:
-                                        fwd = True
-                            c_rev = c_rev + 1
-                        # irreversible reactions
-                        else:
-                            # simply enter 1/k_cat for each combination
-                            # (2^0 = 1 in case of an enzyme that only catalyzes irreversible reactions)
-                            for r in range(2 ** n_rev[e]):
-                                model.HC_matrix[i + r][
-                                    list(model.reactions_dict.keys()).index(rxn)] = np.reciprocal(
-                                    model.reactions_dict[rxn]['kcatForward'])
-                                model.HE_matrix[i + r][j+n_dynamic_extracellular] = -1
-        if enzyme_catalyzes_anything:
-            i = i + 2 ** n_rev[e]
-            e = e + 1
-        j = j + 1 # next macromolecule
+        if phi2:
+            self.phi2 = phi2
+        else:
+            self.phi2 = np.zeros(len(self.y_vec), dtype=float)
 
+        if phi3:
+            self.phi3 = phi3
+        else:
+            self.phi3 = np.zeros(len(self.y_vec), dtype=float)
 
-def construct_Hm(model):
-    """
-    Constructs the H_M matrix
-    """
-    model.HM_matrix = np.zeros((len(model.reactions_dict), len(model.macromolecules_dict)))
+    def construct_boundary(self, model):
+        """
+        construct matrices to enforce boundary conditions
+        """
+        # identity matrix
+        matrix_start = np.eye(len(self.y_vec), dtype=float)
+        # how to encode cyclic behaviour in SBML?
+        matrix_end = np.zeros((matrix_start.shape), dtype=float)
+        # fill vector
+        vec_bndry = np.array(len(self.y_vec) * [[0.0]])
+        for ext in model.extracellular_dict.keys():
+            if ext in self.y_vec:
+                vec_bndry[self.y_vec.index(ext)] = model.extracellular_dict[ext]["initialAmount"]
+        for macrom in model.macromolecules_dict.keys():
+            vec_bndry[self.y_vec.index(macrom)] = model.macromolecules_dict[macrom]["initialAmount"]
 
-    for rxn in model.reactions_dict.keys():
-        if model.reactions_dict[rxn]['maintenanceScaling'] > 0:
-            for mm in model.macromolecules_dict.keys():
-                model.HM_matrix[list(model.reactions_dict.keys()).index(rxn)][
-                    list(model.macromolecules_dict.keys()).index(mm)] = model.reactions_dict[rxn]['maintenanceScaling'] * model.macromolecules_dict[mm]['initialAmount']
+        self.matrix_start = matrix_start
+        self.matrix_end = matrix_end
+        self.vec_bndry = vec_bndry
 
+    def construct_reactions(self, model):
+        """
+        construct matrices S1, S2, S3, S4
+        """
 
-def construct_Hb(model):
-    """
-    Construct the H_B matrix
-    """
+        # select rows of species with QSSA
+        # # (first entries in stoichiometric matrix belong to extreacellular species, followed by internal metabolites)
+        # initialize with indices of internal metabolites
+        rows_qssa = list(
+            range(len(model.extracellular_dict), len(model.extracellular_dict) + len(model.metabolites_dict)))
+        # add non-dynamical extracellualar species
+        for row_index, ext in enumerate(model.extracellular_dict):
+            if model.extracellular_dict[ext]['constant'] or model.extracellular_dict[ext]['boundaryCondition']:
+                rows_qssa.append(row_index)
 
-    # number of columns = number of macromolecules, plus dynamic extracellular species
-    # n_dynamic_extracellular is required as an offset
-    n_dynamic_extracellular = len(model.extracellular_dict)
-    for ext in model.extracellular_dict.keys():
-        if model.extracellular_dict[ext]['constant'] or model.extracellular_dict[ext]['boundaryCondition']:
-            n_dynamic_extracellular = n_dynamic_extracellular - 1
-    m = len(model.macromolecules_dict) + n_dynamic_extracellular
+        # select columns of degradation reactions
+        cols_deg = []
+        for col_index, rxn in enumerate(model.reactions_dict):
+            if np.isnan(model.reactions_dict[rxn]['kcatForward']):
+                cols_deg.append(col_index)
 
-    # number of rows = number of quota and storage compounds
-    n = 0
-    for macrom in model.macromolecules_dict.keys():
-        if model.macromolecules_dict[macrom]['speciesType'] == 'quota':
-            n += 1
+        # S1: QSSA species
+        smat1 = model.stoich[rows_qssa, :]
+        smat1 = np.delete(smat1, cols_deg, 1)
 
-    if n > 0:
-        model.HB_matrix = np.zeros((n, m))
+        # S2: dynamical species
+        smat2 = np.delete(model.stoich, rows_qssa, 0)
+        smat2 = np.delete(smat2, cols_deg, 1)
+
+        # S3: QSSA species
+        smat3 = model.stoich_degradation[rows_qssa, :]
+        smat3 = np.delete(smat3, rows_qssa, 1)  # here: rows_qssa = cols_qssa
+
+        # S4: dynamical species
+        smat4 = np.delete(model.stoich_degradation, rows_qssa, 0)
+        smat4 = np.delete(smat4, rows_qssa, 1)  # here: rows_qssa = cols_qssa
+
+        self.smat1 = smat1
+        self.smat2 = smat2
+        self.smat3 = smat3
+        self.smat4 = smat4
+
+    def construct_flux_bounds(self, model):
+        """
+        construct vectors lb, ub
+        """
+        # define this at a higher level?
+        import gurobipy
+        INFINITY = gurobipy.GRB.INFINITY
+
+        lbvec = np.array(len(self.u_vec) * [[0.0]])
+        ubvec = np.array(len(self.u_vec) * [[INFINITY]])
+
+        # flux bounds determined by regulation are not considered here
+        for index, rxn in enumerate(model.reactions_dict):
+            # lower bounds
+            try:
+                lbvec[index] = float(model.reactions_dict[rxn]['lowerFluxBound'])
+            except KeyError:
+                pass
+            # upper bounds
+            try:
+                ubvec[index] = float(model.reactions_dict[rxn]['upperFluxBound'])
+            except KeyError:
+                pass
+
+        self.lbvec = lbvec
+        self.ubvec = ubvec
+
+    def construct_fullmixed(self, model):
+        """
+        construct matrices for regulation
+        """
+
+        # define at a higher level!
+        epsilon = 0.001
+        u = 10.0 ** 8
+        l = -10.0 ** 8
+
+        # control of discrete jumps
+
+        # initialize matrices
+        n_rows = 2 * len(model.events_dict)
+        matrix_B_y_1 = np.zeros((n_rows, len(self.y_vec)), dtype=float)
+        matrix_B_u_1 = np.zeros((n_rows, len(self.u_vec)), dtype=float)
+        matrix_B_x_1 = np.zeros((n_rows, len(self.x_vec)), dtype=float)
+        vec_B_1 = np.array(n_rows * [[0.0]])
+
+        events_counter = 0
+        for index, event in enumerate(model.events_dict):
+            species_index = self.y_vec.index(model.events_dict[event]['variable'])
+            if model.events_dict[event]['relation'] == 'geq':
+                for i, affected_bool in enumerate(model.events_dict[event]['listOfAssignments']):
+                    matrix_B_y_1[2 * events_counter][species_index] = -1
+                    matrix_B_y_1[2 * events_counter + 1][species_index] = 1
+                    if model.events_dict[event]['listOfEffects'][i] == 0:
+                        matrix_B_x_1[2 * events_counter][self.x_vec.index(affected_bool)] = l
+                        matrix_B_x_1[2 * events_counter + 1][self.x_vec.index(affected_bool)] = epsilon + u
+                        vec_B_1[2 * events_counter] = -model.events_dict[event]['threshold']
+                        vec_B_1[2 * events_counter + 1] = model.events_dict[event]['threshold'] + u
+                    elif model.events_dict[event]['listOfEffects'][i] == 1:
+                        matrix_B_x_1[2 * events_counter][self.x_vec.index(affected_bool)] = -l
+                        matrix_B_x_1[2 * events_counter + 1][self.x_vec.index(affected_bool)] = -epsilon - u
+                        vec_B_1[2 * events_counter] = -model.events_dict[event]['threshold'] - l
+                        vec_B_1[2 * events_counter + 1] = model.events_dict[event]['threshold'] - epsilon
+                    events_counter += 1
+            elif model.events_dict[event]['relation'] == 'leq':
+                for i, affected_bool in enumerate(model.events_dict[event]['listOfAssignments']):
+                    matrix_B_y_1[2 * events_counter][species_index] = 1
+                    matrix_B_y_1[2 * events_counter + 1][species_index] = -1
+                    if model.events_dict[event]['listOfEffects'][i] == 0:
+                        matrix_B_x_1[2 * events_counter][self.x_vec.index(affected_bool)] = l
+                        matrix_B_x_1[2 * events_counter + 1][self.x_vec.index(affected_bool)] = epsilon + u
+                        vec_B_1[2 * events_counter] = model.events_dict[event]['threshold']
+                        vec_B_1[2 * events_counter + 1] = -model.events_dict[event]['threshold'] + u
+                    elif model.events_dict[event]['listOfEffects'][i] == 1:
+                        matrix_B_x_1[2 * events_counter][self.x_vec.index(affected_bool)] = -l
+                        matrix_B_x_1[2 * events_counter + 1][self.x_vec.index(affected_bool)] = -epsilon - u
+                        vec_B_1[2 * events_counter] = model.events_dict[event]['threshold'] - l
+                        vec_B_1[2 * events_counter + 1] = -model.events_dict[event]['threshold'] - epsilon
+                    events_counter += 1
+            else:
+                raise SBMLError('Please use only relation leq or geq!')
+
+        # Control of continuous dynamics by discrete states
+
+        n_rules = 0
+        for rule in model.rules_dict.keys():
+            try:
+                rxn = model.rules_dict[rule]['reactionID']
+                n_rules += 1
+            except KeyError:
+                pass
+
+        matrix_B_y_2 = np.zeros((n_rules, len(self.y_vec)), dtype=float)
+        matrix_B_u_2 = np.zeros((n_rules, len(self.u_vec)), dtype=float)
+        matrix_B_x_2 = np.zeros((n_rules, len(self.x_vec)), dtype=float)
+        vec_B_2 = np.array(n_rules * [[0.0]])
+
+        for index, rule in enumerate(model.rules_dict):
+            try:
+                rxn_index = self.u_vec.index(model.rules_dict[rule]['reactionID'])
+                par_index = self.x_vec.index(model.rules_dict[rule]['bool_parameter'])
+                if model.rules_dict[rule]['direction'] == 'lower':
+                    matrix_B_u_2[index][rxn_index] = -1
+                    matrix_B_x_2[index][par_index] = model.rules_dict[rule]['threshold']
+                if model.rules_dict[rule]['direction'] == 'upper':
+                    matrix_B_u_2[index][rxn_index] = 1
+                    matrix_B_x_2[index][par_index] = -model.rules_dict[rule]['threshold']
+            except KeyError:
+                pass
+
+        self.matrix_B_y = np.vstack((matrix_B_y_1, matrix_B_y_2))
+        self.matrix_B_u = np.vstack((matrix_B_u_1, matrix_B_u_2))
+        self.matrix_B_x = np.vstack((matrix_B_x_1, matrix_B_x_2))
+        self.vec_B = np.vstack((vec_B_1, vec_B_2))
+
+    def construct_mixed(self, model):
+        """
+        constructs matrices H_y and H_u
+        """
+        # check whether the model contains quota compounds
+        n_quota = 0  # number of quota and storage compounds
+        for macrom in model.macromolecules_dict.keys():
+            if model.macromolecules_dict[macrom]['speciesType'] == 'quota':
+                n_quota += 1
+
+        if n_quota > 0:
+            matrix_y_1 = self.construct_Hb(model, n_quota)
+            matrix_u_1 = np.zeros(matrix_y_1.shape, dtype=float)
+
+        matrix_y_2, matrix_u_2 = self.construct_HcHe(model)
+
+        # check whether the model contains a maintenance reaction; if so, pass index
+        main_index = None
+        for index, rxn in enumerate(model.reactions_dict.keys()):
+            if model.reactions_dict[rxn]['maintenanceScaling'] > 0:
+                main_index = index
+                matrix_y_3, matrix_u_3 = self.construct_Hm(model, main_index)
+                break
+
+        # stacking of the resulting matrices
+        if n_quota > 0:
+            if main_index:
+                self.matrix_u = np.vstack((matrix_u_1, matrix_u_2, matrix_u_3))
+                self.matrix_y = np.vstack((matrix_y_1, matrix_y_2, matrix_y_3))
+            else:
+                self.matrix_u = np.vstack((matrix_u_1, matrix_u_2))
+                self.matrix_y = np.vstack((matrix_y_1, matrix_y_2))
+        elif main_index:
+            self.matrix_u = np.vstack((matrix_u_2, matrix_u_3))
+            self.matrix_y = np.vstack((matrix_y_2, matrix_y_3))
+        else:
+            self.matrix_u = matrix_u_2
+            self.matrix_y = matrix_y_2
+
+        self.vec_h = np.zeros(self.matrix_u.shape[0], dtype=float)  # vector h always contains only zeros
+
+    def construct_Hb(self, model, n_rows):
+        """
+        Construct the H_B matrix
+        """
+
+        HB_matrix = np.zeros((n_rows, len(self.y_vec)))
         i = 0  # row (quota) counter
-        if i < n:  # stop iterating when all quota compounds have been considered
+        if i < n_rows:  # stop iterating when all quota compounds have been considered
             for quota in model.macromolecules_dict.keys():
                 if model.macromolecules_dict[quota]['speciesType'] == 'quota':
                     for macrom in model.macromolecules_dict.keys():
                         if macrom == quota:
-                            model.HB_matrix[i][n_dynamic_extracellular + list(model.macromolecules_dict.keys()).index(macrom)] = \
-                                (model.macromolecules_dict[quota]['biomassPercentage'] - 1) * model.macromolecules_dict[macrom]['molecularWeight']
+                            HB_matrix[i][self.y_vec.index(macrom)] = (model.macromolecules_dict[quota][
+                                                                          'biomassPercentage'] - 1) * \
+                                                                     model.macromolecules_dict[macrom][
+                                                                         'molecularWeight']
                         else:
-                            model.HB_matrix[i][n_dynamic_extracellular + list(model.macromolecules_dict.keys()).index(macrom)] = \
-                                model.macromolecules_dict[quota]['biomassPercentage'] * model.macromolecules_dict[macrom]['molecularWeight']
+                            HB_matrix[i][self.y_vec.index(macrom)] = model.macromolecules_dict[quota][
+                                                                         'biomassPercentage'] * \
+                                                                     model.macromolecules_dict[macrom][
+                                                                         'molecularWeight']
                     i += 1
-    else:
-        print(
-            'The model does not include quota compounds with the mandatory biomass percentage defined. Therefore, no biomass composition constraint will be enforced.')
+
+        return HB_matrix
+
+    def construct_HcHe(self, model):
+        """
+        Construct matrices for enzyme capacity constraints: H_C and filter matrix H_E
+        """
+        # calculate number of rows in H_C and H_E:
+        n_rev = []  # list containing number of reversible rxns per enzyme
+
+        # iterate over enzymes
+        for enzyme in model.macromolecules_dict.keys():
+            e_rev = 0  # number of reversible reactions catalyzed by this enzyme
+            enzyme_catalyzed_anything = False
+            # iterate over reactions
+            for rxn in model.reactions_dict.keys():
+                if model.reactions_dict[rxn]['geneProduct'] == enzyme:
+                    enzyme_catalyzed_anything = True
+                    if model.reactions_dict[rxn]['reversible']:
+                        e_rev = e_rev + 1
+            if enzyme_catalyzed_anything:
+                n_rev.append(e_rev)
+
+        # initialize matrices
+        n_rows = sum(2 ** i for i in n_rev)  # number of rows in H_C and H_E
+        HC_matrix = np.zeros((n_rows, len(self.u_vec)), dtype=float)
+        HE_matrix = np.zeros((n_rows, len(self.y_vec)), dtype=float)
+
+        # fill matrices
+        e = 0  # enzyme counter
+        i = 0  # row counter
+
+        # iterate over enzymes
+        for enzyme in model.macromolecules_dict.keys():
+            # if macromolecule doesn't catalyze any reaction (e.g. transcription factors), it won't be regarded
+            enzyme_catalyzes_anything = False
+            # n_rev contains a number for each catalytically active enzyme
+            if e < len(n_rev):
+                # increment macromolecule counter
+                c_rev = 0  # reversible-reaction-per-enzyme counter
+                # iterate over reactions
+                if c_rev <= n_rev[e]:
+                    for rxn, key in model.reactions_dict.items():
+                        # if there is a reaction catalyzed by this macromolecule (i.e. it is a true enzyme)
+                        if model.reactions_dict[rxn]['geneProduct'] == enzyme:
+                            enzyme_catalyzes_anything = True
+                            # reversible reactions
+                            if model.reactions_dict[rxn]['reversible']:
+                                # boolean variable specifies whether to include forward or backward k_cat
+                                fwd = True
+                                # in order to cover all possible combinations of reaction fluxes
+                                for r in range(2 ** n_rev[e]):
+                                    if fwd:
+                                        HC_matrix[i + r][self.u_vec.index(rxn)] = np.reciprocal(
+                                            model.reactions_dict[rxn]['kcatForward'])
+                                        HE_matrix[i + r][self.y_vec.index(enzyme)] = 1
+                                        r = r + 1
+                                        # true after half of the combinations for the first reversible reaction
+                                        # true after 1/4 of the combinations for the second reversible reaction
+                                        # and so on.
+                                        if np.mod(r, 2 ** n_rev[e] / 2 ** (c_rev + 1)) == 0:
+                                            fwd = False
+                                    else:
+                                        HC_matrix[i + r][self.u_vec.index(rxn)] = -1 * np.reciprocal(
+                                            model.reactions_dict[rxn]['kcatBackward'])
+                                        HE_matrix[i + r][self.y_vec.index(enzyme)] = -1
+                                        r = r + 1
+                                        # as above, fwd will be switched after 1/2, 1/4, ... of the possible combinations
+                                        if np.mod(r, 2 ** n_rev[e] / 2 ** (c_rev + 1)) == 0:
+                                            fwd = True
+                                c_rev = c_rev + 1
+                            # irreversible reactions
+                            else:
+                                # simply enter 1/k_cat for each combination
+                                # (2^0 = 1 in case of an enzyme that only catalyzes irreversible reactions)
+                                for r in range(2 ** n_rev[e]):
+                                    HC_matrix[i + r][self.u_vec.index(rxn)] = np.reciprocal(
+                                        model.reactions_dict[rxn]['kcatForward'])
+                                    HE_matrix[i + r][self.y_vec.index(enzyme)] = 1
+            if enzyme_catalyzes_anything:
+                i = i + 2 ** n_rev[e]
+                e = e + 1
+
+        return -HE_matrix, HC_matrix
+
+    def construct_Hm(self, model, main_index):
+        """
+        Constructs the H_M matrix (assumption: there is at most one maintenance reaction)
+        """
+        main_rxn = list(model.reactions_dict.keys())[main_index]
+
+        matrix_HM_y = np.array(len(y_vec) * [model.reactions_dict[main_rxn]]['maintenanceScaling'])
+        matrix_HM_u = np.zeros(len(u_vec), dtype=float)
+        matrix_HM_u[u_vec.index(main_rxn)] = -1.0
+
+        return matrix_HM_y, matrix_HM_u
