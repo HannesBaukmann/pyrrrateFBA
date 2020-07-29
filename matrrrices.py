@@ -1,5 +1,4 @@
 class Matrrrices:
-
     def __init__(self, model):
         self.construct_vectors(model)
         self.construct_objective(model)
@@ -86,8 +85,8 @@ class Matrrrices:
         for macrom in model.macromolecules_dict.keys():
             vec_bndry[self.y_vec.index(macrom)] = model.macromolecules_dict[macrom]["initialAmount"]
 
-        self.matrix_start = matrix_start
-        self.matrix_end = matrix_end
+        self.matrix_start = sp.csr_matrix(matrix_start)
+        self.matrix_end = sp.csr_matrix(matrix_end)
         self.vec_bndry = vec_bndry
 
     def construct_reactions(self, model):
@@ -127,10 +126,10 @@ class Matrrrices:
         smat4 = np.delete(model.stoich_degradation, rows_qssa, 0)
         smat4 = np.delete(smat4, rows_qssa, 1)  # here: rows_qssa = cols_qssa
 
-        self.smat1 = smat1
-        self.smat2 = smat2
-        self.smat3 = smat3
-        self.smat4 = smat4
+        self.smat1 = sp.csr_matrix(smat1)
+        self.smat2 = sp.csr_matrix(smat2)
+        self.smat3 = sp.csr_matrix(smat3)
+        self.smat4 = sp.csr_matrix(smat4)
 
     def construct_flux_bounds(self, model):
         """
@@ -242,9 +241,9 @@ class Matrrrices:
             except KeyError:
                 pass
 
-        self.matrix_B_y = np.vstack((matrix_B_y_1, matrix_B_y_2))
-        self.matrix_B_u = np.vstack((matrix_B_u_1, matrix_B_u_2))
-        self.matrix_B_x = np.vstack((matrix_B_x_1, matrix_B_x_2))
+        self.matrix_B_y = sp.csr_matrix(np.vstack((matrix_B_y_1, matrix_B_y_2)))
+        self.matrix_B_u = sp.csr_matrix(np.vstack((matrix_B_u_1, matrix_B_u_2)))
+        self.matrix_B_x = sp.csr_matrix(np.vstack((matrix_B_x_1, matrix_B_x_2)))
         self.vec_B = np.vstack((vec_B_1, vec_B_2))
 
     def construct_mixed(self, model):
@@ -274,17 +273,17 @@ class Matrrrices:
         # stacking of the resulting matrices
         if n_quota > 0:
             if main_index:
-                self.matrix_u = np.vstack((matrix_u_1, matrix_u_2, matrix_u_3))
-                self.matrix_y = np.vstack((matrix_y_1, matrix_y_2, matrix_y_3))
+                self.matrix_u = sp.csr_matrix(np.vstack((matrix_u_1, matrix_u_2, matrix_u_3)))
+                self.matrix_y = sp.csr_matrix(np.vstack((matrix_y_1, matrix_y_2, matrix_y_3)))
             else:
-                self.matrix_u = np.vstack((matrix_u_1, matrix_u_2))
-                self.matrix_y = np.vstack((matrix_y_1, matrix_y_2))
+                self.matrix_u = sp.csr_matrix(np.vstack((matrix_u_1, matrix_u_2)))
+                self.matrix_y = sp.csr_matrix(np.vstack((matrix_y_1, matrix_y_2)))
         elif main_index:
-            self.matrix_u = np.vstack((matrix_u_2, matrix_u_3))
-            self.matrix_y = np.vstack((matrix_y_2, matrix_y_3))
+            self.matrix_u = sp.csr_matrix(np.vstack((matrix_u_2, matrix_u_3)))
+            self.matrix_y = sp.csr_matrix(np.vstack((matrix_y_2, matrix_y_3)))
         else:
-            self.matrix_u = matrix_u_2
-            self.matrix_y = matrix_y_2
+            self.matrix_u = sp.csr_matrix(matrix_u_2)
+            self.matrix_y = sp.csr_matrix(matrix_y_2)
 
         self.vec_h = np.zeros(self.matrix_u.shape[0], dtype=float)  # vector h always contains only zeros
 
