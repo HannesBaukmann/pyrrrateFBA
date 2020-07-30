@@ -124,7 +124,7 @@ def mi_cp_linprog(t_0, t_end, phi1, phi2, phi3, smat1, smat2, smat3, smat4,
     Approximate the solution of the mixed integer optimal control problem
      min int_{t_0}^{t_end} phi1^T y dt + phi2^T y_0 + phi3^T y_end
      s.t.                             y' == smat2*u + smat4*y
-                                       0 == smat1*u + smat3*u + f_1
+                                       0 == smat1*u + smat3*y + f_1
                                    lbvec <= u <= ubvec
                        hmaty*y + hmatu*u <= hvec
                                        0 <= y
@@ -159,7 +159,7 @@ def mi_cp_linprog(t_0, t_end, phi1, phi2, phi3, smat1, smat2, smat3, smat4,
 
     tgrid = np.linspace(t_0, t_end, n_steps + 1)
     del_t = tgrid[1] - tgrid[0]
-    tt_shift = (tgrid[1:] + tgrid[:-1]) / 2.0  # time grid for controls
+    tt_s = (tgrid[1:] + tgrid[:-1]) / 2.0  # time grid for controls
 
     # Discretization of objective
     # Lagrange part @MAYBE: add possib. for  more complicated objective
@@ -240,7 +240,7 @@ def mi_cp_linprog(t_0, t_end, phi1, phi2, phi3, smat1, smat2, smat3, smat4,
         y_data = np.reshape(model.get_solution()[:n_ally], (n_steps+1, n_y))
         u_data = np.reshape(model.get_solution()[n_ally:n_ally+n_allu], (n_steps, n_u))
         x_data = np.reshape(model.get_solution()[n_ally+n_allu:], (n_steps, n_x))
-        return tgrid, tt_shift, y_data, u_data, x_data
+        return tgrid, tt_s, y_data, u_data, x_data
     # TODO: use cleverer output here
     print("No solution found")
 
@@ -254,8 +254,6 @@ def _inflate_constraints(amat, bmat, cmat, dvec, n_steps=1):
     the underlying dynamics:
     Assume that for m = 0,1,...,n_steps-1, the following inequalities/equalities
     are given: amat*y_{m+1} + bmat*y_{m} + cmat*u_{m+1/2} <relation> dvec
-    #TODO: - Allow time dependency
-           - include possible internal stages
     """
     amat_y = sp.kron(sp.eye(n_steps, n_steps+1), bmat) + \
              sp.kron(sp.diags([1.0], 1, shape=(n_steps, n_steps+1)), amat)
@@ -328,8 +326,8 @@ def _inflate_callable(amat, ttvec, **kwargs):
         function to return amat(t), must have equal shape for all arguments
     ttvec : np.array
         vector of time points
-    **kwargs : -"amat0": provide already 
-        DESCRIPTION.
+    **kwargs : -"amat0": np.array (2d)
+        provide already the first evaluated instance of amat(t)
 
     Returns
     -------
@@ -339,7 +337,6 @@ def _inflate_callable(amat, ttvec, **kwargs):
     n_tt = len(ttvec)
     amat0 = kwargs.get("amat0", amat(ttvec[0]))
     n_2 = amat0.shape[1]
-    # TODO allocate data, indices, indptr for out_mat or -- even better - create extended Kronecker function
     #nnz = amat0.count_nonzero()
     #n_all = n_tt*nnz #  @MAYBE: a bit larger for safety?
     #data = np.array(n_all*[0.0], dtype=np.float64)
@@ -358,7 +355,38 @@ def _inflate_callable(amat, ttvec, **kwargs):
     return data, indices, indptr
 
 
-#def _inflate_rhs():
+def _inflate_vec(fvec, ttvec):
+    """
+    stack possibly time-dependent vectors on top of each other
+        ( fvec(ttvec[0], fvec(ttvec[1]), ..., fvec(ttvec[-1])) )
+    Parameters
+    ----------
+    fvec :  np.array
+            OR:
+            callable double -> np.array of equal length
+        vector( function) to be stacked
+    ttvec : np.array
+        vector of time grid points
+
+    Returns
+    -------
+    fvec_all: np.array
+        stacked vectors
+    """
+    n_tt = len(ttvec)
+    if callable(fvec):
+        fvec0 = fvec(ttvec[0])
+    else:
+        fvec0 = fvec
+    n_f = len(fvec0)
+    if callable(fvec):
+        fvec_all = np.array(n_tt*n_f*[0.0])
+        fvec_all[:n_f] = fvec0
+        for i in range(n_tt-1):
+            fvec_all[(i+1)*n_f:i*n_f] = fvec(ttvec[i+1])
+    else:
+        fvec_all = np.hstack(n_tt*[fvec])
+    return fvec_all
 
 
 #def _inflate_more_constraints(amat, bmat, cmat, dmat, emat, fvec, n_steps=1):
