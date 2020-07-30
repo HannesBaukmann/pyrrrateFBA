@@ -1,3 +1,5 @@
+import numpy as np
+
 class Model(object):
 
     def __init__(self, ram_model):
@@ -46,7 +48,7 @@ class Model(object):
               + '\n\t uptake\t\t' \
               + '\n\t metabolic\t\t' \
               + '\n\t translation\t\t' \
-              + '\n\t degradation\t\t' str(np.count_nonzero(self.stoich_degradation)) \
+              + '\n\t degradation\t\t' + str(np.count_nonzero(self.stoich_degradation)) \
               + '\n\t spontaneous\t\t' + str(spon) \
               + '\n\t maintenance\t\t' + str(main) \
               + '\n regulation\t\t\t\t' \

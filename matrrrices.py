@@ -1,3 +1,5 @@
+import numpy as np
+
 class Matrrrices:
     def __init__(self, model):
         self.construct_vectors(model)
