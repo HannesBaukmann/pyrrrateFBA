@@ -46,7 +46,7 @@ def cp_linprog(t_0, t_end, phi1, phi2, phi3, smat1, smat2, smat3, smat4,
     tt_shift = (tgrid[1:] + tgrid[:-1])/2.0 # time grid for controls
 
     # Discretization of objective
-    # Lagrange part @MAYBE: add possib. for  more complicated objective
+    # Lagrange part @MAYBE: add possib. for more complicated objective
     f_y = np.hstack([0.5*del_t*phi1,
                      np.hstack((n_steps-1)*[del_t*phi1]),
                      0.5*del_t*phi1])
@@ -59,7 +59,7 @@ def cp_linprog(t_0, t_end, phi1, phi2, phi3, smat1, smat2, smat3, smat4,
 
     # Discretization of dynamics
     (aeqmat1_y, aeqmat1_u, beq1) = \
-      _inflate_constraints(-sp.eye(n_y)+del_t*smat4, sp.eye(n_y)+del_t*smat4,
+      _inflate_constraints(-sp.eye(n_y)+0.5*del_t*smat4, sp.eye(n_y)+0.5*del_t*smat4,
                            del_t*smat2, np.array(n_y*[0.0]), n_steps=n_steps)
 
     # Discretization of QSSA rows (this is simplified and only works for constant smat1)
@@ -115,6 +115,7 @@ def cp_linprog(t_0, t_end, phi1, phi2, phi3, smat1, smat2, smat3, smat4,
     return None
 
 
+# TODO: Change at least order of arguments, add additive vector f_1 in qssa rows
 def mi_cp_linprog(t_0, t_end, phi1, phi2, phi3, smat1, smat2, smat3, smat4,
                   lbvec, ubvec, hvec, hmaty, hmatu, bmaty0,
                   hbmaty, hbmatu, hbmatx, hbvec, bmatyend, b_bndry, n_steps=101,
@@ -123,7 +124,7 @@ def mi_cp_linprog(t_0, t_end, phi1, phi2, phi3, smat1, smat2, smat3, smat4,
     Approximate the solution of the mixed integer optimal control problem
      min int_{t_0}^{t_end} phi1^T y dt + phi2^T y_0 + phi3^T y_end
      s.t.                             y' == smat2*u + smat4*y
-                                       0 == smat1*u + smat3*u
+                                       0 == smat1*u + smat3*u + f_1
                                    lbvec <= u <= ubvec
                        hmaty*y + hmatu*u <= hvec
                                        0 <= y
@@ -136,8 +137,6 @@ def mi_cp_linprog(t_0, t_end, phi1, phi2, phi3, smat1, smat2, smat3, smat4,
      objective
     all vectors are always supposed to be np.array, all matrices
      scipy.sparse.csr_matrix
-    @FIXME
-     - Not finished/tested yet!!!
     @DEBUG
      - This is supposed to be temporary and replaced by a more general oc
        routine
@@ -177,7 +176,7 @@ def mi_cp_linprog(t_0, t_end, phi1, phi2, phi3, smat1, smat2, smat3, smat4,
 
     # Discretization of dynamics
     (aeqmat1_y, aeqmat1_u, beq1) = \
-        _inflate_constraints(-sp.eye(n_y) + del_t * smat4, sp.eye(n_y) + del_t * smat4,
+        _inflate_constraints(-sp.eye(n_y) + 0.5 * del_t * smat4, sp.eye(n_y) + 0.5 * del_t * smat4,
                              del_t * smat2, np.array(n_y * [0.0]), n_steps=n_steps)
 
     # Discretization of QSSA rows (this is simplified and only works for constant smat1)
@@ -244,6 +243,7 @@ def mi_cp_linprog(t_0, t_end, phi1, phi2, phi3, smat1, smat2, smat3, smat4,
         return tgrid, tt_shift, y_data, u_data, x_data
     # TODO: use cleverer output here
     print("No solution found")
+
     return None
 
 
@@ -265,16 +265,112 @@ def _inflate_constraints(amat, bmat, cmat, dvec, n_steps=1):
     return (amat_y, amat_u, dvec_all)
 
 
-def _inflate_more_constraints(amat, bmat, cmat, dmat, emat, fvec, n_steps=1):
+def _inflate_constraints_new(amat, ttvec, bmat=None):
     """
-    amat*y_{m+1} + bmat*y_{m} + cmat*u_{m+1/2} + dmat*x_{m+1} + emat*x_{m} <relation> fvec
+    Stagging the pointwise given constraints
+        amat(tt_m)*y_m + bmat(tt_{m+1})*y_{m+1}
+    to a constraint matrix:
+       / amat(tt[0]), bmat(tt[1])                                          \
+       |             amat(tt[1]), bmat(tt[2])                              |
+       |                ...          ...                                   |
+       \                                         amat(tt[-2]) bmat(tt[-1]) /
+    where tt and N correspond to ttvec and n_tt, resp.
+
+    TODO: Still no irregular grid possible -> replace by generalized Kronecker?
     """
+    skip_bmat = True
+    n_tt = len(ttvec)
+    if callable(amat):
+        amat_is_fun = True
+        amat0 = amat(ttvec[0])
+    else:
+        amat_is_fun = False
+        amat0 = amat
+    n_1, n_2 = amat0.shape
+    if not bmat is None:
+        skip_bmat = False
+        if callable(bmat):
+            bmat_is_fun = True
+            bmat0 = bmat(ttvec[1])
+        else:
+            bmat_is_fun = False
+            bmat0 = bmat
+        n_3, n_4 = bmat0.shape
+        if n_1 != n_3 or n_2 != n_4:
+            raise Warning("Matrix dimensions are not correct for inflating constraint")
+    # build matrices
+    if amat_is_fun:
+        data, indices, indptr = _inflate_callable(amat, ttvec[:-1], amat0=amat0)
+        out_mat = sp.csr_matrix((data, indices, indptr), shape=(n_1*(n_tt-1), n_2*n_tt))
+    else:
+        out_mat = sp.kron(sp.eye(n_tt-1, n_tt), amat)
+    # add bmat-part
+    if not skip_bmat:
+        if bmat_is_fun:
+            data, indices, indptr = _inflate_callable(bmat, ttvec[1:], amat0=bmat0)
+            indices = [k+n_2 for k in indices]
+            out_mat += sp.csr_matrix((data, indices, indptr), shape=(n_1*(n_tt-1), n_2*n_tt))
+        else:
+            out_mat += sp.kron(sp.diags([1.0], 1, shape=(n_tt-1, n_tt)), bmat)
+    return out_mat
 
-    amat_y = sp.kron(sp.eye(n_steps, n_steps + 1), bmat) + \
-             sp.kron(sp.diags([1.0], 1, shape=(n_steps, n_steps + 1)), amat)
-    amat_u = sp.kron(sp.eye(n_steps), cmat)
-    amat_x = sp.kron(sp.eye(n_steps, n_steps + 1), emat) + \
-             sp.kron(sp.diags([1.0], 1, shape=(n_steps, n_steps + 1)), dmat)
-    fvec_all = np.hstack(n_steps * [fvec])
 
-    return (amat_y, amat_u, amat_x, fvec_all)
+def _inflate_callable(amat, ttvec, **kwargs):
+    """
+    inflate a given matrix-valued function along the main diagonal of a csr_matrix:
+        / amat(ttvec[0])                                      \
+       |                  amat(ttvec[1])                      |
+       |                      ...                             |
+       \                                      amat(ttvec[-1]) /
+    Parameters
+    ----------
+    amat : callable: real -> scipy.sparse.csr_matrix
+        function to return amat(t), must have equal shape for all arguments
+    ttvec : np.array
+        vector of time points
+    **kwargs : -"amat0": provide already 
+        DESCRIPTION.
+
+    Returns
+    -------
+    data, indices, indptr : arrays for building a csr_matrix
+        works as the standard csr_matrix constructor
+    """
+    n_tt = len(ttvec)
+    amat0 = kwargs.get("amat0", amat(ttvec[0]))
+    n_2 = amat0.shape[1]
+    # TODO allocate data, indices, indptr for out_mat or -- even better - create extended Kronecker function
+    #nnz = amat0.count_nonzero()
+    #n_all = n_tt*nnz #  @MAYBE: a bit larger for safety?
+    #data = np.array(n_all*[0.0], dtype=np.float64)
+    #indices = np.array(n_all*[0], dtype=np.int32)
+    #indptr = np.array(n_tt*n_2*[0], dtype=np.int32)
+    data = list(amat0.data)
+    indices = list(amat0.indices)
+    indptr = list(amat0.indptr[:])
+    for i in range(n_tt-1):
+        print("i = ", i)
+        amat0 = amat(ttvec[i+1])
+        data.extend(list(amat0.data))
+        indices.extend([n_2*(i+1)+k for k in list(amat0.indices)])
+        end = indptr[-1]
+        indptr.extend([end + k for k in amat0.indptr[1:]])
+    return data, indices, indptr
+
+
+#def _inflate_rhs():
+
+
+#def _inflate_more_constraints(amat, bmat, cmat, dmat, emat, fvec, n_steps=1):
+#    """
+#    amat*y_{m+1} + bmat*y_{m} + cmat*u_{m+1/2} + dmat*x_{m+1} + emat*x_{m} <relation> fvec
+#    """
+#
+#    amat_y = sp.kron(sp.eye(n_steps, n_steps + 1), bmat) + \
+#             sp.kron(sp.diags([1.0], 1, shape=(n_steps, n_steps + 1)), amat)
+#    amat_u = sp.kron(sp.eye(n_steps), cmat)
+#    amat_x = sp.kron(sp.eye(n_steps, n_steps + 1), emat) + \
+#             sp.kron(sp.diags([1.0], 1, shape=(n_steps, n_steps + 1)), dmat)
+#    fvec_all = np.hstack(n_steps * [fvec])
+#
+#    return (amat_y, amat_u, amat_x, fvec_all)
