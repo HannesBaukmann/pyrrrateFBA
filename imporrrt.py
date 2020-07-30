@@ -38,7 +38,7 @@ def readSBML(filename):
         model = pyrrrateModel.Model(parsed)
         return model
     else:
-        raise sbml.SBMLError(
+        raise SBMLError(
             'The SBML file contains no model. Maybe the filename is wrong or the file does not follow SBML standards. Please run the SBML validator at http://sbml.org/Facilities/Validator/index.jsp to find the problem.')
 
 
