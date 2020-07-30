@@ -38,7 +38,7 @@ def readSBML(filename):
         model = pyrrrateModel.Model(parsed)
         return model
     else:
-        raise SBMLError(
+        raise sbml.SBMLError(
             'The SBML file contains no model. Maybe the filename is wrong or the file does not follow SBML standards. Please run the SBML validator at http://sbml.org/Facilities/Validator/index.jsp to find the problem.')
 
 
@@ -156,11 +156,11 @@ class RAMParser:
                             biomass_string = ram_element.getAttrValue('biomassPercentage', url)
                             if biomass_string:
                                 try:
-                                    biomass = float(sbmlmodelmodel.getParameter(biomp_string).getValue())
+                                    biomass = float(sbmlmodel.getParameter(biomass_string).getValue())
                                 except AttributeError:
                                     print('The parameter ' + biomass_string + ' has no value.')
                         if biomass < 0 or biomass > 1:
-                            raise RAMError('The parameter ' + biomp_string + ' does not have a value between 0 and 1.')
+                            raise RAMError('The parameter ' + biomass_string + ' does not have a value between 0 and 1.')
                         self.macromolecules_dict[s_id]['biomassPercentage'] = biomass
                         # Hinweis, dass man nicht kontrolliert, ob im Modell eine biomassP für eine nicht-quota species steht?
 
@@ -220,7 +220,7 @@ class RAMParser:
                         # variables that are changed by Rule should not be constant
                         if sbmlmodel.getParameter(v).getConstant():
                             print(
-                                "Warning: Parameter " + v + " is constant. This will lead to errors when the value of " + f + " is changed.")
+                                "Warning: Parameter " + v + " is constant. This will lead to errors when the value of " + v + " is changed.")
                 except AttributeError:
                     print("Error: Variable " + v + " not defined!")
             self.rules_dict[v] = {}

@@ -1,4 +1,5 @@
 import numpy as np
+import scipy.sparse as sp
 
 class Matrrrices:
     def __init__(self, model):
