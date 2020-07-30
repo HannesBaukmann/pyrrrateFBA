@@ -1,4 +1,10 @@
 import numpy as np
+import scipy.sparse as sp
+try:
+    import libsbml as sbml
+except ImportError as err:
+    raise ImportError("SBML support requires the libsbml module, but importing this module failed with message: " + err)
+
 
 class Matrrrices:
     def __init__(self, model):
@@ -213,7 +219,7 @@ class Matrrrices:
                         vec_B_1[2 * events_counter + 1] = -model.events_dict[event]['threshold'] - epsilon
                     events_counter += 1
             else:
-                raise SBMLError('Please use only relation leq or geq!')
+                raise sbml.SBMLError('Please use only relation leq or geq!')
 
         # Control of continuous dynamics by discrete states
 
@@ -402,8 +408,8 @@ class Matrrrices:
         """
         main_rxn = list(model.reactions_dict.keys())[main_index]
 
-        matrix_HM_y = np.array(len(y_vec) * [model.reactions_dict[main_rxn]]['maintenanceScaling'])
-        matrix_HM_u = np.zeros(len(u_vec), dtype=float)
-        matrix_HM_u[u_vec.index(main_rxn)] = -1.0
+        matrix_HM_y = np.array(len(self.y_vec) * [model.reactions_dict[main_rxn]]['maintenanceScaling'])
+        matrix_HM_u = np.zeros(len(self.u_vec), dtype=float)
+        matrix_HM_u[self.u_vec.index(main_rxn)] = -1.0
 
         return matrix_HM_y, matrix_HM_u
