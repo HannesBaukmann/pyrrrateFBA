@@ -34,7 +34,7 @@ def readSBML(filename):
         # Initialize RAMParser object
         parsed = RAMParser(document)
         # return the model object
-        import pyrrrateModel
+        from . import pyrrrateModel
         model = pyrrrateModel.Model(parsed)
         return model
     else:
