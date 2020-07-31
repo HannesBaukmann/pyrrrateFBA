@@ -208,47 +208,35 @@ class Matrrrices:
         # control of discrete jumps
 
         # initialize matrices
-        n_rows = 2 * len(model.events_dict)
+        n_rows = len(model.events_dict)
         matrix_B_y_1 = np.zeros((n_rows, len(self.y_vec)), dtype=float)
         matrix_B_u_1 = np.zeros((n_rows, len(self.u_vec)), dtype=float)
         matrix_B_x_1 = np.zeros((n_rows, len(self.x_vec)), dtype=float)
         vec_B_1 = np.array(n_rows * [0.0])
 
-        events_counter = 0
         for index, event in enumerate(model.events_dict):
             species_index = self.y_vec.index(model.events_dict[event]['variable'])
-            if model.events_dict[event]['relation'] == 'geq':
+            # Difference between geq and gt??
+            if model.events_dict[event]['relation'] == 'geq' or model.events_dict[event]['relation'] == 'gt':
                 for i, affected_bool in enumerate(model.events_dict[event]['listOfAssignments']):
-                    matrix_B_y_1[2 * events_counter][species_index] = -1
-                    matrix_B_y_1[2 * events_counter + 1][species_index] = 1
+                    matrix_B_y_1[index][species_index] = 1
                     if model.events_dict[event]['listOfEffects'][i] == 0:
-                        matrix_B_x_1[2 * events_counter][self.x_vec.index(affected_bool)] = l
-                        matrix_B_x_1[2 * events_counter + 1][self.x_vec.index(affected_bool)] = epsilon + u
-                        vec_B_1[2 * events_counter] = -model.events_dict[event]['threshold']
-                        vec_B_1[2 * events_counter + 1] = model.events_dict[event]['threshold'] + u
+                        matrix_B_x_1[index][self.x_vec.index(affected_bool)] = epsilon + u
+                        vec_B_1[index] = model.events_dict[event]['threshold'] + u
                     elif model.events_dict[event]['listOfEffects'][i] == 1:
-                        matrix_B_x_1[2 * events_counter][self.x_vec.index(affected_bool)] = -l
-                        matrix_B_x_1[2 * events_counter + 1][self.x_vec.index(affected_bool)] = -epsilon - u
-                        vec_B_1[2 * events_counter] = -model.events_dict[event]['threshold'] - l
-                        vec_B_1[2 * events_counter + 1] = model.events_dict[event]['threshold'] - epsilon
-                    events_counter += 1
-            elif model.events_dict[event]['relation'] == 'leq':
+                        matrix_B_x_1[index][self.x_vec.index(affected_bool)] = - (epsilon + u)
+                        vec_B_1[index] = model.events_dict[event]['threshold'] - epsilon
+            # Difference between leq and lt??
+            elif model.events_dict[event]['relation'] == 'leq' or model.events_dict[event]['relation'] == 'lt':
                 for i, affected_bool in enumerate(model.events_dict[event]['listOfAssignments']):
-                    matrix_B_y_1[2 * events_counter][species_index] = 1
-                    matrix_B_y_1[2 * events_counter + 1][species_index] = -1
+                    matrix_B_y_1[index][species_index] = -1
                     if model.events_dict[event]['listOfEffects'][i] == 0:
-                        matrix_B_x_1[2 * events_counter][self.x_vec.index(affected_bool)] = l
-                        matrix_B_x_1[2 * events_counter + 1][self.x_vec.index(affected_bool)] = epsilon + u
-                        vec_B_1[2 * events_counter] = model.events_dict[event]['threshold']
-                        vec_B_1[2 * events_counter + 1] = -model.events_dict[event]['threshold'] + u
+                        matrix_B_x_1[index][self.x_vec.index(affected_bool)] = - l
+                        vec_B_1[index] = -model.events_dict[event]['threshold'] - l
                     elif model.events_dict[event]['listOfEffects'][i] == 1:
-                        matrix_B_x_1[2 * events_counter][self.x_vec.index(affected_bool)] = -l
-                        matrix_B_x_1[2 * events_counter + 1][self.x_vec.index(affected_bool)] = -epsilon - u
-                        vec_B_1[2 * events_counter] = model.events_dict[event]['threshold'] - l
-                        vec_B_1[2 * events_counter + 1] = -model.events_dict[event]['threshold'] - epsilon
-                    events_counter += 1
-            else:
-                raise sbml.SBMLError('Please use only relation leq or geq!')
+                        matrix_B_x_1[index][self.x_vec.index(affected_bool)] = l
+                        vec_B_1[index] = -model.events_dict[event]['threshold']
+
 
         # Control of continuous dynamics by discrete states
         n_rules = 0
