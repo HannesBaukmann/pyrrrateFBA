@@ -7,6 +7,20 @@ except ImportError as err:
 
 
 class Matrrrices:
+    """
+    Class that contains the matrices and vectors of the MILP:
+    min int_{t_0}^{t_end} phi1^T y dt + phi2^T y_0 + phi3^T y_end
+     s.t.                             y' == smat2*u + smat4*y
+                                       0 == smat1*u + smat3*y + f_1
+                                   lbvec <= u <= ubvec
+                       hmaty*y + hmatu*u <= hvec
+                                       0 <= y
+          hbmaty*y + hbmatu*u + hbmatx*x <= hbvec
+             bmaty0*y_0 + bmatyend*y_end == b_bndry
+                                       y in R^{n_y}, u in R^{n_u},
+                                       x in B^{n_x}
+    """
+    
     def __init__(self, model):
         self.construct_vectors(model)
         self.construct_objective(model)
@@ -65,7 +79,7 @@ class Matrrrices:
         self.phi1 = np.zeros(len(self.y_vec), dtype=float)
 
         for macrom in model.macromolecules_dict.keys():
-            self.phi1[self.y_vec.index(macrom)] = model.macromolecules_dict[macrom]['objectiveWeight']
+            self.phi1[self.y_vec.index(macrom)] = -model.macromolecules_dict[macrom]['objectiveWeight']
 
         if phi2:
             self.phi2 = phi2
@@ -86,7 +100,7 @@ class Matrrrices:
         # how to encode cyclic behaviour in SBML?
         matrix_end = np.zeros((matrix_start.shape), dtype=float)
         # fill vector
-        vec_bndry = np.array(len(self.y_vec) * [[0.0]])
+        vec_bndry = np.array(len(self.y_vec) * [0.0])
         for ext in model.extracellular_dict.keys():
             if ext in self.y_vec:
                 vec_bndry[self.y_vec.index(ext)] = model.extracellular_dict[ext]["initialAmount"]
@@ -147,8 +161,8 @@ class Matrrrices:
         import gurobipy
         INFINITY = gurobipy.GRB.INFINITY
 
-        lbvec = np.array(len(self.u_vec) * [[0.0]])
-        ubvec = np.array(len(self.u_vec) * [[INFINITY]])
+        lbvec = np.array(len(self.u_vec) * [0.0])
+        ubvec = np.array(len(self.u_vec) * [INFINITY])
 
         # flux bounds determined by regulation are not considered here
         for index, rxn in enumerate(model.reactions_dict):
@@ -183,7 +197,7 @@ class Matrrrices:
         matrix_B_y_1 = np.zeros((n_rows, len(self.y_vec)), dtype=float)
         matrix_B_u_1 = np.zeros((n_rows, len(self.u_vec)), dtype=float)
         matrix_B_x_1 = np.zeros((n_rows, len(self.x_vec)), dtype=float)
-        vec_B_1 = np.array(n_rows * [[0.0]])
+        vec_B_1 = np.array(n_rows * [0.0])
 
         events_counter = 0
         for index, event in enumerate(model.events_dict):
@@ -222,7 +236,6 @@ class Matrrrices:
                 raise sbml.SBMLError('Please use only relation leq or geq!')
 
         # Control of continuous dynamics by discrete states
-
         n_rules = 0
         for rule in model.rules_dict.keys():
             try:
@@ -234,7 +247,7 @@ class Matrrrices:
         matrix_B_y_2 = np.zeros((n_rules, len(self.y_vec)), dtype=float)
         matrix_B_u_2 = np.zeros((n_rules, len(self.u_vec)), dtype=float)
         matrix_B_x_2 = np.zeros((n_rules, len(self.x_vec)), dtype=float)
-        vec_B_2 = np.array(n_rules * [[0.0]])
+        vec_B_2 = np.array(n_rules * [0.0])
 
         for index, rule in enumerate(model.rules_dict):
             try:
@@ -252,7 +265,7 @@ class Matrrrices:
         self.matrix_B_y = sp.csr_matrix(np.vstack((matrix_B_y_1, matrix_B_y_2)))
         self.matrix_B_u = sp.csr_matrix(np.vstack((matrix_B_u_1, matrix_B_u_2)))
         self.matrix_B_x = sp.csr_matrix(np.vstack((matrix_B_x_1, matrix_B_x_2)))
-        self.vec_B = np.vstack((vec_B_1, vec_B_2))
+        self.vec_B = np.hstack((vec_B_1, vec_B_2))
 
     def construct_mixed(self, model):
         """
