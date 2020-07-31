@@ -7,10 +7,7 @@ from . import lp as lp_wrapper
 
 
 # TODO: Change at least order of arguments, add additive vector f_1 in qssa rows
-def mi_cp_linprog(t_0, t_end, phi1, phi2, phi3, smat1, smat2, smat3, smat4,
-                  lbvec, ubvec, hvec, hmaty, hmatu, bmaty0,
-                  hbmaty, hbmatu, hbmatx, hbvec, bmatyend, b_bndry, n_steps=101,
-                  varphi=0.0):
+def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0):
     """
     Approximate the solution of the mixed integer optimal control problem
      min int_{t_0}^{t_end} phi1^T y dt + phi2^T y_0 + phi3^T y_end
@@ -37,16 +34,16 @@ def mi_cp_linprog(t_0, t_end, phi1, phi2, phi3, smat1, smat2, smat3, smat4,
      - add additional terms in objective and dynamics
      - allow irregular time grid
      - ...
-     @MAYBE
-     - create/use a class for the input(?)
     """
-    n_y, n_u = smat2.shape
-    n_x = hbmatx.shape[1]
-    n_qssa = smat1.shape[0]
+
+
+    n_y, n_u = matrices.smat2.shape
+    n_x = matrices.matrix_B_x.shape[1]
+    n_qssa = matrices.smat1.shape[0]
     n_ally = (n_steps + 1) * n_y
     n_allu = n_steps * n_u
     n_allx = n_steps * n_x
-    n_bndry = len(b_bndry)
+    n_bndry = len(matrices.vec_bndry)
 
     tgrid = np.linspace(t_0, t_end, n_steps + 1)
     del_t = tgrid[1] - tgrid[0]
@@ -54,29 +51,29 @@ def mi_cp_linprog(t_0, t_end, phi1, phi2, phi3, smat1, smat2, smat3, smat4,
 
     # Discretization of objective
     # Lagrange part @MAYBE: add possib. for  more complicated objective
-    f_y = np.hstack([0.5 * del_t * phi1,
-                     np.hstack((n_steps - 1) * [del_t * phi1]),
-                     0.5 * del_t * phi1])
+    f_y = np.hstack([0.5 * del_t * matrices.phi1,
+                     np.hstack((n_steps - 1) * [del_t * matrices.phi1]),
+                     0.5 * del_t * matrices.phi1])
     expvals = np.exp(-varphi * tgrid)
     f_y *= np.repeat(expvals, n_y)
     f_u = np.array(n_allu * [0.0])
     f_x = np.array(n_allx * [0.0])
     # Mayer part
-    f_y[0:n_y] += phi2
-    f_y[n_steps * n_y:n_ally] += phi3
+    f_y[0:n_y] += matrices.phi2
+    f_y[n_steps * n_y:n_ally] += matrices.phi3
 
     # Discretization of dynamics
     (aeqmat1_y, aeqmat1_u, beq1) = \
-        _inflate_constraints(-sp.eye(n_y) + 0.5 * del_t * smat4, sp.eye(n_y) + 0.5 * del_t * smat4,
-                             del_t * smat2, np.array(n_y * [0.0]), n_steps=n_steps)
+        _inflate_constraints(-sp.eye(n_y) + 0.5 * del_t * matrices.smat4, sp.eye(n_y) + 0.5 * del_t * matrices.smat4,
+                             del_t * matrices.smat2, np.array(n_y * [0.0]), n_steps=n_steps)
 
     # Discretization of QSSA rows (this is simplified and only works for constant smat1)
     (aeqmat2_y, aeqmat2_u, beq2) = \
-        _inflate_constraints(-0.5 * smat3, 0.5 * smat3, smat1, n_qssa * [0.0], n_steps=n_steps)
+        _inflate_constraints(-0.5 * matrices.smat3, 0.5 * matrices.smat3, matrices.smat1, n_qssa * [0.0], n_steps=n_steps)
 
     # Discretization of flux bounds @MAYBE: allow time dependency here
-    lb_u = np.hstack(n_steps*[lbvec])
-    ub_u = np.hstack(n_steps*[ubvec])
+    lb_u = np.hstack(n_steps*[matrices.lbvec])
+    ub_u = np.hstack(n_steps*[matrices.ubvec])
 
     # Discretization of positivity
     lb_y = np.array(n_ally*[0.0])
@@ -84,19 +81,19 @@ def mi_cp_linprog(t_0, t_end, phi1, phi2, phi3, smat1, smat2, smat3, smat4,
 
     # Discretization of mixed constraints, This only works for constant smat2
     # TODO: Allow time dependency here
-    (amat1_y, amat1_u, bineq1) = _inflate_constraints(0.5*hmaty, 0.5*hmaty, hmatu,
-                                                      hvec, n_steps=n_steps)
+    (amat1_y, amat1_u, bineq1) = _inflate_constraints(0.5*matrices.matrix_y, 0.5*matrices.matrix_y, matrices.matrix_u,
+                                                      matrices.vec_h, n_steps=n_steps)
 
     # Discretization of mixed Boolean constraints
-    (amat2_y, amat2_u, bineq2) = _inflate_constraints(0.5*hbmaty, 0.5*hbmaty, hbmatu,
-                                                      hbvec, n_steps=n_steps)
-    amat2_x = sp.kron(sp.eye(n_steps), hbmatx)
+    (amat2_y, amat2_u, bineq2) = _inflate_constraints(0.5*matrices.matrix_B_y, 0.5*matrices.matrix_B_y, matrices.matrix_B_u,
+                                                      matrices.vec_B, n_steps=n_steps)
+    amat2_x = sp.kron(sp.eye(n_steps), matrices.matrix_B_x)
     # TODO: Use some "_inflate"-mechanism
 
     # Discretization of equality boundary constraints @MAYBE: also inequality
-    aeqmat3_y = sp.hstack([bmaty0, sp.csr_matrix((n_bndry, (n_steps-1)*n_y)), bmatyend])
+    aeqmat3_y = sp.hstack([matrices.matrix_start, sp.csr_matrix((n_bndry, (n_steps-1)*n_y)), matrices.matrix_end])
     aeqmat3_u = sp.csr_matrix((n_bndry, n_allu))
-    beq3 = b_bndry
+    beq3 = matrices.vec_bndry
 
     # Collect all data
     f_all = np.hstack([f_y, f_u])
