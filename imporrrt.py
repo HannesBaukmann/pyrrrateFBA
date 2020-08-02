@@ -228,19 +228,23 @@ class RAMParser:
             # import variables on right-hand side (don't import equalizations for qualitative species)
             if rule.getMath().getNumChildren() == 2:  # other cases??
                 for i in range(rule.getMath().getNumChildren()):
-                    # check whether parameter is defined
                     name = rule.getMath().getChild(i).getName()
-                    try:
-                        par_id = sbmlmodel.getParameter(name).getId()
-                        if np.isnan(sbmlmodel.getParameter(par_id).getValue()):
-                            self.rules_dict[v]['bool_parameter'] = par_id
-                        else:
-                            thr = float(sbmlmodel.getParameter(par_id).getValue())
-                            self.rules_dict[v]['threshold'] = thr
-                    except KeyError:
-                        print("Error: Variable " + par_id + " not defined!")
+                    # if threshold is not defined (i.e., will be set to a default value later)
+                    if name == 'nan':
+                        self.rules_dict[v]['threshold'] = np.nan
+                    else:
+                        # check whether parameter is defined
+                        try:
+                            par_id = sbmlmodel.getParameter(name).getId()
+                            if np.isnan(sbmlmodel.getParameter(par_id).getValue()):
+                                self.rules_dict[v]['bool_parameter'] = par_id
+                            else:
+                                thr = float(sbmlmodel.getParameter(par_id).getValue())
+                                self.rules_dict[v]['threshold'] = thr
+                        except KeyError:
+                            print("Error: Variable " + par_id + " not defined!")
 
-                        # REACTIONS
+        # REACTIONS
         n_spec = len(self.extracellular_dict) + len(self.metabolites_dict) + len(self.macromolecules_dict)
         self.stoich = np.zeros((n_spec, sbmlmodel.getNumReactions()))
         self.stoich_degradation = np.zeros((n_spec, n_spec))
@@ -418,9 +422,10 @@ class RAMParser:
             except AttributeError:
                 raise SBMLError('The parameter ' + trigger[2] + ' has no value.')
             self.events_dict[e_id]['threshold'] = threshold
+                        
+            self.events_dict[e_id]['listOfAssignments'] = []
+            self.events_dict[e_id]['listOfEffects'] = []
 
             for ass in e.getListOfEventAssignments():
-                self.events_dict[e_id]['listOfAssignments'] = []
                 self.events_dict[e_id]['listOfAssignments'].append(ass.getVariable())
-                self.events_dict[e_id]['listOfEffects'] = []
                 self.events_dict[e_id]['listOfEffects'].append(int(sbml.formulaToString(ass.getMath())))
