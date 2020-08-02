@@ -1711,42 +1711,6 @@
     </eventAssignment>
   </listOfEventAssignments>
 </event>
-<event id="low_O2" useValuesFromTriggerTime="true">
-  <trigger persistent="true" initialValue="true">
-    <math xmlns="http://www.w3.org/1998/Math/MathML">
-      <apply>
-        <lt/>
-        <ci>O2ext</ci>
-        <ci>theta_Y</ci>
-      </apply>
-    </math>
-  </trigger>
-  <listOfEventAssignments>
-    <eventAssignment variable="qual_con_RPO2bar">
-      <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <cn type="integer">1</cn>
-      </math>
-    </eventAssignment>
-  </listOfEventAssignments>
-</event>
-<event id="high_O2" useValuesFromTriggerTime="true">
-  <trigger persistent="true" initialValue="true">
-    <math xmlns="http://www.w3.org/1998/Math/MathML">
-      <apply>
-        <geq/>
-        <ci>O2ext</ci>
-        <ci>theta_Y</ci>
-      </apply>
-    </math>
-  </trigger>
-  <listOfEventAssignments>
-    <eventAssignment variable="qual_con_RPO2bar">
-      <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <cn type="integer">0</cn>
-      </math>
-    </eventAssignment>
-  </listOfEventAssignments>
-</event>
 <event id="high_C1" useValuesFromTriggerTime="true">
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
