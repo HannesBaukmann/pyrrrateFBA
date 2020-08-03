@@ -347,6 +347,8 @@ class RAMParser:
                                 k_fwd = float(sbmlmodel.getParameter(k_fwd_str).getValue())
                             except AttributeError:
                                 raise RAMError('The parameter ' + k_fwd_str + ' has no value.')
+                        else:
+                            raise RAMError('kcatForward of ' + r_id + ' not defined!')
                     self.reactions_dict[r_id]['kcatForward'] = k_fwd
 
                     # Import backward kcat values
@@ -360,6 +362,8 @@ class RAMParser:
                                     k_bwd = float(sbmlmodel.getParameter(k_bwd_str).getValue())
                                 except AttributeError:
                                     raise RAMError('The parameter ' + k_bwd_str + ' has no value.')
+                            else:
+                                raise RAMError('kcatBackward of ' + r_id + ' not defined!')
                         self.reactions_dict[r_id]['kcatBackward'] = k_bwd
                     else:
                         self.reactions_dict[r_id]['kcatBackward'] = 0.0
