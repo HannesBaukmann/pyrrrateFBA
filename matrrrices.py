@@ -102,7 +102,9 @@ class Matrrrices:
         vec_bndry = np.zeros((0), dtype=float)
         # append rows if initialAmount is given and fill bndry vector
         for ext in model.extracellular_dict.keys():
-            try:
+            if np.isnan(model.extracellular_dict[ext]["initialAmount"]):
+                pass
+            else:
                 amount = float(model.extracellular_dict[ext]["initialAmount"])
                 # only for dynamical extracellular species
                 if ext in self.y_vec:
@@ -110,17 +112,15 @@ class Matrrrices:
                     new_row[self.y_vec.index(ext)] = 1
                     matrix_start = np.append(matrix_start, [new_row], axis=0)
                     vec_bndry = np.append(vec_bndry, amount)
-            except KeyError:
-                pass
         for macrom in model.macromolecules_dict.keys():
-            try:
+            if np.isnan(model.macromolecules_dict[macrom]["initialAmount"]):
+                pass
+            else:
                 amount = float(model.macromolecules_dict[macrom]["initialAmount"])
                 new_row = np.zeros(len(self.y_vec), dtype=float)
                 new_row[self.y_vec.index(macrom)] = 1
                 matrix_start = np.append(matrix_start, [new_row], axis=0)
                 vec_bndry = np.append(vec_bndry, amount)
-            except KeyError:
-                pass
 
         self.matrix_start = sp.csr_matrix(matrix_start)
         self.matrix_end = sp.csr_matrix(np.zeros((self.matrix_start.shape), dtype=float))
@@ -292,13 +292,14 @@ class Matrrrices:
                     if np.isnan(model.rules_dict[rule]['threshold']):
                         matrix_B_x_2[index][par_index] = l
                     else:
-                        matrix_B_x_2[index][par_index] = float(model.rules_dict[rule]['threshold'])
+                        matrix_B_x_2[index][par_index] = float(model.rules_dict[rule]['threshold'])                        
                 if model.rules_dict[rule]['direction'] == 'upper':
                     matrix_B_u_2[index][rxn_index] = 1
                     if np.isnan(model.rules_dict[rule]['threshold']):
                         matrix_B_x_2[index][par_index] = -u
                     else:
                         matrix_B_x_2[index][par_index] = float(model.rules_dict[rule]['threshold'])
+
             except KeyError:
                 pass
 
