@@ -22,9 +22,9 @@ class RAMError(Exception):
     pass
 
 
-def readSBML(filename):
+def readSBML(filename, is_rdeFBA=True):
     """
-    Convert SBML file to an deFBA model object.
+    Convert SBML file to an (r-)deFBA model object.
     Required argument:
     - filename              string. Full name of the .xml file, which you want to import.
     """
@@ -32,7 +32,7 @@ def readSBML(filename):
     document = reader.readSBML(filename)
     if document.isSetModel():  # Returns True if the Model object has been set.
         # Initialize RAMParser object
-        parsed = RAMParser(document)
+        parsed = RAMParser(document, is_rdeFBA)
         # return the model object
         from . import pyrrrateModel
         model = pyrrrateModel.Model(parsed)
@@ -45,17 +45,18 @@ def readSBML(filename):
 class RAMParser:
     """
     read all necessary information from a SBML file supporting the Resource Allocation Modelling (RAM) annotation standard and convert them
-    to the matrix representation of a deFBA model. Minimimal informationen content is the stoichiometric matrix and the molecular weights of
+    to the matrix representation of a (r-)deFBA model. Minimimal informationen content is the stoichiometric matrix and the molecular weights of
     objective species (macromolecules)
     """
 
-    def __init__(self, document):
+    def __init__(self, document, is_rdeFBA):
         """
         Required arguments:
         - document      libsbml.reader object containing the SBML data
         """
 
         self.name = None
+        self.is_rdeFBA = is_rdeFBA
         self.extracellular_dict = OrderedDict()
         self.metabolites_dict = OrderedDict()
         self.macromolecules_dict = OrderedDict()
@@ -63,7 +64,6 @@ class RAMParser:
         self.qualitative_species_dict = OrderedDict()
         self.events_dict = OrderedDict()
         self.rules_dict = OrderedDict()
-        self.is_deFBA = True
 
         # MODEL
         sbmlmodel = document.getModel()  # Returns the Model contained in this SBMLDocument, or None if no such model exists.
@@ -168,86 +168,88 @@ class RAMParser:
                     raise SBMLError(
                         'Species ' + s_id + ' has a RAM annotation, but no RAM elements. Aborting import.')
             # no annotation -> no deFBA
-            elif self.is_deFBA:
-                self.is_deFBA = False
-                print('Warning: species ' + s_id + ' has no RAM annotation. The input is no valid deFBA model.')
-
-            if self.is_deFBA:
-                # get species attributes
-                if s_type == 'extracellular':
-                    self.extracellular_dict[s_id]['name'] = s.getName()
-                    self.extracellular_dict[s_id]['compartment'] = s.getCompartment()
-                    self.extracellular_dict[s_id]['initialAmount'] = s.getInitialAmount()
-                    self.extracellular_dict[s_id]['constant'] = s.getConstant()
-                    self.extracellular_dict[s_id]['boundaryCondition'] = s.getBoundaryCondition()
-                    self.extracellular_dict[s_id]['hasOnlySubstanceUnits'] = s.getHasOnlySubstanceUnits()
-                elif s_type == 'metabolite':
-                    self.metabolites_dict[s_id]['name'] = s.getName()
-                    self.metabolites_dict[s_id]['compartment'] = s.getCompartment()
-                    self.metabolites_dict[s_id]['initialAmount'] = s.getInitialAmount()
-                    self.metabolites_dict[s_id]['constant'] = s.getConstant()
-                    self.metabolites_dict[s_id]['boundaryCondition'] = s.getBoundaryCondition()
-                    self.metabolites_dict[s_id]['hasOnlySubstanceUnits'] = s.getHasOnlySubstanceUnits()
-                elif s_type == 'enzyme' or s_type == 'quota' or s_type == 'storage':
-                    self.macromolecules_dict[s_id]['name'] = s.getName()
-                    self.macromolecules_dict[s_id]['compartment'] = s.getCompartment()
-                    self.macromolecules_dict[s_id]['initialAmount'] = s.getInitialAmount()
-                    self.macromolecules_dict[s_id]['constant'] = s.getConstant()
-                    self.macromolecules_dict[s_id]['boundaryCondition'] = s.getBoundaryCondition()
-                    self.macromolecules_dict[s_id]['hasOnlySubstanceUnits'] = s.getHasOnlySubstanceUnits()
+            else:
+                raise RAMError('Species ' + s_id + ' has no RAM annotation. Aborting import.')
+            
+            # get species attributes
+            if s_type == 'extracellular':
+                self.extracellular_dict[s_id]['name'] = s.getName()
+                self.extracellular_dict[s_id]['compartment'] = s.getCompartment()
+                self.extracellular_dict[s_id]['initialAmount'] = s.getInitialAmount()
+                self.extracellular_dict[s_id]['constant'] = s.getConstant()
+                self.extracellular_dict[s_id]['boundaryCondition'] = s.getBoundaryCondition()
+                self.extracellular_dict[s_id]['hasOnlySubstanceUnits'] = s.getHasOnlySubstanceUnits()
+            elif s_type == 'metabolite':
+                self.metabolites_dict[s_id]['name'] = s.getName()
+                self.metabolites_dict[s_id]['compartment'] = s.getCompartment()
+                self.metabolites_dict[s_id]['initialAmount'] = s.getInitialAmount()
+                self.metabolites_dict[s_id]['constant'] = s.getConstant()
+                self.metabolites_dict[s_id]['boundaryCondition'] = s.getBoundaryCondition()
+                self.metabolites_dict[s_id]['hasOnlySubstanceUnits'] = s.getHasOnlySubstanceUnits()
+            elif s_type == 'enzyme' or s_type == 'quota' or s_type == 'storage':
+                self.macromolecules_dict[s_id]['name'] = s.getName()
+                self.macromolecules_dict[s_id]['compartment'] = s.getCompartment()
+                self.macromolecules_dict[s_id]['initialAmount'] = s.getInitialAmount()
+                self.macromolecules_dict[s_id]['constant'] = s.getConstant()
+                self.macromolecules_dict[s_id]['boundaryCondition'] = s.getBoundaryCondition()
+                self.macromolecules_dict[s_id]['hasOnlySubstanceUnits'] = s.getHasOnlySubstanceUnits()
 
         # QUALITATIVE SPECIES
-        qual_model = sbmlmodel.getPlugin('qual')
-
-        for q in qual_model.getListOfQualitativeSpecies():
-            q_id = q.getId()
-            self.qualitative_species_dict[q_id] = {}
-            self.qualitative_species_dict[q_id]['constant'] = q.getConstant()
-            if q.getConstant():
-                print(
-                    "Warning: Qualitative Species " + q_id + " is constant. This will lead to errors when the level of " + q_id + " is changed.")
-            self.qualitative_species_dict[q_id]['initialLevel'] = q.getInitialLevel()
-            self.qualitative_species_dict[q_id]['maxLevel'] = q.getMaxLevel()
+        if is_rdeFBA:
+            qual_model = sbmlmodel.getPlugin('qual')
+    
+            for q in qual_model.getListOfQualitativeSpecies():
+                q_id = q.getId()
+                self.qualitative_species_dict[q_id] = {}
+                self.qualitative_species_dict[q_id]['constant'] = q.getConstant()
+                if q.getConstant():
+                    print(
+                        "Warning: Qualitative Species " + q_id + " is constant. This will lead to errors when the level of " + q_id + " is changed.")
+                self.qualitative_species_dict[q_id]['initialLevel'] = q.getInitialLevel()
+                self.qualitative_species_dict[q_id]['maxLevel'] = q.getMaxLevel()
 
         # RULES
-        for rule in sbmlmodel.getListOfRules():
-            # import variable on the left-hand side
-            v = rule.getVariable()
-            if v not in self.qualitative_species_dict.keys():
-                try:
-                    par_id = sbmlmodel.getParameter(v).getId()
-                    if par_id == v:
-                        # variables that are changed by Rule should not be constant
-                        if sbmlmodel.getParameter(v).getConstant():
-                            print(
-                                "Warning: Parameter " + v + " is constant. This will lead to errors when the value of " + v + " is changed.")
-                except AttributeError:
-                    print("Error: Variable " + v + " not defined!")
-            self.rules_dict[v] = {}
-
-            # import variables on right-hand side (don't import equalizations for qualitative species)
-            if rule.getMath().getNumChildren() == 2:  # other cases??
-                for i in range(rule.getMath().getNumChildren()):
-                    name = rule.getMath().getChild(i).getName()
-                    # if threshold is not defined (i.e., will be set to a default value later)
-                    if name == 'nan':
-                        self.rules_dict[v]['threshold'] = np.nan
-                    else:
-                        # check whether parameter is defined
-                        try:
-                            par_id = sbmlmodel.getParameter(name).getId()
-                            if np.isnan(sbmlmodel.getParameter(par_id).getValue()):
-                                self.rules_dict[v]['bool_parameter'] = par_id
-                            else:
-                                thr = float(sbmlmodel.getParameter(par_id).getValue())
-                                self.rules_dict[v]['threshold'] = thr
-                        except KeyError:
-                            print("Error: Variable " + par_id + " not defined!")
+        if is_rdeFBA:
+            for rule in sbmlmodel.getListOfRules():
+                # import variable on the left-hand side
+                v = rule.getVariable()
+                if v not in self.qualitative_species_dict.keys():
+                    try:
+                        par_id = sbmlmodel.getParameter(v).getId()
+                        if par_id == v:
+                            # variables that are changed by Rule should not be constant
+                            if sbmlmodel.getParameter(v).getConstant():
+                                print(
+                                    "Warning: Parameter " + v + " is constant. This will lead to errors when the value of " + v + " is changed.")
+                    except AttributeError:
+                        print("Error: Variable " + v + " not defined!")
+                self.rules_dict[v] = {}
+    
+                # import variables on right-hand side (don't import equalities of qual species)
+                if rule.getMath().getNumChildren() == 2:  # other cases??
+                    for i in range(rule.getMath().getNumChildren()):
+                        name = rule.getMath().getChild(i).getName()
+                        # if threshold is not defined (i.e., will be set to a default value later)
+                        if name == 'nan':
+                            self.rules_dict[v]['threshold'] = np.nan
+                        else:
+                            # check whether parameter is defined
+                            try:
+                                par_id = sbmlmodel.getParameter(name).getId()
+                                if np.isnan(sbmlmodel.getParameter(par_id).getValue()):
+                                    self.rules_dict[v]['bool_parameter'] = par_id
+                                else:
+                                    thr = float(sbmlmodel.getParameter(par_id).getValue())
+                                    self.rules_dict[v]['threshold'] = thr
+                            except KeyError:
+                                print("Error: Variable " + par_id + " not defined!")
 
         # REACTIONS
         n_spec = len(self.extracellular_dict) + len(self.metabolites_dict) + len(self.macromolecules_dict)
         self.stoich = np.zeros((n_spec, sbmlmodel.getNumReactions()))
+        # degradation is allowed for deFBA models
         self.stoich_degradation = np.zeros((n_spec, n_spec))
+
 
         # Loop over all reactions. gather stoichiometry, reversibility, kcats and gene associations
         for r in sbmlmodel.reactions:
@@ -292,10 +294,11 @@ class RAMParser:
                         lb = float(lb_par)
                         self.reactions_dict[r_id]['lowerFluxBound'] = lb
                     except ValueError:
-                        # finalize import of rules to regulate reactions
-                        self.rules_dict[lb_par]['reactionID'] = r_id
-                        self.rules_dict[lb_par]['direction'] = 'lower'
-                        self.reactions_dict[r_id]['lowerFluxBound_rule'] = lb_par
+                        if is_rdeFBA:
+                            # finalize import of rules to regulate reactions
+                            self.rules_dict[lb_par]['reactionID'] = r_id
+                            self.rules_dict[lb_par]['direction'] = 'lower'
+                            self.reactions_dict[r_id]['lowerFluxBound_rule'] = lb_par
                 if reaction_fbc.getUpperFluxBound():
                     ub_par = reaction_fbc.getUpperFluxBound()
                     try:
@@ -303,10 +306,11 @@ class RAMParser:
                         ub = float(ub_par)
                         self.reactions_dict[r_id]['upperFluxBound'] = ub
                     except ValueError:
-                        # finalize import of rules to regulate reactions
-                        self.rules_dict[ub_par]['reactionID'] = r_id
-                        self.rules_dict[ub_par]['direction'] = 'upper'
-                        self.reactions_dict[r_id]['upperFluxBound_rule'] = ub_par
+                        if is_rdeFBA:
+                            # finalize import of rules to regulate reactions
+                            self.rules_dict[ub_par]['reactionID'] = r_id
+                            self.rules_dict[ub_par]['direction'] = 'upper'
+                            self.reactions_dict[r_id]['upperFluxBound_rule'] = ub_par
 
             # get RAM reactions attributes
             annotation = r.getAnnotation()
@@ -364,10 +368,9 @@ class RAMParser:
                         raise RAMError(
                             'The reaction ' + r_id + ' has no forward kcat value but a non-zero backward kcat. ')
             # no annotation -> no deFBA
-            elif self.is_deFBA:
-                self.is_deFBA = False
-                print('Warning: reaction ' + r_id + ' has no RAM annotation. The input is no valid deFBA model.')
-
+            else:
+                raise RAMError('Reaction ' + r_id + ' has no RAM annotation. Aborting import.')
+    
             # fill stoichiometric matrix (and degradation stoichiometric matrix)
             j = list(sbmlmodel.reactions).index(r)
             for educt in r.getListOfReactants():
@@ -399,33 +402,34 @@ class RAMParser:
                     self.stoich[i, j] += product.getStoichiometry()
 
         # EVENTS
-        for e in sbmlmodel.getListOfEvents():
-            e_id = e.getId()
-            self.events_dict[e_id] = {}
-            self.events_dict[e_id]['getUseValuesFromTriggerTime'] = e.getUseValuesFromTriggerTime()
-            if not e.getUseValuesFromTriggerTime():
-                print(
-                    "Warning: Variable getUseValuesFromTriggerTime of event " + e_id + " is set to False, but should be True. Delays are not considered by this software.")
-            self.events_dict[e_id]['persistent'] = e.getTrigger().getPersistent()
-            if not e.getTrigger().getPersistent():
-                print(
-                    "Warning: Variable persistent of trigger in event " + e_id + " is set to False, but should be True in order to allow for multiple events to happen at the same time.")
-            self.events_dict[e_id]['initialValue'] = e.getTrigger().getInitialValue()
-            if not e.getTrigger().getInitialValue():
-                print(
-                    "Warning: Initial value of trigger element of event " + e_id + " is set to False, but should be True to prevent triggering at the initial time.")
-            trigger = re.split('\(|, |\)', sbml.formulaToString(e.getTrigger().getMath()))
-            self.events_dict[e_id]['variable'] = trigger[1]
-            self.events_dict[e_id]['relation'] = trigger[0]
-            try:
-                threshold = float(sbmlmodel.getParameter(trigger[2]).getValue())
-            except AttributeError:
-                raise SBMLError('The parameter ' + trigger[2] + ' has no value.')
-            self.events_dict[e_id]['threshold'] = threshold
-                        
-            self.events_dict[e_id]['listOfAssignments'] = []
-            self.events_dict[e_id]['listOfEffects'] = []
-
-            for ass in e.getListOfEventAssignments():
-                self.events_dict[e_id]['listOfAssignments'].append(ass.getVariable())
-                self.events_dict[e_id]['listOfEffects'].append(int(sbml.formulaToString(ass.getMath())))
+        if is_rdeFBA:
+            for e in sbmlmodel.getListOfEvents():
+                e_id = e.getId()
+                self.events_dict[e_id] = {}
+                self.events_dict[e_id]['getUseValuesFromTriggerTime'] = e.getUseValuesFromTriggerTime()
+                if not e.getUseValuesFromTriggerTime():
+                    print(
+                        "Warning: Variable getUseValuesFromTriggerTime of event " + e_id + " is set to False, but should be True. Delays are not considered by this software.")
+                self.events_dict[e_id]['persistent'] = e.getTrigger().getPersistent()
+                if not e.getTrigger().getPersistent():
+                    print(
+                        "Warning: Variable persistent of trigger in event " + e_id + " is set to False, but should be True in order to allow for multiple events to happen at the same time.")
+                self.events_dict[e_id]['initialValue'] = e.getTrigger().getInitialValue()
+                if not e.getTrigger().getInitialValue():
+                    print(
+                        "Warning: Initial value of trigger element of event " + e_id + " is set to False, but should be True to prevent triggering at the initial time.")
+                trigger = re.split('\(|, |\)', sbml.formulaToString(e.getTrigger().getMath()))
+                self.events_dict[e_id]['variable'] = trigger[1]
+                self.events_dict[e_id]['relation'] = trigger[0]
+                try:
+                    threshold = float(sbmlmodel.getParameter(trigger[2]).getValue())
+                except AttributeError:
+                    raise SBMLError('The parameter ' + trigger[2] + ' has no value.')
+                self.events_dict[e_id]['threshold'] = threshold
+                            
+                self.events_dict[e_id]['listOfAssignments'] = []
+                self.events_dict[e_id]['listOfEffects'] = []
+    
+                for ass in e.getListOfEventAssignments():
+                    self.events_dict[e_id]['listOfAssignments'].append(ass.getVariable())
+                    self.events_dict[e_id]['listOfEffects'].append(int(sbml.formulaToString(ass.getMath())))

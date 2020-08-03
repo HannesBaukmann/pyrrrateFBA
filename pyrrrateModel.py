@@ -4,6 +4,7 @@ class Model(object):
 
     def __init__(self, ram_model):
         self.name = ram_model.name
+        self.is_rdeFBA = ram_model.is_rdeFBA
         self.extracellular_dict = ram_model.extracellular_dict
         self.metabolites_dict = ram_model.metabolites_dict
         self.macromolecules_dict = ram_model.macromolecules_dict
@@ -13,8 +14,6 @@ class Model(object):
         self.rules_dict = ram_model.rules_dict
         self.stoich = ram_model.stoich
         self.stoich_degradation = ram_model.stoich_degradation
-        # Create an empty variable to save the latest results of the simulation methods
-        self.results = None
 
 
     def print_numbers(self):
