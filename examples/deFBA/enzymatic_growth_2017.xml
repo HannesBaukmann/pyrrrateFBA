@@ -8,7 +8,7 @@
 </listOfCompartments>
 
 <listOfSpecies>
-<species id="N" name="nutrient" compartment="extracellular" initialAmount="2000.0" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="N" name="nutrient" compartment="extracellular" initialAmount="1000000.0" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="0.0" ram:objectiveWeight="0.0" ram:biomassPercentage="0.0" ram:speciesType="extracellular"/>
