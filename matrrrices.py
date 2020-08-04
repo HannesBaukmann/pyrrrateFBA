@@ -106,7 +106,7 @@ class Matrrrices:
         matrix_start = np.zeros((0, len(self.y_vec)), dtype=float)
         # how to encode cyclic behaviour in SBML?
         matrix_end = np.zeros((0, len(self.y_vec)), dtype=float)
-        vec_bndry = np.zeros((0), dtype=float)
+        vec_bndry = np.zeros((0,1), dtype=float)
         # append rows if initialAmount is given and fill bndry vector
         for ext in model.extracellular_dict.keys():
             if np.isnan(model.extracellular_dict[ext]["initialAmount"]):
@@ -118,7 +118,7 @@ class Matrrrices:
                     new_row = np.zeros(len(self.y_vec), dtype=float)
                     new_row[self.y_vec.index(ext)] = 1
                     matrix_start = np.append(matrix_start, [new_row], axis=0)
-                    vec_bndry = np.append(vec_bndry, amount)
+                    vec_bndry = np.append(vec_bndry, [[amount]], axis=0)
         for macrom in model.macromolecules_dict.keys():
             if np.isnan(model.macromolecules_dict[macrom]["initialAmount"]):
                 pass
@@ -127,7 +127,7 @@ class Matrrrices:
                 new_row = np.zeros(len(self.y_vec), dtype=float)
                 new_row[self.y_vec.index(macrom)] = 1
                 matrix_start = np.append(matrix_start, [new_row], axis=0)
-                vec_bndry = np.append(vec_bndry, amount)
+                vec_bndry = np.append(vec_bndry, [[amount]], axis=0)
                 
         # enforce that the weighted sum of all macromolecules is 1
         weights_row = np.zeros(len(self.y_vec), dtype=float)
@@ -135,7 +135,7 @@ class Matrrrices:
             weight = float(model.macromolecules_dict[macrom]["molecularWeight"])
             weights_row[self.y_vec.index(macrom)] = weight
         matrix_start = np.append(matrix_start, [weights_row], axis=0)
-        vec_bndry = np.append(vec_bndry, 1.0)
+        vec_bndry = np.append(vec_bndry, [[1.0]], axis=0)
 
         self.matrix_start = sp.csr_matrix(matrix_start)
         self.matrix_end = matrix_end
@@ -191,8 +191,8 @@ class Matrrrices:
         import gurobipy
         INFINITY = gurobipy.GRB.INFINITY
 
-        lbvec = np.array(len(self.u_vec) * [0.0])
-        ubvec = np.array(len(self.u_vec) * [INFINITY])
+        lbvec = np.array(len(self.u_vec) * [[0.0]])
+        ubvec = np.array(len(self.u_vec) * [[INFINITY]])
 
         # flux bounds determined by regulation are not considered here
         for index, rxn in enumerate(model.reactions_dict):
@@ -230,7 +230,7 @@ class Matrrrices:
         matrix_B_y_1 = np.zeros((n_assignments, len(self.y_vec)), dtype=float)
         matrix_B_u_1 = np.zeros((n_assignments, len(self.u_vec)), dtype=float)
         matrix_B_x_1 = np.zeros((n_assignments, len(self.x_vec)), dtype=float)
-        vec_B_1 = np.array(n_assignments * [0.0])
+        vec_B_1 = np.array(n_assignments * [[0.0]])
 
         event_index = 0
         for event in model.events_dict.keys():
@@ -296,7 +296,7 @@ class Matrrrices:
         matrix_B_y_2 = np.zeros((n_rules, len(self.y_vec)), dtype=float)
         matrix_B_u_2 = np.zeros((n_rules, len(self.u_vec)), dtype=float)
         matrix_B_x_2 = np.zeros((n_rules, len(self.x_vec)), dtype=float)
-        vec_B_2 = np.array(n_rules * [0.0])
+        vec_B_2 = np.array(n_rules * [[0.0]])
 
         for index, rule in enumerate(model.rules_dict):
             try:
@@ -321,7 +321,7 @@ class Matrrrices:
         self.matrix_B_y = sp.csr_matrix(np.vstack((matrix_B_y_1, matrix_B_y_2)))
         self.matrix_B_u = sp.csr_matrix(np.vstack((matrix_B_u_1, matrix_B_u_2)))
         self.matrix_B_x = sp.csr_matrix(np.vstack((matrix_B_x_1, matrix_B_x_2)))
-        self.vec_B = np.hstack((vec_B_1, vec_B_2))
+        self.vec_B = np.vstack((vec_B_1, vec_B_2))
 
     def construct_mixed(self, model):
         """
@@ -361,8 +361,8 @@ class Matrrrices:
         else:
             self.matrix_u = sp.csr_matrix(matrix_u_2)
             self.matrix_y = sp.csr_matrix(matrix_y_2)
-
-        self.vec_h = np.zeros(self.matrix_u.shape[0], dtype=float)  # vector h always contains only zeros
+        # h always contains only zeros
+        self.vec_h = np.zeros((self.matrix_u.shape[0],1), dtype=float)
 
     def construct_Hb(self, model, n_rows):
         """
