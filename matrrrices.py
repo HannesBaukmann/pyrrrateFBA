@@ -1,10 +1,6 @@
 import numpy as np
 import scipy.sparse as sp
 import sys
-try:
-    import libsbml as sbml
-except ImportError as err:
-    raise ImportError("SBML support requires the libsbml module, but importing this module failed with message: " + err)
 
 
 class Matrrrices:
@@ -106,10 +102,10 @@ class Matrrrices:
         """
         construct matrices to enforce boundary conditions
         """
-        # initialize matrices of shape (0,7)
+        # initialize matrices
         matrix_start = np.zeros((0, len(self.y_vec)), dtype=float)
         # how to encode cyclic behaviour in SBML?
-        # matrix_end = np.zeros((0, len(self.y_vec)), dtype=float)
+        matrix_end = np.zeros((0, len(self.y_vec)), dtype=float)
         vec_bndry = np.zeros((0), dtype=float)
         # append rows if initialAmount is given and fill bndry vector
         for ext in model.extracellular_dict.keys():
@@ -132,9 +128,17 @@ class Matrrrices:
                 new_row[self.y_vec.index(macrom)] = 1
                 matrix_start = np.append(matrix_start, [new_row], axis=0)
                 vec_bndry = np.append(vec_bndry, amount)
+                
+        # enforce that the weighted sum of all macromolecules is 1
+        weights_row = np.zeros(len(self.y_vec), dtype=float)
+        for macrom in model.macromolecules_dict.keys():
+            weight = float(model.macromolecules_dict[macrom]["molecularWeight"])
+            weights_row[self.y_vec.index(macrom)] = weight
+        matrix_start = np.append(matrix_start, [weights_row], axis=0)
+        vec_bndry = np.append(vec_bndry, 1.0)
 
         self.matrix_start = sp.csr_matrix(matrix_start)
-        self.matrix_end = sp.csr_matrix(np.zeros((self.matrix_start.shape), dtype=float))
+        self.matrix_end = matrix_end
         self.vec_bndry = vec_bndry
 
     def construct_reactions(self, model):
