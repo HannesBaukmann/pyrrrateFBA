@@ -105,7 +105,7 @@ class Matrrrices:
         # initialize matrices
         matrix_start = np.zeros((0, len(self.y_vec)), dtype=float)
         # how to encode cyclic behaviour in SBML?
-        matrix_end = np.zeros((0, len(self.y_vec)), dtype=float)
+        # matrix_end = np.zeros((0, len(self.y_vec)), dtype=float)
         vec_bndry = np.zeros((0,1), dtype=float)
         # append rows if initialAmount is given and fill bndry vector
         for ext in model.extracellular_dict.keys():
@@ -138,7 +138,7 @@ class Matrrrices:
         vec_bndry = np.append(vec_bndry, [[1.0]], axis=0)
 
         self.matrix_start = sp.csr_matrix(matrix_start)
-        self.matrix_end = matrix_end
+        self.matrix_end = sp.csr_matrix(np.zeros((self.matrix_start.shape), dtype=float))
         self.vec_bndry = vec_bndry
 
     def construct_reactions(self, model):
