@@ -62,22 +62,23 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0):
     f_y[0:n_y] += matrices.phi2
     f_y[n_steps * n_y:n_ally] += matrices.phi3
 
+    print()
     # Discretization of dynamics
     (aeqmat1_y, aeqmat1_u, beq1) = \
         _inflate_constraints(-sp.eye(n_y) + 0.5 * del_t * matrices.smat4, sp.eye(n_y) + 0.5 * del_t * matrices.smat4,
-                             del_t * matrices.smat2, np.array(n_y * [0.0]), n_steps=n_steps)
+                             del_t * matrices.smat2, np.array(n_y * [[0.0]]), n_steps=n_steps)
 
     # Discretization of QSSA rows (this is simplified and only works for constant smat1)
     (aeqmat2_y, aeqmat2_u, beq2) = \
-        _inflate_constraints(-0.5 * matrices.smat3, 0.5 * matrices.smat3, matrices.smat1, n_qssa * [0.0], n_steps=n_steps)
+        _inflate_constraints(-0.5 * matrices.smat3, 0.5 * matrices.smat3, matrices.smat1, n_qssa * [[0.0]], n_steps=n_steps)
 
     # Discretization of flux bounds @MAYBE: allow time dependency here
-    lb_u = np.hstack(n_steps*[matrices.lbvec])
-    ub_u = np.hstack(n_steps*[matrices.ubvec])
+    lb_u = np.vstack(n_steps*[matrices.lbvec])
+    ub_u = np.vstack(n_steps*[matrices.ubvec])
 
     # Discretization of positivity
-    lb_y = np.array(n_ally*[0.0])
-    ub_y = np.array(n_ally*[lp_wrapper.INFINITY])
+    lb_y = np.array(n_ally*[[0.0]])
+    ub_y = np.array(n_ally*[[lp_wrapper.INFINITY]])
 
     # Discretization of mixed constraints, This only works for constant smat2
     # TODO: Allow time dependency here
@@ -103,14 +104,14 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0):
                       [aeqmat2_y, aeqmat2_u],
                       [aeqmat3_y, aeqmat3_u]], format='csr')
 
-    beq = np.hstack([beq1, beq2, beq3])
-    lb_all = np.hstack([lb_y, lb_u])
-    ub_all = np.hstack([ub_y, ub_u])
+    beq = np.vstack([beq1, beq2, beq3])
+    lb_all = np.vstack([lb_y, lb_u])
+    ub_all = np.vstack([ub_y, ub_u])
 
     amat = sp.bmat([[amat1_y, amat1_u], [amat2_y, amat2_u]], format='csr')
     abarmat = sp.bmat([[sp.csr_matrix((bineq1.shape[0], n_allx))], [amat2_x]])
 
-    bineq = np.hstack([bineq1, bineq2])
+    bineq = np.vstack([bineq1, bineq2])
 
     # TODO: Create variable name creator function
     variable_names = ["y_"+str(j+1)+"_"+str(i) for i in range(n_steps+1) for j in range(n_y)]
@@ -146,7 +147,7 @@ def _inflate_constraints(amat, bmat, cmat, dvec, n_steps=1):
     amat_y = sp.kron(sp.eye(n_steps, n_steps+1), bmat) + \
              sp.kron(sp.diags([1.0], 1, shape=(n_steps, n_steps+1)), amat)
     amat_u = sp.kron(sp.eye(n_steps), cmat)
-    dvec_all = np.hstack(n_steps*[dvec])
+    dvec_all = np.vstack(n_steps*[dvec])
 
     return (amat_y, amat_u, dvec_all)
 
