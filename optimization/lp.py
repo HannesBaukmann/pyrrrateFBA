@@ -82,8 +82,8 @@ class MILPModel(LPModel):
             bvec, # b
             sp.bmat([[aeqmat, sp.csr_matrix((m_aeqmat, n_booles))]], format='csr'), # Aeq
             beq, # beq
-            np.hstack([lbvec, np.array([0.0]*n_booles)]), # lb
-            np.hstack([ubvec, np.array([1.0]*n_booles)]), # ub
+            np.vstack([lbvec, np.array([[0.0]]*n_booles)]), # lb
+            np.vstack([ubvec, np.array([[1.0]]*n_booles)]), # ub
             variable_names,
             nbooles=n_booles)
 
