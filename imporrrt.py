@@ -338,40 +338,75 @@ class RAMParser:
                     self.reactions_dict[r_id]['maintenanceScaling'] = main
 
                     # Import forward kcat values
-                    try:
-                        k_fwd = float(ram_element.getAttrValue('kcatForward', url))
-                    except ValueError:
-                        k_fwd_str = ram_element.getAttrValue('kcatForward', url)
-                        if k_fwd_str:
-                            try:
-                                k_fwd = float(sbmlmodel.getParameter(k_fwd_str).getValue())
-                            except AttributeError:
-                                raise RAMError('The parameter ' + k_fwd_str + ' has no value.')
+                    # check whether reaction is spontaneous
+                    if self.reactions_dict[r_id]['geneProduct'] == None:
+                        # 'NaN' is marker for degradation reactions
+                        if ram_element.getAttrValue('kcatForward', url) == 'NaN':
+                            self.reactions_dict[r_id]['kcatForward'] = np.nan
                         else:
-                            raise RAMError('kcatForward of ' + r_id + ' not defined!')
-                    self.reactions_dict[r_id]['kcatForward'] = k_fwd
+                            self.reactions_dict[r_id]['kcatForward'] = 0.0
+                    # enzymatically catalyzed reactions
+                    else:
+                        # kcatForward not given (i.e., "") is only allowed for spontaneous reactions
+                        if ram_element.getAttrValue('kcatForward', url) == '':
+                            raise RAMError('Reaction ' + r_id + ' has no kcatForward, but is not spontaneous.')
+                        else:
+                            try:
+                                # import value
+                                k_fwd = float(ram_element.getAttrValue('kcatForward', url))
+                                # if input is not float, try to import the parameter
+                            except ValueError:
+                                k_fwd_str = ram_element.getAttrValue('kcatForward', url)
+                                if k_fwd_str:
+                                    # check whether this parameter is defined
+                                    try:
+                                        k_fwd = float(sbmlmodel.getParameter(k_fwd_str).getValue())
+                                    except AttributeError:
+                                        raise RAMError('The parameter ' + k_fwd_str + ' is not defined!')
+                            # kcat=0 is only allowed for spontaneous reactions
+                            if k_fwd == 0.0:
+                                raise RAMError('Reaction ' + r_id + ' has a zero kcatForward, but is not spontaneous.')
+                            else:
+                                self.reactions_dict[r_id]['kcatForward'] = k_fwd
 
                     # Import backward kcat values
+                    # first check if reaction is reversible
                     if self.reactions_dict[r_id]['reversible'] == True:
-                        try:
-                            k_bwd = float(ram_element.getAttrValue('kcatBackward', url))
-                        except ValueError:
-                            k_bwd_str = ram_element.getAttrValue('kcatBackward', url)
-                            if k_bwd_str:
-                                try:
-                                    k_bwd = float(sbmlmodel.getParameter(k_bwd_str).getValue())
-                                except AttributeError:
-                                    raise RAMError('The parameter ' + k_bwd_str + ' has no value.')
+                        # check whether reaction is spontaneous
+                        if self.reactions_dict[r_id]['geneProduct'] == None:
+                           self.reactions_dict[r_id]['kcatBackward'] = 0.0
+                        # enzymatically catalyzed reactions
+                        else:
+                            # kcatForward not given is only allowed for spontaneous reactions
+                            if ram_element.getAttrValue('kcatBackward', url) == '' or ram_element.getAttrValue('kcatBackward', url) == 'NaN':
+                                raise RAMError('Reaction ' + r_id + ' has no kcatBackward, but is reversible and not spontaneous.')
                             else:
-                                raise RAMError('kcatBackward of ' + r_id + ' not defined!')
-                        self.reactions_dict[r_id]['kcatBackward'] = k_bwd
+                                try:
+                                    # import value
+                                    k_bwd = float(ram_element.getAttrValue('kcatBackward', url))
+                                    # if input is not float, try to import the parameter
+                                except ValueError:
+                                    k_bwd_str = ram_element.getAttrValue('kcatBackward', url)
+                                    if k_bwd_str:
+                                        # check whether this parameter is defined
+                                        try:
+                                            k_bwd = float(sbmlmodel.getParameter(k_bwd_str).getValue())
+                                        except AttributeError:
+                                            raise RAMError('The parameter ' + k_bwd_str + ' is not defined!')
+                                # kcat=0 is only allowed for spontaneous reactions
+                                if k_bwd == 0.0:
+                                    raise RAMError('Reaction ' + r_id + ' has a zero kcatBackward, but is reversible and not spontaneous.')
+                                else:
+                                    self.reactions_dict[r_id]['kcatBackward'] = k_bwd
+                    # if reaction is irreversible, kcat is zero
                     else:
                         self.reactions_dict[r_id]['kcatBackward'] = 0.0
 
                     if self.reactions_dict[r_id]['kcatForward'] == 0 and self.reactions_dict[r_id]['kcatBackward'] != 0:
                         raise RAMError(
-                            'The reaction ' + r_id + ' has no forward kcat value but a non-zero backward kcat. ')
-            # no annotation -> no deFBA
+                            'The reaction ' + r_id + ' has no forward kcat value but a non-zero backward kcat.')
+
+            # no annotation -> no (r-)deFBA
             else:
                 raise RAMError('Reaction ' + r_id + ' has no RAM annotation. Aborting import.')
     
