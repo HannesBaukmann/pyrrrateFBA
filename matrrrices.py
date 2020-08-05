@@ -32,10 +32,11 @@ class Matrrrices:
             self.construct_fullmixed(model)
         # corresponding deFBA model is obtained by omitting the regulatory constraints
         else:
-            self.matrix_B_y = np.zeros((0, len(self.y_vec)), dtype=float)
-            self.matrix_B_u = np.zeros((0, len(self.u_vec)), dtype=float)
-            self.matrix_B_x = np.zeros((0, len(self.x_vec)), dtype=float)
-            self.vec_B = np.array(0 * [0.0])
+            # matrices must have (at least) one row to keep linprog working
+            self.matrix_B_y = np.zeros((1, len(self.y_vec)), dtype=float)
+            self.matrix_B_u = np.zeros((1, len(self.u_vec)), dtype=float)
+            self.matrix_B_x = np.zeros((1, 1), dtype=float)
+            self.vec_B = np.array([0.0])
 
     def construct_vectors(self, model):
         """

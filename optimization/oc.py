@@ -62,7 +62,6 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0):
     f_y[0:n_y] += matrices.phi2
     f_y[n_steps * n_y:n_ally] += matrices.phi3
 
-    print()
     # Discretization of dynamics
     (aeqmat1_y, aeqmat1_u, beq1) = \
         _inflate_constraints(-sp.eye(n_y) + 0.5 * del_t * matrices.smat4, sp.eye(n_y) + 0.5 * del_t * matrices.smat4,
