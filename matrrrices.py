@@ -131,12 +131,19 @@ class Matrrrices:
                 vec_bndry = np.append(vec_bndry, [[amount]], axis=0)
                 
         # enforce that the weighted sum of all macromolecules is 1
-        weights_row = np.zeros(len(self.y_vec), dtype=float)
+        # only if there is a macromolecule without an initialAmount specified
+        enforce_biomass = False
         for macrom in model.macromolecules_dict.keys():
-            weight = float(model.macromolecules_dict[macrom]["molecularWeight"])
-            weights_row[self.y_vec.index(macrom)] = weight
-        matrix_start = np.append(matrix_start, [weights_row], axis=0)
-        vec_bndry = np.append(vec_bndry, [[1.0]], axis=0)
+            if np.isnan(model.macromolecules_dict[macrom]['initialAmount']):
+                enforce_biomass = True
+                break
+        if enforce_biomass:
+            weights_row = np.zeros(len(self.y_vec), dtype=float)
+            for macrom in model.macromolecules_dict.keys():
+                weight = float(model.macromolecules_dict[macrom]["molecularWeight"])
+                weights_row[self.y_vec.index(macrom)] = weight
+            matrix_start = np.append(matrix_start, [weights_row], axis=0)
+            vec_bndry = np.append(vec_bndry, [[1.0]], axis=0)
 
         self.matrix_start = sp.csr_matrix(matrix_start)
         self.matrix_end = sp.csr_matrix(np.zeros((self.matrix_start.shape), dtype=float))
