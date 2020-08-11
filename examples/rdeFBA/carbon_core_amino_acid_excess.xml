@@ -1859,8 +1859,8 @@
 
 <listOfParameters>
   <parameter id="theta_RP" constant="true" value="0.001"/>
-  <parameter id="theta_Y" constant="true" value="0.1"/>
-  <parameter id="theta_v" constant="true" value="1.0"/>
+  <parameter id="theta_Y" constant="true" value="1.0"/>
+  <parameter id="theta_v" constant="true" value="0.1"/>
   <parameter id="e_RP" constant="true" value="0.001"/>
   <parameter id="e_E" constant="true" value="1e-06"/>
   <parameter id="fbc_vE_Tc2_fwd" value="NaN" constant="false" />
