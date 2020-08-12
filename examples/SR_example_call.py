@@ -10,6 +10,42 @@ from ..optimization.oc import mi_cp_linprog
 from ..optimization.lp import INFINITY
 #from ..optimization import lp as lp_wrapper
 
+# Molecular / Objective Weights
+nQ = 300.0
+nR = 7459.0
+nT1 = 400.0
+nT2 = 1500.0
+nRP = 300.0
+w = 100.0 # weight of "amino acid" M
+
+# Quota 
+PhiQ = 0.35
+
+# Turnover rates
+kC1 = 3000
+kC2 = 2000
+kQ = 4.2
+kR = 0.1689
+kT1 = 3.15
+kT2 = 0.81
+kRP = 4.2
+
+# Degradation rates
+kdQ = 0.01
+kdR = 0.01
+kdT1 = 0.01
+kdT2 = 0.01
+# kdRP = 0.2
+kdRP = 0.1
+
+# Regulation Parameters
+epsilon_RP = 0.01
+epsilon_T2 = 0.01
+epsilon_T2 = 0.001 # WHY ????????????????????????????????
+epsilon_jump = 10.0**-8.0 # small positive number
+alpha = 0.03
+gamma = 20
+
 class Solutions:
     def __init__(self, tt, tt_shift, sol_y, sol_u, sol_x): 
         self.tt = tt
@@ -19,43 +55,7 @@ class Solutions:
         self.sol_x = sol_x
 
 class SR_Matrices:
-    def __init__(self):
-        # Molecular / Objective Weights
-        nQ = 300.0
-        nR = 7459.0
-        nT1 = 400.0
-        nT2 = 1500.0
-        nRP = 300.0
-        w = 100.0 # weight of "amino acid" M
-        
-        # Quota 
-        PhiQ = 0.35
-    
-        # Turnover rates
-        kC1 = 3000
-        kC2 = 2000
-        kQ = 4.2
-        kR = 0.1689
-        kT1 = 3.15
-        kT2 = 0.81
-        kRP = 4.2
-    
-        # Degradation rates
-        kdQ = 0.01
-        kdR = 0.01
-        kdT1 = 0.01
-        kdT2 = 0.01
-        # kdRP = 0.2
-        kdRP = 0.1
-    
-        # Regulation Parameters
-        epsilon_RP = 0.01
-        epsilon_T2 = 0.01
-        epsilon_T2 = 0.001 # WHY ????????????????????????????????
-        epsilon_jump = 10.0**-8.0 # small positive number
-        alpha = 0.03
-        gamma = 20
-    
+    def __init__(self):    
         # Objective parameters
         new_small_eps = 0.0
         self.phi1 = np.array([new_small_eps, new_small_eps, -nQ, -nR, -nT1, -nT2, -nRP])
@@ -180,7 +180,7 @@ def run_SR_example():
     # macromolecules
     mac = pd.DataFrame()
     mac['time'] = sols.tt
-    # mac['Q'] = sols.sol_y[:,2]
+    mac['Q'] = sols.sol_y[:,2]
     mac['R'] = sols.sol_y[:,3]
     mac['T1'] = sols.sol_y[:,4]
     mac['T2'] = sols.sol_y[:,5]
@@ -214,4 +214,24 @@ def run_SR_example():
     translation.plot(x='time')
     plt.xlim(0,55)
     plt.xlabel('Time / min')    
+    plt.show()
+    
+    # BIOMASS
+    biomass = pd.DataFrame()
+    biomass['time'] = sols.tt_shift
+    biomass['T1_weighted'] = mac['T1'] * nT1
+    biomass['T2_weighted'] = mac['T2'] * nT2
+    biomass['R_weighted'] = mac['R'] * nR
+    biomass['RP_weighted'] = mac['RP'] * nRP
+    biomass['Q_weighted'] = mac['Q'] * nQ
+    biomass['biomass'] = biomass.sum(axis=1)
+
+    biomass_result = str(int(pd.Series(biomass['biomass'].sum()))) + ' mmol'
+    
+    biomass.plot(x='time')
+    plt.xlim(0,55)
+    plt.xlabel('Time / min')
+    plt.savefig('Masterarbeit/Figures/sim_self_replicator_biomass.png')    
+    plt.text(1, 550, biomass_result)
+
     plt.show()
