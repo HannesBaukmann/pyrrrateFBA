@@ -292,6 +292,7 @@ class Matrrrices:
                             vec_B_1[event_index] = -model.events_dict[event]['threshold']
                         event_index += 1
 
+
         # Control of continuous dynamics by discrete states
         n_rules = 0
         for rule in model.rules_dict.keys():
@@ -322,7 +323,6 @@ class Matrrrices:
                         matrix_B_x_2[index][par_index] = -u
                     else:
                         matrix_B_x_2[index][par_index] = float(model.rules_dict[rule]['threshold'])
-
             except KeyError:
                 pass
 
@@ -483,10 +483,16 @@ class Matrrrices:
         """
         Constructs the H_M matrix (assumption: there is at most one maintenance reaction)
         """
-        main_rxn = list(model.reactions_dict.keys())[main_index]
 
-        matrix_HM_y = np.array(len(self.y_vec) * [model.reactions_dict[main_rxn]]['maintenanceScaling'])
+        main_scaling = model.reactions_dict[list(model.reactions_dict.keys())[main_index]]['maintenanceScaling']
+        
+        # matrix has entry -1 where the column corresponds to the maintenance reaction, zeros elsewhere
         matrix_HM_u = np.zeros(len(self.u_vec), dtype=float)
-        matrix_HM_u[self.u_vec.index(main_rxn)] = -1.0
+        matrix_HM_u[self.u_vec.index(main_index)] = -1.0
+        
+        # entries in matrix correspond to weights * maintenanceScaling
+        matrix_HM_y = np.zeros(len(self.y_vec), dtype=float)
+        for macrom in model.macromolecules_dict.keys():
+            matrix_HM_y[self.y_vec.index(macrom)] = main_scaling * model.macromolecules_dict[macrom]['molecularWeight']
 
         return matrix_HM_y, matrix_HM_u
