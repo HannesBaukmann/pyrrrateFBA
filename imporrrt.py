@@ -230,7 +230,7 @@ class RAMParser:
                     for i in range(rule.getMath().getNumChildren()):
                         name = rule.getMath().getChild(i).getName()
                         # if threshold is not defined (i.e., will be set to a default value later)
-                        if name == 'nan':
+                        if name == 'NaN':
                             self.rules_dict[v]['threshold'] = np.nan
                         else:
                             # check whether parameter is defined

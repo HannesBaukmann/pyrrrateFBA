@@ -3029,7 +3029,7 @@
 <reaction id="T_ACEA" reversible="false" fbc:lowerFluxBound="T_ACEA_FBClower" fbc:upperFluxBound="T_ACEA_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.3502304147465436" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.35023" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3050,7 +3050,7 @@
 <reaction id="T_ACEB" reversible="false" fbc:lowerFluxBound="T_ACEB_FBClower" fbc:upperFluxBound="T_ACEB_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.9136960600375235" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.9137" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3071,7 +3071,7 @@
 <reaction id="T_ACEE" reversible="false" fbc:lowerFluxBound="T_ACEE_FBClower" fbc:upperFluxBound="T_ACEE_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="0.5123053741838273" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="0.51231" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3113,7 +3113,7 @@
 <reaction id="T_ACNAR" reversible="false" fbc:lowerFluxBound="T_ACNAR_FBClower" fbc:upperFluxBound="T_ACNAR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.1447811447811447" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.14478" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3134,7 +3134,7 @@
 <reaction id="T_ACNBR" reversible="false" fbc:lowerFluxBound="T_ACNBR_FBClower" fbc:upperFluxBound="T_ACNBR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.1791907514450868" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.17919" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3155,7 +3155,7 @@
 <reaction id="T_ACS" reversible="false" fbc:lowerFluxBound="T_ACS_FBClower" fbc:upperFluxBound="T_ACS_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.5644171779141105" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.56442" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3176,7 +3176,7 @@
 <reaction id="T_ADHER" reversible="false" fbc:lowerFluxBound="T_ADHER_FBClower" fbc:upperFluxBound="T_ADHER_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.1447811447811447" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.14478" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3197,7 +3197,7 @@
 <reaction id="T_ADK" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="4.766355140186916" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="4.76636" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3218,7 +3218,7 @@
 <reaction id="T_ATPAR" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="0.46195652173913043" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="0.46196" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3239,7 +3239,7 @@
 <reaction id="T_CYDA" reversible="false" fbc:lowerFluxBound="T_CYDA_FBClower" fbc:upperFluxBound="T_CYDA_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.1320754716981132" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.13208" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3260,7 +3260,7 @@
 <reaction id="T_CYOA" reversible="false" fbc:lowerFluxBound="T_CYOA_FBClower" fbc:upperFluxBound="T_CYOA_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="0.7900852052672347" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="0.79009" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3281,7 +3281,7 @@
 <reaction id="T_DLD1R" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.7863397548161122" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.78634" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3302,7 +3302,7 @@
 <reaction id="T_DLD2" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.7863397548161122" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.78634" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3323,7 +3323,7 @@
 <reaction id="T_ENOR" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.361111111111111" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.36111" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3344,7 +3344,7 @@
 <reaction id="T_FBAR" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.8412256267409473" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.84123" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3365,7 +3365,7 @@
 <reaction id="T_FBP" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="3.072289156626506" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="3.07229" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3386,7 +3386,7 @@
 <reaction id="T_FDNG" reversible="false" fbc:lowerFluxBound="T_FDNG_FBClower" fbc:upperFluxBound="T_FDNG_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="0.6684141546526867" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="0.66841" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3407,7 +3407,7 @@
 <reaction id="T_FDOH" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="0.6679764243614931" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="0.66798" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3428,7 +3428,7 @@
 <reaction id="T_FRDA" reversible="false" fbc:lowerFluxBound="T_FRDA_FBClower" fbc:upperFluxBound="T_FRDA_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="0.9306569343065694" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="0.93066" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3449,7 +3449,7 @@
 <reaction id="T_FUMAR" reversible="false" fbc:lowerFluxBound="T_FUMAR_FBClower" fbc:upperFluxBound="T_FUMAR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.8613138686131387" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.86131" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3470,7 +3470,7 @@
 <reaction id="T_FUMBR" reversible="false" fbc:lowerFluxBound="T_FUMBR_FBClower" fbc:upperFluxBound="T_FUMBR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.8613138686131387" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.86131" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3491,7 +3491,7 @@
 <reaction id="T_FUMCR" reversible="false" fbc:lowerFluxBound="T_FUMCR_FBClower" fbc:upperFluxBound="T_FUMCR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.184154175588865" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.18415" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3512,7 +3512,7 @@
 <reaction id="T_GALER" reversible="false" fbc:lowerFluxBound="T_GALER_FBClower" fbc:upperFluxBound="T_GALER_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="3.0177514792899407" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="3.01775" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3533,7 +3533,7 @@
 <reaction id="T_GALKR" reversible="false" fbc:lowerFluxBound="T_GALKR_FBClower" fbc:upperFluxBound="T_GALKR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.670157068062827" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.67016" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3554,7 +3554,7 @@
 <reaction id="T_GALM1R" reversible="false" fbc:lowerFluxBound="T_GALM1R_FBClower" fbc:upperFluxBound="T_GALM1R_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.947976878612717" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.94798" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3575,7 +3575,7 @@
 <reaction id="T_GALM2R" reversible="false" fbc:lowerFluxBound="T_GALM2R_FBClower" fbc:upperFluxBound="T_GALM2R_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.947976878612717" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.94798" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3596,7 +3596,7 @@
 <reaction id="T_GALTR" reversible="false" fbc:lowerFluxBound="T_GALTR_FBClower" fbc:upperFluxBound="T_GALTR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.9310344827586206" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.93103" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3617,7 +3617,7 @@
 <reaction id="T_GALUR" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="3.377483443708609" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="3.37748" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3638,7 +3638,7 @@
 <reaction id="T_GAPAR" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="3.081570996978852" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="3.08157" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3659,7 +3659,7 @@
 <reaction id="T_GLK" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="3.177570093457944" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="3.17757" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3680,7 +3680,7 @@
 <reaction id="T_GLPA" reversible="false" fbc:lowerFluxBound="T_GLPA_FBClower" fbc:upperFluxBound="T_GLPA_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="0.7516580692704495" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="0.75166" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3701,7 +3701,7 @@
 <reaction id="T_GLPD" reversible="false" fbc:lowerFluxBound="T_GLPD_FBClower" fbc:upperFluxBound="T_GLPD_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.035928143712575" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.03593" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3722,7 +3722,7 @@
 <reaction id="T_GLPK" reversible="false" fbc:lowerFluxBound="T_GLPK_FBClower" fbc:upperFluxBound="T_GLPK_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.0318725099601593" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.03187" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3743,7 +3743,7 @@
 <reaction id="T_GLTA" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.388758782201405" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.38876" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3764,7 +3764,7 @@
 <reaction id="T_GND" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.1794871794871793" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.17949" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3827,7 +3827,7 @@
 <reaction id="T_GPSAR" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="3.0088495575221237" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="3.00885" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3848,7 +3848,7 @@
 <reaction id="T_ICDAR" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.451923076923077" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.45192" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3869,7 +3869,7 @@
 <reaction id="T_LACZ" reversible="false" fbc:lowerFluxBound="T_LACZ_FBClower" fbc:upperFluxBound="T_LACZ_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="0.99609375" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="0.99609" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3890,7 +3890,7 @@
 <reaction id="T_MAEB" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.3438735177865613" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.34387" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3911,7 +3911,7 @@
 <reaction id="T_MDHR" reversible="false" fbc:lowerFluxBound="T_MDHR_FBClower" fbc:upperFluxBound="T_MDHR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="3.269230769230769" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="3.26923" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3932,7 +3932,7 @@
 <reaction id="T_NDH" reversible="false" fbc:lowerFluxBound="T_NDH_FBClower" fbc:upperFluxBound="T_NDH_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.3502304147465436" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.35023" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3953,7 +3953,7 @@
 <reaction id="T_NUOA" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="0.23820644558617468" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="0.23821" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -3974,7 +3974,7 @@
 <reaction id="T_PCKA" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.8888888888888888" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.88889" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4016,7 +4016,7 @@
 <reaction id="T_PFKB" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="3.3009708737864076" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="3.30097" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4037,7 +4037,7 @@
 <reaction id="T_PFLA" reversible="false" fbc:lowerFluxBound="T_PFLA_FBClower" fbc:upperFluxBound="T_PFLA_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.0139165009940359" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.01392" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4058,7 +4058,7 @@
 <reaction id="T_PFLC" reversible="false" fbc:lowerFluxBound="T_PFLC_FBClower" fbc:upperFluxBound="T_PFLC_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="0.9649952696310312" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="0.965" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4079,7 +4079,7 @@
 <reaction id="T_PGIR" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.8579234972677596" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.85792" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4100,7 +4100,7 @@
 <reaction id="T_PGKR" reversible="false" fbc:lowerFluxBound="T_PGKR_FBClower" fbc:upperFluxBound="T_PGKR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.635658914728682" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.63566" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4121,7 +4121,7 @@
 <reaction id="T_PGL" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="3.081570996978852" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="3.08157" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4142,7 +4142,7 @@
 <reaction id="T_PGMR" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.8681318681318682" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.86813" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4163,7 +4163,7 @@
 <reaction id="T_PNTA1" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.0493827160493827" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.04938" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4184,7 +4184,7 @@
 <reaction id="T_PNTA2" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.0493827160493827" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.04938" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4205,7 +4205,7 @@
 <reaction id="T_PPA" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="5.795454545454546" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="5.79545" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4226,7 +4226,7 @@
 <reaction id="T_PPC" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.1551528878822197" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.15515" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4247,7 +4247,7 @@
 <reaction id="T_PPSA" reversible="false" fbc:lowerFluxBound="T_PPSA_FBClower" fbc:upperFluxBound="T_PPSA_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.2878787878787878" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.28788" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4268,7 +4268,7 @@
 <reaction id="T_PTAR" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.4285714285714286" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.42857" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4310,7 +4310,7 @@
 <reaction id="T_PYKF" reversible="false" fbc:lowerFluxBound="T_PYKF_FBClower" fbc:upperFluxBound="T_PYKF_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.1702127659574466" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.17021" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4331,7 +4331,7 @@
 <reaction id="T_RBSK" reversible="false" fbc:lowerFluxBound="T_RBSK_FBClower" fbc:upperFluxBound="T_RBSK_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="3.3009708737864076" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="3.30097" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4352,7 +4352,7 @@
 <reaction id="T_RPER" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="4.533333333333333" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="4.53333" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4373,7 +4373,7 @@
 <reaction id="T_RPIAR" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="4.657534246575342" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="4.65753" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4394,7 +4394,7 @@
 <reaction id="T_RPIBR" reversible="false" fbc:lowerFluxBound="T_RPIBR_FBClower" fbc:upperFluxBound="T_RPIBR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="6.845637583892618" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="6.84564" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4415,7 +4415,7 @@
 <reaction id="T_SDHA1" reversible="false" fbc:lowerFluxBound="T_SDHA1_FBClower" fbc:upperFluxBound="T_SDHA1_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="0.9532710280373832" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="0.95327" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4436,7 +4436,7 @@
 <reaction id="T_SDHA2" reversible="false" fbc:lowerFluxBound="T_SDHA2_FBClower" fbc:upperFluxBound="T_SDHA2_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="0.9532710280373832" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="0.95327" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4457,7 +4457,7 @@
 <reaction id="T_SFCA" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.8053097345132743" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.80531" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4478,7 +4478,7 @@
 <reaction id="T_SUCA" reversible="false" fbc:lowerFluxBound="T_SUCA_FBClower" fbc:upperFluxBound="T_SUCA_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="0.5629139072847682" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="0.56291" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4499,7 +4499,7 @@
 <reaction id="T_SUCCR" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.5066469719350073" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.50665" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4520,7 +4520,7 @@
 <reaction id="T_TALAR" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="3.2278481012658227" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="3.22785" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4541,7 +4541,7 @@
 <reaction id="T_TALBR" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="3.217665615141956" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="3.21767" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4562,7 +4562,7 @@
 <reaction id="T_TKTA1R" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.5384615384615385" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.53846" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4583,7 +4583,7 @@
 <reaction id="T_TKTA2R" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.5384615384615385" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.53846" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4604,7 +4604,7 @@
 <reaction id="T_TKTB1R" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.5292353823088456" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.52924" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4625,7 +4625,7 @@
 <reaction id="T_TKTB2R" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.5292353823088456" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.52924" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4667,7 +4667,7 @@
 <reaction id="T_ZWFR" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.0773930753564156" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.07739" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4688,7 +4688,7 @@
 <reaction id="T_FORUPR" reversible="false" fbc:lowerFluxBound="T_FORUPR_FBClower" fbc:upperFluxBound="T_FORUPR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="3.5789473684210527" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="3.57895" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4709,7 +4709,7 @@
 <reaction id="T_GLCPTS" reversible="false" fbc:lowerFluxBound="T_GLCPTS_FBClower" fbc:upperFluxBound="T_GLCPTS_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="0.781010719754977" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="0.78101" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4730,7 +4730,7 @@
 <reaction id="T_GLCUP" reversible="false" fbc:lowerFluxBound="T_GLCUP_FBClower" fbc:upperFluxBound="T_GLCUP_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.1982758620689653" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.19828" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4751,7 +4751,7 @@
 <reaction id="T_GLUPR" reversible="false" fbc:lowerFluxBound="T_GLUPR_FBClower" fbc:upperFluxBound="T_GLUPR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="3.6298932384341636" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="3.62989" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4772,7 +4772,7 @@
 <reaction id="T_LACYR" reversible="false" fbc:lowerFluxBound="T_LACYR_FBClower" fbc:upperFluxBound="T_LACYR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.446043165467626" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.44604" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4793,7 +4793,7 @@
 <reaction id="T_PIUP2R" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.0220440881763526" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.02204" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4814,7 +4814,7 @@
 <reaction id="T_RIBUPR" reversible="false" fbc:lowerFluxBound="T_RIBUPR_FBClower" fbc:upperFluxBound="T_RIBUPR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="0.8114558472553699" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="0.81146" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4835,7 +4835,7 @@
 <reaction id="T_DCTAR" reversible="false" fbc:lowerFluxBound="T_DCTAR_FBClower" fbc:upperFluxBound="T_DCTAR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.383177570093458" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.38318" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4856,7 +4856,7 @@
 <reaction id="T_DCUAR" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.355658198614319" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.35566" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4877,7 +4877,7 @@
 <reaction id="T_DCUBR" reversible="false" fbc:lowerFluxBound="T_DCUBR_FBClower" fbc:upperFluxBound="T_DCUBR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.286995515695067" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.287" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4898,7 +4898,7 @@
 <reaction id="T_DCUC" reversible="false" fbc:lowerFluxBound="T_DCUC_FBClower" fbc:upperFluxBound="T_DCUC_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.2125813449023863" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.21258" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4919,7 +4919,7 @@
 <reaction id="T_arcA" reversible="false" fbc:lowerFluxBound="T_arcA_FBClower" fbc:upperFluxBound="T_arcA_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="4.285714285714286" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="4.28571" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4940,7 +4940,7 @@
 <reaction id="T_cra" reversible="false" fbc:lowerFluxBound="T_cra_FBClower" fbc:upperFluxBound="T_cra_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="3.053892215568862" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="3.05389" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4961,7 +4961,7 @@
 <reaction id="T_crp" reversible="false" fbc:lowerFluxBound="T_crp_FBClower" fbc:upperFluxBound="T_crp_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="4.857142857142857" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="4.85714" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -4982,7 +4982,7 @@
 <reaction id="T_dcuR" reversible="false" fbc:lowerFluxBound="T_dcuR_FBClower" fbc:upperFluxBound="T_dcuR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="4.2677824267782425" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="4.26778" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -5003,7 +5003,7 @@
 <reaction id="T_dcuS" reversible="false" fbc:lowerFluxBound="T_dcuS_FBClower" fbc:upperFluxBound="T_dcuS_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.8784530386740332" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="1.87845" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -5024,7 +5024,7 @@
 <reaction id="T_fadR" reversible="false" fbc:lowerFluxBound="T_fadR_FBClower" fbc:upperFluxBound="T_fadR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="4.2677824267782425" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="4.26778" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -5066,7 +5066,7 @@
 <reaction id="T_galR" reversible="false" fbc:lowerFluxBound="T_galR_FBClower" fbc:upperFluxBound="T_galR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.9737609329446064" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.97376" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -5087,7 +5087,7 @@
 <reaction id="T_galS" reversible="false" fbc:lowerFluxBound="T_galS_FBClower" fbc:upperFluxBound="T_galS_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.947976878612717" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.94798" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -5108,7 +5108,7 @@
 <reaction id="T_glpR" reversible="false" fbc:lowerFluxBound="T_glpR_FBClower" fbc:upperFluxBound="T_glpR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="4.0476190476190474" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="4.04762" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -5129,7 +5129,7 @@
 <reaction id="T_iclR" reversible="false" fbc:lowerFluxBound="T_iclR_FBClower" fbc:upperFluxBound="T_iclR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="3.7226277372262775" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="3.72263" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -5150,7 +5150,7 @@
 <reaction id="T_lacI" reversible="false" fbc:lowerFluxBound="T_lacI_FBClower" fbc:upperFluxBound="T_lacI_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.8333333333333335" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.83333" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -5171,7 +5171,7 @@
 <reaction id="T_mlc" reversible="false" fbc:lowerFluxBound="T_mlc_FBClower" fbc:upperFluxBound="T_mlc_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.5123152709359604" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.51232" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -5192,7 +5192,7 @@
 <reaction id="T_pdhR" reversible="false" fbc:lowerFluxBound="T_pdhR_FBClower" fbc:upperFluxBound="T_pdhR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="4.015748031496063" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="4.01575" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -5213,7 +5213,7 @@
 <reaction id="T_rbsR" reversible="false" fbc:lowerFluxBound="T_rbsR_FBClower" fbc:upperFluxBound="T_rbsR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="3.090909090909091" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="3.09091" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -5234,7 +5234,7 @@
 <reaction id="T_rpiR" reversible="false" fbc:lowerFluxBound="T_rpiR_FBClower" fbc:upperFluxBound="T_rpiR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="3.445945945945946" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="3.44595" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -5255,7 +5255,7 @@
 <reaction id="T_ASPT" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.1338912133891212" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.13389" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -5276,7 +5276,7 @@
 <reaction id="T_R" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="0.1430173864273696" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="0.14302" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -5297,7 +5297,7 @@
 <reaction id="T_Quota_protein" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.249173098125689" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.24917" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
@@ -6463,98 +6463,98 @@
 </listOfReactions>
 
 <fbc:listOfGeneProducts>
-	<fbc:geneProduct fbc:id="E_ACEA" fbc:label="aceA_ACEA" fbc:associatedSpecies="E_ACEA"/>
-	<fbc:geneProduct fbc:id="E_ACEB" fbc:label="aceB_ACEB" fbc:associatedSpecies="E_ACEB"/>
-	<fbc:geneProduct fbc:id="E_ACEE" fbc:label="aceE, aceF, lpdA_ACEE" fbc:associatedSpecies="E_ACEE"/>
-	<fbc:geneProduct fbc:id="E_ACKAR" fbc:label="ackA_ACKAR" fbc:associatedSpecies="E_ACKAR"/>
-	<fbc:geneProduct fbc:id="E_ACNAR" fbc:label="acnA_ACNAR" fbc:associatedSpecies="E_ACNAR"/>
-	<fbc:geneProduct fbc:id="E_ACNBR" fbc:label="acnB_ACNBR" fbc:associatedSpecies="E_ACNBR"/>
-	<fbc:geneProduct fbc:id="E_ACS" fbc:label="acs_ACS" fbc:associatedSpecies="E_ACS"/>
-	<fbc:geneProduct fbc:id="E_ADHER" fbc:label="adhE_ADHER" fbc:associatedSpecies="E_ADHER"/>
-	<fbc:geneProduct fbc:id="E_ADK" fbc:label="adk_ADK" fbc:associatedSpecies="E_ADK"/>
-	<fbc:geneProduct fbc:id="E_ATPAR" fbc:label="atpA, atpB, atpC, atpD, atpE, atpF, atpG, atpH, atpI_ATPAR" fbc:associatedSpecies="E_ATPAR"/>
-	<fbc:geneProduct fbc:id="E_CYDA" fbc:label="cydA, cydB_CYDA" fbc:associatedSpecies="E_CYDA"/>
-	<fbc:geneProduct fbc:id="E_CYOA" fbc:label="cyoA, cyoB, cyoC, cyoD_CYOA" fbc:associatedSpecies="E_CYOA"/>
-	<fbc:geneProduct fbc:id="E_DLD1R" fbc:label="dld_DLD1R" fbc:associatedSpecies="E_DLD1R"/>
-	<fbc:geneProduct fbc:id="E_DLD2" fbc:label="dld_DLD2" fbc:associatedSpecies="E_DLD2"/>
-	<fbc:geneProduct fbc:id="E_ENOR" fbc:label="eno_ENOR" fbc:associatedSpecies="E_ENOR"/>
-	<fbc:geneProduct fbc:id="E_FBAR" fbc:label="fba_FBAR" fbc:associatedSpecies="E_FBAR"/>
-	<fbc:geneProduct fbc:id="E_FBP" fbc:label="fbp_FBP" fbc:associatedSpecies="E_FBP"/>
-	<fbc:geneProduct fbc:id="E_FDNG" fbc:label="fdnG, fdnH, fdnI_FDNG" fbc:associatedSpecies="E_FDNG"/>
-	<fbc:geneProduct fbc:id="E_FDOH" fbc:label="fdoI, fdoH, fdoG_FDOH" fbc:associatedSpecies="E_FDOH"/>
-	<fbc:geneProduct fbc:id="E_FRDA" fbc:label="frdA, frdB, frdC, frdD_FRDA" fbc:associatedSpecies="E_FRDA"/>
-	<fbc:geneProduct fbc:id="E_FUMAR" fbc:label="fumA_FUMAR" fbc:associatedSpecies="E_FUMAR"/>
-	<fbc:geneProduct fbc:id="E_FUMBR" fbc:label="fumB_FUMBR" fbc:associatedSpecies="E_FUMBR"/>
-	<fbc:geneProduct fbc:id="E_FUMCR" fbc:label="fumC_FUMCR" fbc:associatedSpecies="E_FUMCR"/>
-	<fbc:geneProduct fbc:id="E_GALER" fbc:label="galE_GALER" fbc:associatedSpecies="E_GALER"/>
-	<fbc:geneProduct fbc:id="E_GALKR" fbc:label="galK_GALKR" fbc:associatedSpecies="E_GALKR"/>
-	<fbc:geneProduct fbc:id="E_GALM1R" fbc:label="galM_GALM1R" fbc:associatedSpecies="E_GALM1R"/>
-	<fbc:geneProduct fbc:id="E_GALM2R" fbc:label="galM_GALM2R" fbc:associatedSpecies="E_GALM2R"/>
-	<fbc:geneProduct fbc:id="E_GALTR" fbc:label="galT_GALTR" fbc:associatedSpecies="E_GALTR"/>
-	<fbc:geneProduct fbc:id="E_GALUR" fbc:label="galU_GALUR" fbc:associatedSpecies="E_GALUR"/>
-	<fbc:geneProduct fbc:id="E_GAPAR" fbc:label="gapA_GAPAR" fbc:associatedSpecies="E_GAPAR"/>
-	<fbc:geneProduct fbc:id="E_GLK" fbc:label="glk_GLK" fbc:associatedSpecies="E_GLK"/>
-	<fbc:geneProduct fbc:id="E_GLPA" fbc:label="glpA, glpB, glpC_GLPA" fbc:associatedSpecies="E_GLPA"/>
-	<fbc:geneProduct fbc:id="E_GLPD" fbc:label="glpD_GLPD" fbc:associatedSpecies="E_GLPD"/>
-	<fbc:geneProduct fbc:id="E_GLPK" fbc:label="glpK_GLPK" fbc:associatedSpecies="E_GLPK"/>
-	<fbc:geneProduct fbc:id="E_GLTA" fbc:label="gltA_GLTA" fbc:associatedSpecies="E_GLTA"/>
-	<fbc:geneProduct fbc:id="E_GND" fbc:label="gnd_GND" fbc:associatedSpecies="E_GND"/>
-	<fbc:geneProduct fbc:id="E_GPMAR" fbc:label="gpmA_GPMAR" fbc:associatedSpecies="E_GPMAR"/>
-	<fbc:geneProduct fbc:id="E_GPMBR" fbc:label="gpmA_GPMBR" fbc:associatedSpecies="E_GPMBR"/>
-	<fbc:geneProduct fbc:id="E_GPSAR" fbc:label="gpsA_GPSAR" fbc:associatedSpecies="E_GPSAR"/>
-	<fbc:geneProduct fbc:id="E_ICDAR" fbc:label="icdA_ICDAR" fbc:associatedSpecies="E_ICDAR"/>
-	<fbc:geneProduct fbc:id="E_LACZ" fbc:label="lacZ_LACZ" fbc:associatedSpecies="E_LACZ"/>
-	<fbc:geneProduct fbc:id="E_MAEB" fbc:label="maeB_MAEB" fbc:associatedSpecies="E_MAEB"/>
-	<fbc:geneProduct fbc:id="E_MDHR" fbc:label="mdh_MDHR" fbc:associatedSpecies="E_MDHR"/>
-	<fbc:geneProduct fbc:id="E_NDH" fbc:label="ndh_NDH" fbc:associatedSpecies="E_NDH"/>
-	<fbc:geneProduct fbc:id="E_NUOA" fbc:label="nuoA, nuoB, nuoE, nuoF, nuoG, nuoH, nuoI, nuoJ, nuoK, nuoL, nuoM, nuoN_NUOA" fbc:associatedSpecies="E_NUOA"/>
-	<fbc:geneProduct fbc:id="E_PCKA" fbc:label="pck_PCKA" fbc:associatedSpecies="E_PCKA"/>
-	<fbc:geneProduct fbc:id="E_PFKA" fbc:label="pfkA_PFKA" fbc:associatedSpecies="E_PFKA"/>
-	<fbc:geneProduct fbc:id="E_PFKB" fbc:label="pfkB_PFKB" fbc:associatedSpecies="E_PFKB"/>
-	<fbc:geneProduct fbc:id="E_PFLA" fbc:label="pflA, pflB_PFLA" fbc:associatedSpecies="E_PFLA"/>
-	<fbc:geneProduct fbc:id="E_PFLC" fbc:label="pflC, pflD_PFLC" fbc:associatedSpecies="E_PFLC"/>
-	<fbc:geneProduct fbc:id="E_PGIR" fbc:label="pgi_PGIR" fbc:associatedSpecies="E_PGIR"/>
-	<fbc:geneProduct fbc:id="E_PGKR" fbc:label="pgk_PGKR" fbc:associatedSpecies="E_PGKR"/>
-	<fbc:geneProduct fbc:id="E_PGL" fbc:label="pgl_PGL" fbc:associatedSpecies="E_PGL"/>
-	<fbc:geneProduct fbc:id="E_PGMR" fbc:label="pgm_PGMR" fbc:associatedSpecies="E_PGMR"/>
-	<fbc:geneProduct fbc:id="E_PNTA1" fbc:label="pntA, pntB_PNTA1" fbc:associatedSpecies="E_PNTA1"/>
-	<fbc:geneProduct fbc:id="E_PNTA2" fbc:label="pntA, pntB_PNTA2" fbc:associatedSpecies="E_PNTA2"/>
-	<fbc:geneProduct fbc:id="E_PPA" fbc:label="ppa_PPA" fbc:associatedSpecies="E_PPA"/>
-	<fbc:geneProduct fbc:id="E_PPC" fbc:label="ppc_PPC" fbc:associatedSpecies="E_PPC"/>
-	<fbc:geneProduct fbc:id="E_PPSA" fbc:label="ppsA_PPSA" fbc:associatedSpecies="E_PPSA"/>
-	<fbc:geneProduct fbc:id="E_PTAR" fbc:label="pta_PTAR" fbc:associatedSpecies="E_PTAR"/>
-	<fbc:geneProduct fbc:id="E_PYKA" fbc:label="pykA_PYKA" fbc:associatedSpecies="E_PYKA"/>
-	<fbc:geneProduct fbc:id="E_PYKF" fbc:label="pykF_PYKF" fbc:associatedSpecies="E_PYKF"/>
-	<fbc:geneProduct fbc:id="E_RBSK" fbc:label="rbsK_RBSK" fbc:associatedSpecies="E_RBSK"/>
-	<fbc:geneProduct fbc:id="E_RPER" fbc:label="rpe_RPER" fbc:associatedSpecies="E_RPER"/>
-	<fbc:geneProduct fbc:id="E_RPIAR" fbc:label="rpiA_RPIAR" fbc:associatedSpecies="E_RPIAR"/>
-	<fbc:geneProduct fbc:id="E_RPIBR" fbc:label="rpiB_RPIBR" fbc:associatedSpecies="E_RPIBR"/>
-	<fbc:geneProduct fbc:id="E_SDHA1" fbc:label="sdhA, sdhB, sdhC, sdhD_SDHA1" fbc:associatedSpecies="E_SDHA1"/>
-	<fbc:geneProduct fbc:id="E_SDHA2" fbc:label="sdhA, sdhB, sdhC, sdhD_SDHA2" fbc:associatedSpecies="E_SDHA2"/>
-	<fbc:geneProduct fbc:id="E_SFCA" fbc:label="maeA_SFCA" fbc:associatedSpecies="E_SFCA"/>
-	<fbc:geneProduct fbc:id="E_SUCA" fbc:label="sucA, sucB, lpdA_SUCA" fbc:associatedSpecies="E_SUCA"/>
-	<fbc:geneProduct fbc:id="E_SUCCR" fbc:label="sucC, sucD_SUCCR" fbc:associatedSpecies="E_SUCCR"/>
-	<fbc:geneProduct fbc:id="E_TALAR" fbc:label="talA_TALAR" fbc:associatedSpecies="E_TALAR"/>
-	<fbc:geneProduct fbc:id="E_TALBR" fbc:label="talB_TALBR" fbc:associatedSpecies="E_TALBR"/>
-	<fbc:geneProduct fbc:id="E_TKTA1R" fbc:label="tktA_TKTA1R" fbc:associatedSpecies="E_TKTA1R"/>
-	<fbc:geneProduct fbc:id="E_TKTA2R" fbc:label="tktA_TKTA2R" fbc:associatedSpecies="E_TKTA2R"/>
-	<fbc:geneProduct fbc:id="E_TKTB1R" fbc:label="tktB_TKTB1R" fbc:associatedSpecies="E_TKTB1R"/>
-	<fbc:geneProduct fbc:id="E_TKTB2R" fbc:label="tktB_TKTB2R" fbc:associatedSpecies="E_TKTB2R"/>
-	<fbc:geneProduct fbc:id="E_TPIAR" fbc:label="tpiA_TPIAR" fbc:associatedSpecies="E_TPIAR"/>
-	<fbc:geneProduct fbc:id="E_ZWFR" fbc:label="zwf_ZWFR" fbc:associatedSpecies="E_ZWFR"/>
-	<fbc:geneProduct fbc:id="E_FORUPR" fbc:label="focA_FORUPR" fbc:associatedSpecies="E_FORUPR"/>
-	<fbc:geneProduct fbc:id="E_GLCPTS" fbc:label="ptsG, ptsH, ptsI, crr_GLCPTS" fbc:associatedSpecies="E_GLCPTS"/>
-	<fbc:geneProduct fbc:id="E_GLCUP" fbc:label="galP_GLCUP" fbc:associatedSpecies="E_GLCUP"/>
-	<fbc:geneProduct fbc:id="E_GLUPR" fbc:label="glpF_GLUPR" fbc:associatedSpecies="E_GLUPR"/>
-	<fbc:geneProduct fbc:id="E_LACYR" fbc:label="lacY_LACYR" fbc:associatedSpecies="E_LACYR"/>
-	<fbc:geneProduct fbc:id="E_PIUP2R" fbc:label="pitA, pitB_PIUP2R" fbc:associatedSpecies="E_PIUP2R"/>
-	<fbc:geneProduct fbc:id="E_RIBUPR" fbc:label="rbsA, rbsB, rbsC, rbsD_RIBUPR" fbc:associatedSpecies="E_RIBUPR"/>
-	<fbc:geneProduct fbc:id="E_DCTAR" fbc:label="dctA_DCTAR" fbc:associatedSpecies="E_DCTAR"/>
-	<fbc:geneProduct fbc:id="E_DCUAR" fbc:label="dcuA_DCUAR" fbc:associatedSpecies="E_DCUAR"/>
-	<fbc:geneProduct fbc:id="E_DCUBR" fbc:label="dcuB_DCUBR" fbc:associatedSpecies="E_DCUBR"/>
-	<fbc:geneProduct fbc:id="E_DCUC" fbc:label="dcuC_DCUC" fbc:associatedSpecies="E_DCUC"/>
-	<fbc:geneProduct fbc:id="E_ASPT" fbc:label="aspA_ASPT" fbc:associatedSpecies="E_ASPT"/>
-	<fbc:geneProduct fbc:id="E_R" fbc:label="rplA, rplB, rplC, rplD, rplE, rplF, rplI, rplJ, rplK, rplL, rplM, rplN, rplO, rplP, rplQ, rplR, rplS, rplT, rplU, rplV, rplW, rplX, rplY, rpmA, rpmB, rpmC, rpmD, rpmE, rpmF, rpmG, rpmH, rpmI, rpmJ, rpsA, rpsB, rpsC, rpsD, rpsE, rpsF, rpsG, rpsH, rpsI, rpsJ, rpsK, rpsL, rpsM, rpsN, rpsO, rpsP, rpsQ, rpsR, rpsS, rpsT, rpsU_R" fbc:associatedSpecies="E_R"/>
+  <fbc:geneProduct fbc:id="E_ACEA" fbc:label="aceA_ACEA" fbc:associatedSpecies="E_ACEA"/>
+  <fbc:geneProduct fbc:id="E_ACEB" fbc:label="aceB_ACEB" fbc:associatedSpecies="E_ACEB"/>
+  <fbc:geneProduct fbc:id="E_ACEE" fbc:label="aceE, aceF, lpdA_ACEE" fbc:associatedSpecies="E_ACEE"/>
+  <fbc:geneProduct fbc:id="E_ACKAR" fbc:label="ackA_ACKAR" fbc:associatedSpecies="E_ACKAR"/>
+  <fbc:geneProduct fbc:id="E_ACNAR" fbc:label="acnA_ACNAR" fbc:associatedSpecies="E_ACNAR"/>
+  <fbc:geneProduct fbc:id="E_ACNBR" fbc:label="acnB_ACNBR" fbc:associatedSpecies="E_ACNBR"/>
+  <fbc:geneProduct fbc:id="E_ACS" fbc:label="acs_ACS" fbc:associatedSpecies="E_ACS"/>
+  <fbc:geneProduct fbc:id="E_ADHER" fbc:label="adhE_ADHER" fbc:associatedSpecies="E_ADHER"/>
+  <fbc:geneProduct fbc:id="E_ADK" fbc:label="adk_ADK" fbc:associatedSpecies="E_ADK"/>
+  <fbc:geneProduct fbc:id="E_ATPAR" fbc:label="atpA, atpB, atpC, atpD, atpE, atpF, atpG, atpH, atpI_ATPAR" fbc:associatedSpecies="E_ATPAR"/>
+  <fbc:geneProduct fbc:id="E_CYDA" fbc:label="cydA, cydB_CYDA" fbc:associatedSpecies="E_CYDA"/>
+  <fbc:geneProduct fbc:id="E_CYOA" fbc:label="cyoA, cyoB, cyoC, cyoD_CYOA" fbc:associatedSpecies="E_CYOA"/>
+  <fbc:geneProduct fbc:id="E_DLD1R" fbc:label="dld_DLD1R" fbc:associatedSpecies="E_DLD1R"/>
+  <fbc:geneProduct fbc:id="E_DLD2" fbc:label="dld_DLD2" fbc:associatedSpecies="E_DLD2"/>
+  <fbc:geneProduct fbc:id="E_ENOR" fbc:label="eno_ENOR" fbc:associatedSpecies="E_ENOR"/>
+  <fbc:geneProduct fbc:id="E_FBAR" fbc:label="fba_FBAR" fbc:associatedSpecies="E_FBAR"/>
+  <fbc:geneProduct fbc:id="E_FBP" fbc:label="fbp_FBP" fbc:associatedSpecies="E_FBP"/>
+  <fbc:geneProduct fbc:id="E_FDNG" fbc:label="fdnG, fdnH, fdnI_FDNG" fbc:associatedSpecies="E_FDNG"/>
+  <fbc:geneProduct fbc:id="E_FDOH" fbc:label="fdoI, fdoH, fdoG_FDOH" fbc:associatedSpecies="E_FDOH"/>
+  <fbc:geneProduct fbc:id="E_FRDA" fbc:label="frdA, frdB, frdC, frdD_FRDA" fbc:associatedSpecies="E_FRDA"/>
+  <fbc:geneProduct fbc:id="E_FUMAR" fbc:label="fumA_FUMAR" fbc:associatedSpecies="E_FUMAR"/>
+  <fbc:geneProduct fbc:id="E_FUMBR" fbc:label="fumB_FUMBR" fbc:associatedSpecies="E_FUMBR"/>
+  <fbc:geneProduct fbc:id="E_FUMCR" fbc:label="fumC_FUMCR" fbc:associatedSpecies="E_FUMCR"/>
+  <fbc:geneProduct fbc:id="E_GALER" fbc:label="galE_GALER" fbc:associatedSpecies="E_GALER"/>
+  <fbc:geneProduct fbc:id="E_GALKR" fbc:label="galK_GALKR" fbc:associatedSpecies="E_GALKR"/>
+  <fbc:geneProduct fbc:id="E_GALM1R" fbc:label="galM_GALM1R" fbc:associatedSpecies="E_GALM1R"/>
+  <fbc:geneProduct fbc:id="E_GALM2R" fbc:label="galM_GALM2R" fbc:associatedSpecies="E_GALM2R"/>
+  <fbc:geneProduct fbc:id="E_GALTR" fbc:label="galT_GALTR" fbc:associatedSpecies="E_GALTR"/>
+  <fbc:geneProduct fbc:id="E_GALUR" fbc:label="galU_GALUR" fbc:associatedSpecies="E_GALUR"/>
+  <fbc:geneProduct fbc:id="E_GAPAR" fbc:label="gapA_GAPAR" fbc:associatedSpecies="E_GAPAR"/>
+  <fbc:geneProduct fbc:id="E_GLK" fbc:label="glk_GLK" fbc:associatedSpecies="E_GLK"/>
+  <fbc:geneProduct fbc:id="E_GLPA" fbc:label="glpA, glpB, glpC_GLPA" fbc:associatedSpecies="E_GLPA"/>
+  <fbc:geneProduct fbc:id="E_GLPD" fbc:label="glpD_GLPD" fbc:associatedSpecies="E_GLPD"/>
+  <fbc:geneProduct fbc:id="E_GLPK" fbc:label="glpK_GLPK" fbc:associatedSpecies="E_GLPK"/>
+  <fbc:geneProduct fbc:id="E_GLTA" fbc:label="gltA_GLTA" fbc:associatedSpecies="E_GLTA"/>
+  <fbc:geneProduct fbc:id="E_GND" fbc:label="gnd_GND" fbc:associatedSpecies="E_GND"/>
+  <fbc:geneProduct fbc:id="E_GPMAR" fbc:label="gpmA_GPMAR" fbc:associatedSpecies="E_GPMAR"/>
+  <fbc:geneProduct fbc:id="E_GPMBR" fbc:label="gpmA_GPMBR" fbc:associatedSpecies="E_GPMBR"/>
+  <fbc:geneProduct fbc:id="E_GPSAR" fbc:label="gpsA_GPSAR" fbc:associatedSpecies="E_GPSAR"/>
+  <fbc:geneProduct fbc:id="E_ICDAR" fbc:label="icdA_ICDAR" fbc:associatedSpecies="E_ICDAR"/>
+  <fbc:geneProduct fbc:id="E_LACZ" fbc:label="lacZ_LACZ" fbc:associatedSpecies="E_LACZ"/>
+  <fbc:geneProduct fbc:id="E_MAEB" fbc:label="maeB_MAEB" fbc:associatedSpecies="E_MAEB"/>
+  <fbc:geneProduct fbc:id="E_MDHR" fbc:label="mdh_MDHR" fbc:associatedSpecies="E_MDHR"/>
+  <fbc:geneProduct fbc:id="E_NDH" fbc:label="ndh_NDH" fbc:associatedSpecies="E_NDH"/>
+  <fbc:geneProduct fbc:id="E_NUOA" fbc:label="nuoA, nuoB, nuoE, nuoF, nuoG, nuoH, nuoI, nuoJ, nuoK, nuoL, nuoM, nuoN_NUOA" fbc:associatedSpecies="E_NUOA"/>
+  <fbc:geneProduct fbc:id="E_PCKA" fbc:label="pck_PCKA" fbc:associatedSpecies="E_PCKA"/>
+  <fbc:geneProduct fbc:id="E_PFKA" fbc:label="pfkA_PFKA" fbc:associatedSpecies="E_PFKA"/>
+  <fbc:geneProduct fbc:id="E_PFKB" fbc:label="pfkB_PFKB" fbc:associatedSpecies="E_PFKB"/>
+  <fbc:geneProduct fbc:id="E_PFLA" fbc:label="pflA, pflB_PFLA" fbc:associatedSpecies="E_PFLA"/>
+  <fbc:geneProduct fbc:id="E_PFLC" fbc:label="pflC, pflD_PFLC" fbc:associatedSpecies="E_PFLC"/>
+  <fbc:geneProduct fbc:id="E_PGIR" fbc:label="pgi_PGIR" fbc:associatedSpecies="E_PGIR"/>
+  <fbc:geneProduct fbc:id="E_PGKR" fbc:label="pgk_PGKR" fbc:associatedSpecies="E_PGKR"/>
+  <fbc:geneProduct fbc:id="E_PGL" fbc:label="pgl_PGL" fbc:associatedSpecies="E_PGL"/>
+  <fbc:geneProduct fbc:id="E_PGMR" fbc:label="pgm_PGMR" fbc:associatedSpecies="E_PGMR"/>
+  <fbc:geneProduct fbc:id="E_PNTA1" fbc:label="pntA, pntB_PNTA1" fbc:associatedSpecies="E_PNTA1"/>
+  <fbc:geneProduct fbc:id="E_PNTA2" fbc:label="pntA, pntB_PNTA2" fbc:associatedSpecies="E_PNTA2"/>
+  <fbc:geneProduct fbc:id="E_PPA" fbc:label="ppa_PPA" fbc:associatedSpecies="E_PPA"/>
+  <fbc:geneProduct fbc:id="E_PPC" fbc:label="ppc_PPC" fbc:associatedSpecies="E_PPC"/>
+  <fbc:geneProduct fbc:id="E_PPSA" fbc:label="ppsA_PPSA" fbc:associatedSpecies="E_PPSA"/>
+  <fbc:geneProduct fbc:id="E_PTAR" fbc:label="pta_PTAR" fbc:associatedSpecies="E_PTAR"/>
+  <fbc:geneProduct fbc:id="E_PYKA" fbc:label="pykA_PYKA" fbc:associatedSpecies="E_PYKA"/>
+  <fbc:geneProduct fbc:id="E_PYKF" fbc:label="pykF_PYKF" fbc:associatedSpecies="E_PYKF"/>
+  <fbc:geneProduct fbc:id="E_RBSK" fbc:label="rbsK_RBSK" fbc:associatedSpecies="E_RBSK"/>
+  <fbc:geneProduct fbc:id="E_RPER" fbc:label="rpe_RPER" fbc:associatedSpecies="E_RPER"/>
+  <fbc:geneProduct fbc:id="E_RPIAR" fbc:label="rpiA_RPIAR" fbc:associatedSpecies="E_RPIAR"/>
+  <fbc:geneProduct fbc:id="E_RPIBR" fbc:label="rpiB_RPIBR" fbc:associatedSpecies="E_RPIBR"/>
+  <fbc:geneProduct fbc:id="E_SDHA1" fbc:label="sdhA, sdhB, sdhC, sdhD_SDHA1" fbc:associatedSpecies="E_SDHA1"/>
+  <fbc:geneProduct fbc:id="E_SDHA2" fbc:label="sdhA, sdhB, sdhC, sdhD_SDHA2" fbc:associatedSpecies="E_SDHA2"/>
+  <fbc:geneProduct fbc:id="E_SFCA" fbc:label="maeA_SFCA" fbc:associatedSpecies="E_SFCA"/>
+  <fbc:geneProduct fbc:id="E_SUCA" fbc:label="sucA, sucB, lpdA_SUCA" fbc:associatedSpecies="E_SUCA"/>
+  <fbc:geneProduct fbc:id="E_SUCCR" fbc:label="sucC, sucD_SUCCR" fbc:associatedSpecies="E_SUCCR"/>
+  <fbc:geneProduct fbc:id="E_TALAR" fbc:label="talA_TALAR" fbc:associatedSpecies="E_TALAR"/>
+  <fbc:geneProduct fbc:id="E_TALBR" fbc:label="talB_TALBR" fbc:associatedSpecies="E_TALBR"/>
+  <fbc:geneProduct fbc:id="E_TKTA1R" fbc:label="tktA_TKTA1R" fbc:associatedSpecies="E_TKTA1R"/>
+  <fbc:geneProduct fbc:id="E_TKTA2R" fbc:label="tktA_TKTA2R" fbc:associatedSpecies="E_TKTA2R"/>
+  <fbc:geneProduct fbc:id="E_TKTB1R" fbc:label="tktB_TKTB1R" fbc:associatedSpecies="E_TKTB1R"/>
+  <fbc:geneProduct fbc:id="E_TKTB2R" fbc:label="tktB_TKTB2R" fbc:associatedSpecies="E_TKTB2R"/>
+  <fbc:geneProduct fbc:id="E_TPIAR" fbc:label="tpiA_TPIAR" fbc:associatedSpecies="E_TPIAR"/>
+  <fbc:geneProduct fbc:id="E_ZWFR" fbc:label="zwf_ZWFR" fbc:associatedSpecies="E_ZWFR"/>
+  <fbc:geneProduct fbc:id="E_FORUPR" fbc:label="focA_FORUPR" fbc:associatedSpecies="E_FORUPR"/>
+  <fbc:geneProduct fbc:id="E_GLCPTS" fbc:label="ptsG, ptsH, ptsI, crr_GLCPTS" fbc:associatedSpecies="E_GLCPTS"/>
+  <fbc:geneProduct fbc:id="E_GLCUP" fbc:label="galP_GLCUP" fbc:associatedSpecies="E_GLCUP"/>
+  <fbc:geneProduct fbc:id="E_GLUPR" fbc:label="glpF_GLUPR" fbc:associatedSpecies="E_GLUPR"/>
+  <fbc:geneProduct fbc:id="E_LACYR" fbc:label="lacY_LACYR" fbc:associatedSpecies="E_LACYR"/>
+  <fbc:geneProduct fbc:id="E_PIUP2R" fbc:label="pitA, pitB_PIUP2R" fbc:associatedSpecies="E_PIUP2R"/>
+  <fbc:geneProduct fbc:id="E_RIBUPR" fbc:label="rbsA, rbsB, rbsC, rbsD_RIBUPR" fbc:associatedSpecies="E_RIBUPR"/>
+  <fbc:geneProduct fbc:id="E_DCTAR" fbc:label="dctA_DCTAR" fbc:associatedSpecies="E_DCTAR"/>
+  <fbc:geneProduct fbc:id="E_DCUAR" fbc:label="dcuA_DCUAR" fbc:associatedSpecies="E_DCUAR"/>
+  <fbc:geneProduct fbc:id="E_DCUBR" fbc:label="dcuB_DCUBR" fbc:associatedSpecies="E_DCUBR"/>
+  <fbc:geneProduct fbc:id="E_DCUC" fbc:label="dcuC_DCUC" fbc:associatedSpecies="E_DCUC"/>
+  <fbc:geneProduct fbc:id="E_ASPT" fbc:label="aspA_ASPT" fbc:associatedSpecies="E_ASPT"/>
+  <fbc:geneProduct fbc:id="E_R" fbc:label="rplA, rplB, rplC, rplD, rplE, rplF, rplI, rplJ, rplK, rplL, rplM, rplN, rplO, rplP, rplQ, rplR, rplS, rplT, rplU, rplV, rplW, rplX, rplY, rpmA, rpmB, rpmC, rpmD, rpmE, rpmF, rpmG, rpmH, rpmI, rpmJ, rpsA, rpsB, rpsC, rpsD, rpsE, rpsF, rpsG, rpsH, rpsI, rpsJ, rpsK, rpsL, rpsM, rpsN, rpsO, rpsP, rpsQ, rpsR, rpsS, rpsT, rpsU_R" fbc:associatedSpecies="E_R"/>
   <fbc:geneProduct fbc:id="RP_arcA" fbc:label="arcA" fbc:associatedSpecies="RP_arcA"/>
   <fbc:geneProduct fbc:id="RP_cra" fbc:label="cra" fbc:associatedSpecies="RP_cra"/>
   <fbc:geneProduct fbc:id="RP_crp" fbc:label="crp" fbc:associatedSpecies="RP_crp"/>
@@ -6574,44 +6574,44 @@
 </fbc:listOfGeneProducts>
 
 <qual:listOfQualitativeSpecies>
-  <qual:qualitativeSpecies qual:id="arcA_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="cra_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="crp_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="dcuR_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="dcuS_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="fadR_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="fnr_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="galR_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="galS_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="glpR_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="iclR_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="lacI_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="mlc_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="pdhR_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="rbsR_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="rpiR_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="ACEA_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="ACEB_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="ACEE_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="ADHER_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="CYDA_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="CYOA_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="FDNG_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="FRDA_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="FUMAR_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="FUMBR_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="MDHR_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="NDH_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="PFLA_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="PFLC_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="PPSA_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="PYKF_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="RPIBR_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="SDHA1_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="SDHA2_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="SUCA_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="FORUPR_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="DCUC_bar" qual:initialLevel="1" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="arcA_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="cra_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="crp_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="dcuR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="dcuS_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="fadR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="fnr_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="galR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="galS_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="glpR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="iclR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="lacI_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="mlc_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="pdhR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="rbsR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="rpiR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="ACEA_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="ACEB_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="ACEE_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="ADHER_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="CYDA_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="CYOA_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="FDNG_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="FRDA_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="FUMAR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="FUMBR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="MDHR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="NDH_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="PFLA_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="PFLC_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="PPSA_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="PYKF_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="RPIBR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="SDHA1_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="SDHA2_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="SUCA_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="FORUPR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="DCUC_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
 </qual:listOfQualitativeSpecies>
 
 <listOfRules>
@@ -6619,7 +6619,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_ACEA_bar</ci>
       </apply>
     </math>
@@ -6637,7 +6637,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_ACEB_bar</ci>
       </apply>
     </math>
@@ -6655,7 +6655,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_ACEE_bar</ci>
       </apply>
     </math>
@@ -6673,7 +6673,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_ACNAR_bar</ci>
       </apply>
     </math>
@@ -6691,7 +6691,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_ACNBR_bar</ci>
       </apply>
     </math>
@@ -6709,7 +6709,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_ACS_bar</ci>
       </apply>
     </math>
@@ -6727,7 +6727,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_ADHER_bar</ci>
       </apply>
     </math>
@@ -6745,7 +6745,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_CYDA_bar</ci>
       </apply>
     </math>
@@ -6763,7 +6763,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_CYOA_bar</ci>
       </apply>
     </math>
@@ -6781,7 +6781,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_FDNG_bar</ci>
       </apply>
     </math>
@@ -6799,7 +6799,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_FRDA_bar</ci>
       </apply>
     </math>
@@ -6817,7 +6817,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_FUMAR_bar</ci>
       </apply>
     </math>
@@ -6835,7 +6835,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_FUMBR_bar</ci>
       </apply>
     </math>
@@ -6853,7 +6853,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_FUMCR_bar</ci>
       </apply>
     </math>
@@ -6871,7 +6871,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_GALER_bar</ci>
       </apply>
     </math>
@@ -6889,7 +6889,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_GALKR_bar</ci>
       </apply>
     </math>
@@ -6907,7 +6907,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_GALM1R_bar</ci>
       </apply>
     </math>
@@ -6925,7 +6925,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_GALM2R_bar</ci>
       </apply>
     </math>
@@ -6943,7 +6943,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_GALTR_bar</ci>
       </apply>
     </math>
@@ -6961,7 +6961,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_GLPA_bar</ci>
       </apply>
     </math>
@@ -6979,7 +6979,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_GLPD_bar</ci>
       </apply>
     </math>
@@ -6997,7 +6997,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_GLPK_bar</ci>
       </apply>
     </math>
@@ -7015,7 +7015,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_LACZ_bar</ci>
       </apply>
     </math>
@@ -7033,7 +7033,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_MDHR_bar</ci>
       </apply>
     </math>
@@ -7051,7 +7051,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_NDH_bar</ci>
       </apply>
     </math>
@@ -7069,7 +7069,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_PFLA_bar</ci>
       </apply>
     </math>
@@ -7087,7 +7087,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_PFLC_bar</ci>
       </apply>
     </math>
@@ -7105,7 +7105,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_PGKR_bar</ci>
       </apply>
     </math>
@@ -7123,7 +7123,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_PPSA_bar</ci>
       </apply>
     </math>
@@ -7141,7 +7141,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_PYKF_bar</ci>
       </apply>
     </math>
@@ -7159,7 +7159,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_RBSK_bar</ci>
       </apply>
     </math>
@@ -7177,7 +7177,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_RPIBR_bar</ci>
       </apply>
     </math>
@@ -7195,7 +7195,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_SDHA1_bar</ci>
       </apply>
     </math>
@@ -7213,7 +7213,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_SDHA2_bar</ci>
       </apply>
     </math>
@@ -7231,7 +7231,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_SUCA_bar</ci>
       </apply>
     </math>
@@ -7249,7 +7249,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_FORUPR_bar</ci>
       </apply>
     </math>
@@ -7267,7 +7267,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_GLCPTS_bar</ci>
       </apply>
     </math>
@@ -7285,7 +7285,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_GLCUP_bar</ci>
       </apply>
     </math>
@@ -7303,7 +7303,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_GLUPR_bar</ci>
       </apply>
     </math>
@@ -7321,7 +7321,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_LACYR_bar</ci>
       </apply>
     </math>
@@ -7339,7 +7339,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_RIBUPR_bar</ci>
       </apply>
     </math>
@@ -7357,7 +7357,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_DCTAR_bar</ci>
       </apply>
     </math>
@@ -7375,7 +7375,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_DCUBR_bar</ci>
       </apply>
     </math>
@@ -7393,7 +7393,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_DCUC_bar</ci>
       </apply>
     </math>
@@ -7411,7 +7411,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_arcA_bar</ci>
       </apply>
     </math>
@@ -7429,7 +7429,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_cra_bar</ci>
       </apply>
     </math>
@@ -7447,7 +7447,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_crp_bar</ci>
       </apply>
     </math>
@@ -7465,7 +7465,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_dcuR_bar</ci>
       </apply>
     </math>
@@ -7483,7 +7483,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_dcuS_bar</ci>
       </apply>
     </math>
@@ -7501,7 +7501,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_fadR_bar</ci>
       </apply>
     </math>
@@ -7519,7 +7519,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_fnr_bar</ci>
       </apply>
     </math>
@@ -7537,7 +7537,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_galR_bar</ci>
       </apply>
     </math>
@@ -7555,7 +7555,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_galS_bar</ci>
       </apply>
     </math>
@@ -7573,7 +7573,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_glpR_bar</ci>
       </apply>
     </math>
@@ -7591,7 +7591,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_iclR_bar</ci>
       </apply>
     </math>
@@ -7609,7 +7609,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_lacI_bar</ci>
       </apply>
     </math>
@@ -7627,7 +7627,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_mlc_bar</ci>
       </apply>
     </math>
@@ -7645,7 +7645,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_pdhR_bar</ci>
       </apply>
     </math>
@@ -7663,7 +7663,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_rbsR_bar</ci>
       </apply>
     </math>
@@ -7681,7 +7681,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_rpiR_bar</ci>
       </apply>
     </math>
