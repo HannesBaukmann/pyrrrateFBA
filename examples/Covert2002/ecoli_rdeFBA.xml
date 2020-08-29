@@ -6593,6 +6593,9 @@
   <qual:qualitativeSpecies qual:id="ACEA_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="ACEB_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="ACEE_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="ACNAR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="ACNBR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="ACS_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="ADHER_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="CYDA_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="CYOA_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
@@ -6600,17 +6603,36 @@
   <qual:qualitativeSpecies qual:id="FRDA_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="FUMAR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="FUMBR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="FUMCR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="GALER_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="GALKR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="GALM1R_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="GALM2R_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="GALTR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="GLPA_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="GLPD_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="GLPK_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="LACZ_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="MDHR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="NDH_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="PFLA_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="PFLC_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="PGKR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="PPSA_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="PYKF_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="RBSK_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="RPIBR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="SDHA1_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="SDHA2_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="SUCA_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="FORUPR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="GLCPTS_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="GLCUP_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="GLUPR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="LACYR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="RIBUPR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="DCTAR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
+  <qual:qualitativeSpecies qual:id="DCUBR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="DCUC_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
 </qual:listOfQualitativeSpecies>
 
@@ -7790,6 +7812,21 @@
     <ci>qual_con_ACEE_bar</ci>
   </math>
 </assignmentRule>
+<assignmentRule variable="ACNAR_bar">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <ci>qual_con_ACNAR_bar</ci>
+  </math>
+</assignmentRule>
+<assignmentRule variable="ACNBR_bar">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <ci>qual_con_ACNBR_bar</ci>
+  </math>
+</assignmentRule>
+<assignmentRule variable="ACS_bar">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <ci>qual_con_ACS_bar</ci>
+  </math>
+</assignmentRule>
 <assignmentRule variable="ADHER_bar">
   <math xmlns="http://www.w3.org/1998/Math/MathML">
     <ci>qual_con_ADHER_bar</ci>
@@ -7825,6 +7862,56 @@
     <ci>qual_con_FUMBR_bar</ci>
   </math>
 </assignmentRule>
+<assignmentRule variable="FUMCR_bar">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <ci>qual_con_FUMCR_bar</ci>
+  </math>
+</assignmentRule>
+<assignmentRule variable="GALER_bar">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <ci>qual_con_GALER_bar</ci>
+  </math>
+</assignmentRule>
+<assignmentRule variable="GALKR_bar">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <ci>qual_con_GALKR_bar</ci>
+  </math>
+</assignmentRule>
+<assignmentRule variable="GALM1R_bar">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <ci>qual_con_GALM1R_bar</ci>
+  </math>
+</assignmentRule>
+<assignmentRule variable="GALM2R_bar">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <ci>qual_con_GALM2R_bar</ci>
+  </math>
+</assignmentRule>
+<assignmentRule variable="GALTR_bar">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <ci>qual_con_GALTR_bar</ci>
+  </math>
+</assignmentRule>
+<assignmentRule variable="GLPA_bar">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <ci>qual_con_GLPA_bar</ci>
+  </math>
+</assignmentRule>
+<assignmentRule variable="GLPD_bar">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <ci>qual_con_GLPD_bar</ci>
+  </math>
+</assignmentRule>
+<assignmentRule variable="GLPK_bar">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <ci>qual_con_GLPK_bar</ci>
+  </math>
+</assignmentRule>
+<assignmentRule variable="LACZ_bar">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <ci>qual_con_LACZ_bar</ci>
+  </math>
+</assignmentRule>
 <assignmentRule variable="MDHR_bar">
   <math xmlns="http://www.w3.org/1998/Math/MathML">
     <ci>qual_con_MDHR_bar</ci>
@@ -7845,6 +7932,11 @@
     <ci>qual_con_PFLC_bar</ci>
   </math>
 </assignmentRule>
+<assignmentRule variable="PGKR_bar">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <ci>qual_con_PGKR_bar</ci>
+  </math>
+</assignmentRule>
 <assignmentRule variable="PPSA_bar">
   <math xmlns="http://www.w3.org/1998/Math/MathML">
     <ci>qual_con_PPSA_bar</ci>
@@ -7853,6 +7945,11 @@
 <assignmentRule variable="PYKF_bar">
   <math xmlns="http://www.w3.org/1998/Math/MathML">
     <ci>qual_con_PYKF_bar</ci>
+  </math>
+</assignmentRule>
+<assignmentRule variable="RBSK_bar">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <ci>qual_con_RBSK_bar</ci>
   </math>
 </assignmentRule>
 <assignmentRule variable="RPIBR_bar">
@@ -7878,6 +7975,41 @@
 <assignmentRule variable="FORUPR_bar">
   <math xmlns="http://www.w3.org/1998/Math/MathML">
     <ci>qual_con_FORUPR_bar</ci>
+  </math>
+</assignmentRule>
+<assignmentRule variable="GLCPTS_bar">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <ci>qual_con_GLCPTS_bar</ci>
+  </math>
+</assignmentRule>
+<assignmentRule variable="GLCUP_bar">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <ci>qual_con_GLCUP_bar</ci>
+  </math>
+</assignmentRule>
+<assignmentRule variable="GLUPR_bar">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <ci>qual_con_GLUPR_bar</ci>
+  </math>
+</assignmentRule>
+<assignmentRule variable="LACYR_bar">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <ci>qual_con_LACYR_bar</ci>
+  </math>
+</assignmentRule>
+<assignmentRule variable="RIBUPR_bar">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <ci>qual_con_RIBUPR_bar</ci>
+  </math>
+</assignmentRule>
+<assignmentRule variable="DCTAR_bar">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <ci>qual_con_DCTAR_bar</ci>
+  </math>
+</assignmentRule>
+<assignmentRule variable="DCUBR_bar">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <ci>qual_con_DCUBR_bar</ci>
   </math>
 </assignmentRule>
 <assignmentRule variable="DCUC_bar">
@@ -8476,6 +8608,8 @@
 
 <listOfParameters>
   <parameter id="epsilon_trans" constant="true" value="1e-06"/>
+  <parameter id="theta_xt" constant="true" value="0.0001"/>
+  <parameter id="theta_RP" constant="true" value="1e-06"/>
   <parameter id="T_ACEA_FBCupper" value="NaN" constant="false" />
   <parameter id="T_ACEA_FBClower" value="NaN" constant="false" />
   <parameter id="T_ACEB_FBCupper" value="NaN" constant="false" />
@@ -8615,6 +8749,9 @@
   <parameter id="qual_con_ACEA_bar" constant="false" value="NaN"/>
   <parameter id="qual_con_ACEB_bar" constant="false" value="NaN"/>
   <parameter id="qual_con_ACEE_bar" constant="false" value="NaN"/>
+  <parameter id="qual_con_ACNAR_bar" constant="false" value="NaN"/>
+  <parameter id="qual_con_ACNBR_bar" constant="false" value="NaN"/>
+  <parameter id="qual_con_ACS_bar" constant="false" value="NaN"/>
   <parameter id="qual_con_ADHER_bar" constant="false" value="NaN"/>
   <parameter id="qual_con_CYDA_bar" constant="false" value="NaN"/>
   <parameter id="qual_con_CYOA_bar" constant="false" value="NaN"/>
@@ -8622,17 +8759,36 @@
   <parameter id="qual_con_FRDA_bar" constant="false" value="NaN"/>
   <parameter id="qual_con_FUMAR_bar" constant="false" value="NaN"/>
   <parameter id="qual_con_FUMBR_bar" constant="false" value="NaN"/>
+  <parameter id="qual_con_FUMCR_bar" constant="false" value="NaN"/>
+  <parameter id="qual_con_GALER_bar" constant="false" value="NaN"/>
+  <parameter id="qual_con_GALKR_bar" constant="false" value="NaN"/>
+  <parameter id="qual_con_GALM1R_bar" constant="false" value="NaN"/>
+  <parameter id="qual_con_GALM2R_bar" constant="false" value="NaN"/>
+  <parameter id="qual_con_GALTR_bar" constant="false" value="NaN"/>
+  <parameter id="qual_con_GLPA_bar" constant="false" value="NaN"/>
+  <parameter id="qual_con_GLPD_bar" constant="false" value="NaN"/>
+  <parameter id="qual_con_GLPK_bar" constant="false" value="NaN"/>
+  <parameter id="qual_con_LACZ_bar" constant="false" value="NaN"/>
   <parameter id="qual_con_MDHR_bar" constant="false" value="NaN"/>
   <parameter id="qual_con_NDH_bar" constant="false" value="NaN"/>
   <parameter id="qual_con_PFLA_bar" constant="false" value="NaN"/>
   <parameter id="qual_con_PFLC_bar" constant="false" value="NaN"/>
+  <parameter id="qual_con_PGKR_bar" constant="false" value="NaN"/>
   <parameter id="qual_con_PPSA_bar" constant="false" value="NaN"/>
   <parameter id="qual_con_PYKF_bar" constant="false" value="NaN"/>
+  <parameter id="qual_con_RBSK_bar" constant="false" value="NaN"/>
   <parameter id="qual_con_RPIBR_bar" constant="false" value="NaN"/>
   <parameter id="qual_con_SDHA1_bar" constant="false" value="NaN"/>
   <parameter id="qual_con_SDHA2_bar" constant="false" value="NaN"/>
   <parameter id="qual_con_SUCA_bar" constant="false" value="NaN"/>
   <parameter id="qual_con_FORUPR_bar" constant="false" value="NaN"/>
+  <parameter id="qual_con_GLCPTS_bar" constant="false" value="NaN"/>
+  <parameter id="qual_con_GLCUP_bar" constant="false" value="NaN"/>
+  <parameter id="qual_con_GLUPR_bar" constant="false" value="NaN"/>
+  <parameter id="qual_con_LACYR_bar" constant="false" value="NaN"/>
+  <parameter id="qual_con_RIBUPR_bar" constant="false" value="NaN"/>
+  <parameter id="qual_con_DCTAR_bar" constant="false" value="NaN"/>
+  <parameter id="qual_con_DCUBR_bar" constant="false" value="NaN"/>
   <parameter id="qual_con_DCUC_bar" constant="false" value="NaN"/>
 </listOfParameters>
 </model>
