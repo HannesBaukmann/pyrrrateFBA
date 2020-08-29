@@ -348,22 +348,22 @@ class Matrrrices:
         matrix_y_2, matrix_u_2 = self.construct_HcHe(model)
 
         # check whether the model contains a maintenance reaction; if so, pass index
-        main_index = None
+        main_rxn = None
         for index, rxn in enumerate(model.reactions_dict.keys()):
             if model.reactions_dict[rxn]['maintenanceScaling'] > 0:
-                main_index = index
-                matrix_y_3, matrix_u_3 = self.construct_Hm(model, main_index)
+                main_rxn = rxn
+                matrix_y_3, matrix_u_3 = self.construct_Hm(model, main_rxn)
                 break
         
         # stacking of the resulting matrices
         if n_quota > 0:
-            if main_index:
+            if main_rxn:
                 self.matrix_u = sp.csr_matrix(np.vstack((matrix_u_1, matrix_u_2, matrix_u_3)))
                 self.matrix_y = sp.csr_matrix(np.vstack((matrix_y_1, matrix_y_2, matrix_y_3)))
             else:
                 self.matrix_u = sp.csr_matrix(np.vstack((matrix_u_1, matrix_u_2)))
                 self.matrix_y = sp.csr_matrix(np.vstack((matrix_y_1, matrix_y_2)))
-        elif main_index:
+        elif main_rxn:
             self.matrix_u = sp.csr_matrix(np.vstack((matrix_u_2, matrix_u_3)))
             self.matrix_y = sp.csr_matrix(np.vstack((matrix_y_2, matrix_y_3)))
         else:
@@ -479,16 +479,17 @@ class Matrrrices:
 
         return -HE_matrix, HC_matrix
 
-    def construct_Hm(self, model, main_index):
+    def construct_Hm(self, model, main_rxn):
         """
         Constructs the H_M matrix (assumption: there is at most one maintenance reaction)
         """
 
-        main_scaling = model.reactions_dict[list(model.reactions_dict.keys())[main_index]]['maintenanceScaling']
+        main_scaling = model.reactions_dict[main_rxn]['maintenanceScaling']
+        main_index = self.u_vec.index(main_rxn)
         
         # matrix has entry -1 where the column corresponds to the maintenance reaction, zeros elsewhere
         matrix_HM_u = np.zeros(len(self.u_vec), dtype=float)
-        matrix_HM_u[self.u_vec.index(main_index)] = -1.0
+        matrix_HM_u[main_index] = -1.0
         
         # entries in matrix correspond to weights * maintenanceScaling
         matrix_HM_y = np.zeros(len(self.y_vec), dtype=float)
