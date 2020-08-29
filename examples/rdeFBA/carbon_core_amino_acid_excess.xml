@@ -134,161 +134,161 @@
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_Tc2" name="E_Tc2" compartment="cytosol" initialAmount="nan" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_Tc2" name="E_Tc2" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="150.0" ram:objectiveWeight="150.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_R2a" name="E_R2a" compartment="cytosol" initialAmount="nan" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_R2a" name="E_R2a" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="50.0" ram:objectiveWeight="50.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_R5a" name="E_R5a" compartment="cytosol" initialAmount="nan" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_R5a" name="E_R5a" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="50.0" ram:objectiveWeight="50.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_R5b" name="E_R5b" compartment="cytosol" initialAmount="nan" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_R5b" name="E_R5b" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="50.0" ram:objectiveWeight="50.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_R7" name="E_R7" compartment="cytosol" initialAmount="nan" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_R7" name="E_R7" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="100.0" ram:objectiveWeight="100.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_R8a" name="E_R8a" compartment="cytosol" initialAmount="nan" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_R8a" name="E_R8a" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="400.0" ram:objectiveWeight="400.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_Rres" name="E_Rres" compartment="cytosol" initialAmount="nan" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_Rres" name="E_Rres" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="50.0" ram:objectiveWeight="50.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_Tc1" name="E_Tc1" compartment="cytosol" initialAmount="nan" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_Tc1" name="E_Tc1" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="40.0" ram:objectiveWeight="40.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_Tf" name="E_Tf" compartment="cytosol" initialAmount="nan" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_Tf" name="E_Tf" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="40.0" ram:objectiveWeight="40.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_Th" name="E_Th" compartment="cytosol" initialAmount="nan" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_Th" name="E_Th" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="40.0" ram:objectiveWeight="40.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_R1" name="E_R1" compartment="cytosol" initialAmount="nan" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_R1" name="E_R1" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="50.0" ram:objectiveWeight="50.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_R2b" name="E_R2b" compartment="cytosol" initialAmount="nan" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_R2b" name="E_R2b" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="50.0" ram:objectiveWeight="50.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_R3" name="E_R3" compartment="cytosol" initialAmount="nan" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_R3" name="E_R3" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="200.0" ram:objectiveWeight="200.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_R4" name="E_R4" compartment="cytosol" initialAmount="nan" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_R4" name="E_R4" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="50.0" ram:objectiveWeight="50.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_R6" name="E_R6" compartment="cytosol" initialAmount="nan" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_R6" name="E_R6" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="100.0" ram:objectiveWeight="100.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_R8b" name="E_R8b" compartment="cytosol" initialAmount="nan" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_R8b" name="E_R8b" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="400.0" ram:objectiveWeight="400.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_Q" name="E_Q" compartment="cytosol" initialAmount="nan" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_Q" name="E_Q" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="50.0" ram:objectiveWeight="50.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="R" name="Ribosome" compartment="cytosol" initialAmount="nan" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="R" name="Ribosome" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="600.0" ram:objectiveWeight="600.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RPc1" name="Regulatory Protein c1" compartment="cytosol" initialAmount="nan" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RPc1" name="Regulatory Protein c1" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="30" ram:objectiveWeight="30" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RPO2" name="Regulatory Protein O2" compartment="cytosol" initialAmount="nan" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RPO2" name="Regulatory Protein O2" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="30" ram:objectiveWeight="30" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RPb" name="Regulatory Protein b" compartment="cytosol" initialAmount="nan" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RPb" name="Regulatory Protein b" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="30" ram:objectiveWeight="30" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RPh" name="Regulatory Protein h" compartment="cytosol" initialAmount="nan" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RPh" name="Regulatory Protein h" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="30" ram:objectiveWeight="30" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="Q" compartment="cytosol" initialAmount="nan" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="Q" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="75.0" ram:objectiveWeight="75.0" ram:biomassPercentage="0.35" ram:speciesType="quota"/>
@@ -1285,7 +1285,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_Tc2bar</ci>
       </apply>
     </math>
@@ -1303,7 +1303,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_R2abar</ci>
       </apply>
     </math>
@@ -1321,7 +1321,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_R7bar</ci>
       </apply>
     </math>
@@ -1339,7 +1339,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_R8abar</ci>
       </apply>
     </math>
@@ -1357,7 +1357,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_R5abar</ci>
       </apply>
     </math>
@@ -1375,7 +1375,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_R5bbar</ci>
       </apply>
     </math>
@@ -1393,7 +1393,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_Rresbar</ci>
       </apply>
     </math>
@@ -1411,7 +1411,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_RPO2bar</ci>
       </apply>
     </math>
@@ -1429,7 +1429,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_RPc1bar</ci>
       </apply>
     </math>
@@ -1447,7 +1447,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_RPhbar</ci>
       </apply>
     </math>
@@ -1465,7 +1465,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_RPbbar</ci>
       </apply>
     </math>
