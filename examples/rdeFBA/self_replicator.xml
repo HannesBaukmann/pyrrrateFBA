@@ -247,7 +247,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_T2bar</ci>
       </apply>
     </math>
@@ -265,7 +265,7 @@
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
-        <ci>nan</ci>
+        <ci>NaN</ci>
         <ci>qual_con_RPbar</ci>
       </apply>
     </math>
