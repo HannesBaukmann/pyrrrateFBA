@@ -22,7 +22,7 @@
     </ram:RAM>
   </annotation>
 </species>
-<species id="P" name="protein" compartment="cytosol" initialAmount="10.0" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="P" name="protein" compartment="cytosol" initialAmount="1.0" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="1.0" ram:objectiveWeight="1.0" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
@@ -34,7 +34,7 @@
 <reaction id="v_Y" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="1.0" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="0.5" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="P">
@@ -54,7 +54,8 @@
     </ram:RAM>
   </annotation>
   <listOfReactants>
-    <speciesReference species="X" stoichiometry="10.0" constant="true"/>  </listOfReactants>
+    <speciesReference species="X" stoichiometry="10.0" constant="true"/>
+  </listOfReactants>
   <listOfProducts>
     <speciesReference species="P" stoichiometry="1.0" constant="true"/>
   </listOfProducts>
