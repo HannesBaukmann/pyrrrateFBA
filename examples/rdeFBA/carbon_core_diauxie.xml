@@ -8,14 +8,14 @@
 </listOfCompartments>
 
 <listOfSpecies>
-<species id="Carbon1" name="Carbon1" compartment="extracellular" initialAmount="1000.0" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="Carbon1" name="Carbon1" compartment="extracellular" initialAmount="500.0" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="0.0" ram:objectiveWeight="0.0" ram:biomassPercentage="0.0" ram:speciesType="extracellular"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="Carbon2" name="Carbon2" compartment="extracellular" initialAmount="500.0" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="Carbon2" name="Carbon2" compartment="extracellular" initialAmount="1000.0" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="0.0" ram:objectiveWeight="0.0" ram:biomassPercentage="0.0" ram:speciesType="extracellular"/>
