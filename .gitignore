@@ -1,2 +1,16 @@
 DS_Store
 .idea
+.DS_Store
+doc/tex/optimization/.DS_Store
+doc/tex/optimization/milp/.DS_Store
+examples/.DS_Store
+examples/Covert2002/.DS_Store
+examples/Covert2002/.ipynb_checkpoints/
+examples/Covert2002/turnover_latex.txt
+examples/__pycache__/
+examples/deFBA/.DS_Store
+examples/hybrid_automata/.DS_Store
+examples/rdeFBA/.DS_Store
+optimization/.DS_Store
+optimization/__pycache__/
+__pycache__/
