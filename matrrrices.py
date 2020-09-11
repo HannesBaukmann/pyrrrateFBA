@@ -68,12 +68,15 @@ class Matrrrices:
                     x_vec.append(variable)
         # then interate through rules for boolean variables regulating fluxes
         for rule in model.rules_dict.keys():
-            try:
+            if 'indicators' in model.rules_dict[rule]:
+                for indicator in model.rules_dict[rule]['indicators']:
+                    if indicator not in x_vec:
+                        x_vec.append(indicator)
+            elif 'bool_parameter' in model.rules_dict[rule]:
                 parameter = model.rules_dict[rule]['bool_parameter']
                 if parameter not in x_vec:
                     x_vec.append(parameter)
-            except KeyError:
-                pass
+
 
         self.y_vec = y_vec
         self.u_vec = u_vec
@@ -242,89 +245,129 @@ class Matrrrices:
 
         event_index = 0
         for event in model.events_dict.keys():
-            # boolean variable depends on species amount
-            if model.events_dict[event]['variable'] in self.y_vec:
-                species_index = self.y_vec.index(model.events_dict[event]['variable'])
-                # Difference between geq and gt??
-                if model.events_dict[event]['relation'] == 'geq' or model.events_dict[event]['relation'] == 'gt':
-                    for i, affected_bool in enumerate(model.events_dict[event]['listOfAssignments']):
-                        matrix_B_y_1[event_index][species_index] = 1
-                        if model.events_dict[event]['listOfEffects'][i] == 0:
-                            matrix_B_x_1[event_index][self.x_vec.index(affected_bool)] = epsilon + u
-                            vec_B_1[event_index] = model.events_dict[event]['threshold'] + u
-                        elif model.events_dict[event]['listOfEffects'][i] == 1:
-                            matrix_B_x_1[event_index][self.x_vec.index(affected_bool)] = - (epsilon + u)
-                            vec_B_1[event_index] = model.events_dict[event]['threshold'] - epsilon
-                        event_index += 1
-                # Difference between leq and lt??
-                elif model.events_dict[event]['relation'] == 'leq' or model.events_dict[event]['relation'] == 'lt':
-                    for i, affected_bool in enumerate(model.events_dict[event]['listOfAssignments']):
-                        matrix_B_y_1[event_index][species_index] = -1
-                        if model.events_dict[event]['listOfEffects'][i] == 0:
-                            matrix_B_x_1[event_index][self.x_vec.index(affected_bool)] = - l
-                            vec_B_1[event_index] = -model.events_dict[event]['threshold'] - l
-                        elif model.events_dict[event]['listOfEffects'][i] == 1:
-                            matrix_B_x_1[event_index][self.x_vec.index(affected_bool)] = l
-                            vec_B_1[event_index] = -model.events_dict[event]['threshold']
-                        event_index += 1
+            variables = model.events_dict[event]['variable'].split(' + ')
+            # Difference between geq and gt??
+            if model.events_dict[event]['relation'] == 'geq' or model.events_dict[event]['relation'] == 'gt':
+                for i, affected_bool in enumerate(model.events_dict[event]['listOfAssignments']):
+                    for variable in variables:
+                        # boolean variable depends on species amount
+                        if variable in self.y_vec:
+                            species_index = self.y_vec.index(variable)
+                            matrix_B_y_1[event_index][species_index] = 1
+                            if model.events_dict[event]['listOfEffects'][i] == 0:
+                                matrix_B_x_1[event_index][self.x_vec.index(affected_bool)] = epsilon + u
+                                vec_B_1[event_index] = model.events_dict[event]['threshold'] + u
+                            elif model.events_dict[event]['listOfEffects'][i] == 1:
+                                matrix_B_x_1[event_index][self.x_vec.index(affected_bool)] = - (epsilon + u)
+                                vec_B_1[event_index] = model.events_dict[event]['threshold'] - epsilon
 
-            # boolean variable depends on flux
-            elif model.events_dict[event]['variable'] in self.u_vec:
-                flux_index = self.u_vec.index(model.events_dict[event]['variable'])
-                if model.events_dict[event]['relation'] == 'geq' or model.events_dict[event]['relation'] == 'gt':
-                    for i, affected_bool in enumerate(model.events_dict[event]['listOfAssignments']):
-                        matrix_B_u_1[event_index][flux_index] = 1
-                        if model.events_dict[event]['listOfEffects'][i] == 0:
-                            matrix_B_x_1[event_index][self.x_vec.index(affected_bool)] = epsilon + u
-                            vec_B_1[event_index] = model.events_dict[event]['threshold'] + u
-                        elif model.events_dict[event]['listOfEffects'][i] == 1:
-                            matrix_B_x_1[event_index][self.x_vec.index(affected_bool)] = - (epsilon + u)
-                            vec_B_1[event_index] = model.events_dict[event]['threshold'] - epsilon
-                        event_index += 1
-                elif model.events_dict[event]['relation'] == 'leq' or model.events_dict[event]['relation'] == 'lt':
-                    for i, affected_bool in enumerate(model.events_dict[event]['listOfAssignments']):
-                        matrix_B_u_1[event_index][flux_index] = -1
-                        if model.events_dict[event]['listOfEffects'][i] == 0:
-                            matrix_B_x_1[event_index][self.x_vec.index(affected_bool)] = - l
-                            vec_B_1[event_index] = -model.events_dict[event]['threshold'] - l
-                        elif model.events_dict[event]['listOfEffects'][i] == 1:
-                            matrix_B_x_1[event_index][self.x_vec.index(affected_bool)] = l
-                            vec_B_1[event_index] = -model.events_dict[event]['threshold']
-                        event_index += 1
+                        # boolean variable depends on flux
+                        elif variable in self.u_vec:
+                            flux_index = self.u_vec.index(variable)
+                            matrix_B_u_1[event_index][flux_index] = 1
+                            if model.events_dict[event]['listOfEffects'][i] == 0:
+                                matrix_B_x_1[event_index][self.x_vec.index(affected_bool)] = epsilon + u
+                                vec_B_1[event_index] = model.events_dict[event]['threshold'] + u
+                            elif model.events_dict[event]['listOfEffects'][i] == 1:
+                                matrix_B_x_1[event_index][self.x_vec.index(affected_bool)] = - (epsilon + u)
+                                vec_B_1[event_index] = model.events_dict[event]['threshold'] - epsilon
+                        else:
+                            print(variable + ' not defined as Species or Reaction!')
+                event_index += 1
+ 
+
+            # Difference between leq and lt??
+            elif model.events_dict[event]['relation'] == 'leq' or model.events_dict[event]['relation'] == 'lt':
+                for i, affected_bool in enumerate(model.events_dict[event]['listOfAssignments']):
+                    for variable in variables:
+                        # boolean variable depends on species amount
+                        if variable in self.y_vec:
+                            species_index = self.y_vec.index(variable)
+                            matrix_B_y_1[event_index][species_index] = -1
+                            if model.events_dict[event]['listOfEffects'][i] == 0:
+                                matrix_B_x_1[event_index][self.x_vec.index(affected_bool)] = - l
+                                vec_B_1[event_index] = -model.events_dict[event]['threshold'] - l
+                            elif model.events_dict[event]['listOfEffects'][i] == 1:
+                                matrix_B_x_1[event_index][self.x_vec.index(affected_bool)] = l
+                                vec_B_1[event_index] = -model.events_dict[event]['threshold']
+    
+                        # boolean variable depends on flux
+                        elif variable in self.u_vec:
+                            flux_index = self.u_vec.index(variable)
+                            matrix_B_u_1[event_index][flux_index] = -1
+                            if model.events_dict[event]['listOfEffects'][i] == 0:
+                                matrix_B_x_1[event_index][self.x_vec.index(affected_bool)] = - l
+                                vec_B_1[event_index] = -model.events_dict[event]['threshold'] - l
+                            elif model.events_dict[event]['listOfEffects'][i] == 1:
+                                matrix_B_x_1[event_index][self.x_vec.index(affected_bool)] = l
+                                vec_B_1[event_index] = -model.events_dict[event]['threshold']
+                        else:
+                            print(variable + ' not defined as Species or Reaction!')
+                event_index += 1
 
 
-        # Control of continuous dynamics by discrete states
+
         n_rules = 0
         for rule in model.rules_dict.keys():
-            try:
-                model.rules_dict[rule]['reactionID']
+            if 'reactionID' in model.rules_dict[rule]:
                 n_rules += 1
-            except KeyError:
-                pass
+            elif 'operator' in model.rules_dict[rule]:
+                n_rules += len(model.rules_dict[rule]['indicators']) + 1
+                                
 
         matrix_B_y_2 = np.zeros((n_rules, len(self.y_vec)), dtype=float)
         matrix_B_u_2 = np.zeros((n_rules, len(self.u_vec)), dtype=float)
         matrix_B_x_2 = np.zeros((n_rules, len(self.x_vec)), dtype=float)
         vec_B_2 = np.array(n_rules * [[0.0]])
+        
+        rule_row_index = 0
 
         for index, rule in enumerate(model.rules_dict):
-            try:
+            # Control of continuous dynamics by discrete states
+            if 'reactionID' in model.rules_dict[rule]:
                 rxn_index = self.u_vec.index(model.rules_dict[rule]['reactionID'])
                 par_index = self.x_vec.index(model.rules_dict[rule]['bool_parameter'])
                 if model.rules_dict[rule]['direction'] == 'lower':
-                    matrix_B_u_2[index][rxn_index] = -1
+                    matrix_B_u_2[rule_row_index][rxn_index] = -1
                     if np.isnan(model.rules_dict[rule]['threshold']):
-                        matrix_B_x_2[index][par_index] = l
+                        matrix_B_x_2[rule_row_index][par_index] = l
                     else:
-                        matrix_B_x_2[index][par_index] = float(model.rules_dict[rule]['threshold'])                        
+                        matrix_B_x_2[rule_row_index][par_index] = float(model.rules_dict[rule]['threshold'])                        
                 if model.rules_dict[rule]['direction'] == 'upper':
-                    matrix_B_u_2[index][rxn_index] = 1
+                    matrix_B_u_2[rule_row_index][rxn_index] = 1
                     if np.isnan(model.rules_dict[rule]['threshold']):
-                        matrix_B_x_2[index][par_index] = -u
+                        matrix_B_x_2[rule_row_index][par_index] = -u
                     else:
-                        matrix_B_x_2[index][par_index] = float(model.rules_dict[rule]['threshold'])
-            except KeyError:
-                pass
+                        matrix_B_x_2[rule_row_index][par_index] = float(model.rules_dict[rule]['threshold'])
+                rule_row_index += 1 # only requires one line, i.e. one inequality
+            # Boolean Algebra Rules
+            elif 'operator' in model.rules_dict[rule]:
+                variable_index = self.x_vec.index(rule)
+                # Discriminate AND and OR
+                if model.rules_dict[rule]['operator'] == 304: # AND
+                    # first inequality (the one containing all variables)
+                    matrix_B_x_2[rule_row_index][variable_index] = -1
+                    vec_B_2[rule_row_index] = len(model.rules_dict[rule]['indicators']) - 1
+                    for i in range(len(model.rules_dict[rule]['indicators'])):
+                        indicator_index = self.x_vec.index(model.rules_dict[rule]['indicators'][i])
+                        # positive in the first inequality containing all variables
+                        matrix_B_x_2[rule_row_index][indicator_index] = 1
+                        # negative in another (dependent variable is positive there)
+                        matrix_B_x_2[rule_row_index + i + 1][indicator_index] = -1
+                        matrix_B_x_2[rule_row_index + i + 1][variable_index] = 1
+                    rule_row_index += len(model.rules_dict[rule]['indicators']) + 1
+                elif model.rules_dict[rule]['operator'] == 306: # OR
+                    # first inequality (the one containing all variables)
+                    matrix_B_x_2[rule_row_index][variable_index] = 1
+                    for i in range(len(model.rules_dict[rule]['indicators'])):
+                        indicator_index = self.x_vec.index(model.rules_dict[rule]['indicators'][i])
+                        # negative in the first inequality containing all variables
+                        matrix_B_x_2[rule_row_index][indicator_index] = -1
+                        # positive in another (dependent variable is positive there)
+                        matrix_B_x_2[rule_row_index + i + 1][indicator_index] = 1
+                        matrix_B_x_2[rule_row_index + i + 1][variable_index] = -1
+                    rule_row_index += len(model.rules_dict[rule]['indicators']) + 1
+
 
         self.matrix_B_y = sp.csr_matrix(np.vstack((matrix_B_y_1, matrix_B_y_2)))
         self.matrix_B_u = sp.csr_matrix(np.vstack((matrix_B_u_1, matrix_B_u_2)))

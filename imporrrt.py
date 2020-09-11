@@ -31,8 +31,8 @@ def readSBML(filename, is_rdeFBA=True):
     reader = sbml.SBMLReader()
     document = reader.readSBML(filename)
     if document.isSetModel():  # Returns True if the Model object has been set.
-        # Initialize RAMParser object
-        parsed = RAMParser(document, is_rdeFBA)
+        # Initialize Parrrser object
+        parsed = Parrrser(document, is_rdeFBA)
         # return the model object
         from . import pyrrrateModel
         model = pyrrrateModel.Model(parsed)
@@ -42,7 +42,7 @@ def readSBML(filename, is_rdeFBA=True):
             'The SBML file contains no model. Maybe the filename is wrong or the file does not follow SBML standards. Please run the SBML validator at http://sbml.org/Facilities/Validator/index.jsp to find the problem.')
 
 
-class RAMParser:
+class Parrrser:
     """
     read all necessary information from a SBML file supporting the Resource Allocation Modelling (RAM) annotation standard and convert them
     to the matrix representation of a (r-)deFBA model. Minimimal informationen content is the stoichiometric matrix and the molecular weights of
@@ -225,24 +225,40 @@ class RAMParser:
                         print("Error: Variable " + v + " not defined!")
                 self.rules_dict[v] = {}
     
-                # import variables on right-hand side (don't import equalities of qual species)
-                if rule.getMath().getNumChildren() == 2:  # other cases??
-                    for i in range(rule.getMath().getNumChildren()):
-                        name = rule.getMath().getChild(i).getName()
-                        # if threshold is not defined (i.e., will be set to a default value later)
-                        if name == 'NaN':
-                            self.rules_dict[v]['threshold'] = np.nan
-                        else:
-                            # check whether parameter is defined
-                            try:
-                                par_id = sbmlmodel.getParameter(name).getId()
-                                if np.isnan(sbmlmodel.getParameter(par_id).getValue()):
-                                    self.rules_dict[v]['bool_parameter'] = par_id
-                                else:
-                                    thr = float(sbmlmodel.getParameter(par_id).getValue())
-                                    self.rules_dict[v]['threshold'] = thr
-                            except KeyError:
-                                print("Error: Variable " + par_id + " not defined!")
+                # import variables on right-hand side (don't import equalities of qual species for now)
+                if rule.getMath().getNumChildren() > 1:
+                    type_code = rule.getMath().getType()
+                    # type code for 'times' is 42
+                    if type_code == 42:
+                        for i in range(rule.getMath().getNumChildren()):
+                            name = rule.getMath().getChild(i).getName()
+                            # if threshold is not defined (i.e., will be set to a default value later)
+                            if name == 'NaN':
+                                self.rules_dict[v]['threshold'] = np.nan
+                            else:
+                                # check whether parameter is defined
+                                try:
+                                    par_id = sbmlmodel.getParameter(name).getId()
+                                    if np.isnan(sbmlmodel.getParameter(par_id).getValue()):
+                                        self.rules_dict[v]['bool_parameter'] = par_id
+                                    else:
+                                        thr = float(sbmlmodel.getParameter(par_id).getValue())
+                                        self.rules_dict[v]['threshold'] = thr
+                                except KeyError:
+                                    print("Error: Variable " + par_id + " not defined!")
+                    # if not 'times', it can only be boolean
+                    else:
+                        # enter type code
+                        self.rules_dict[v]['operator'] = type_code
+                        # get list of children (indicators)
+                        indicator_list = []
+                        for i in range(rule.getMath().getNumChildren()):
+                            indicator_name = rule.getMath().getChild(i).getName()
+                            # test whether indicator is defined as parameter
+                            par_id = sbmlmodel.getParameter(indicator_name).getId()
+                            indicator_list.append(par_id)
+                        self.rules_dict[v]['indicators'] = indicator_list
+
 
         # REACTIONS
         n_spec = len(self.extracellular_dict) + len(self.metabolites_dict) + len(self.macromolecules_dict)
