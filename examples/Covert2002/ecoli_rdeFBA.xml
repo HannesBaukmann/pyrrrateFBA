@@ -1212,13 +1212,6 @@
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_crp" name="Catabolite repressor protein" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
-  <annotation>
-    <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:species ram:molecularWeight="27.951" ram:objectiveWeight="27.951" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
-    </ram:RAM>
-  </annotation>
-</species>
 <species id="RP_dcuR" name="Dicarboxylate response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
@@ -1320,7 +1313,7 @@
 <species id="Quota_protein" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:species ram:molecularWeight="60.36085" ram:objectiveWeight="60.36085" ram:biomassPercentage="0.38329239038794827" ram:speciesType="quota"/>
+      <ram:species ram:molecularWeight="61.3591" ram:objectiveWeight="61.3591" ram:biomassPercentage="0.3836738857523882" ram:speciesType="quota"/>
     </ram:RAM>
   </annotation>
 </species>
@@ -3488,7 +3481,7 @@
     <speciesReference species="PI" stoichiometry="1096" constant="true"/>
   </listOfProducts>
 </reaction>
-<reaction id="T_FUMCR" reversible="false" fbc:lowerFluxBound="T_FUMCR_FBClower" fbc:upperFluxBound="T_FUMCR_FBCupper">
+<reaction id="T_FUMCR" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="2.18415" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
@@ -4958,27 +4951,6 @@
     <speciesReference species="PI" stoichiometry="668" constant="true"/>
   </listOfProducts>
 </reaction>
-<reaction id="T_crp" reversible="false" fbc:lowerFluxBound="T_crp_FBClower" fbc:upperFluxBound="T_crp_FBCupper">
-  <annotation>
-    <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="4.85714" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
-    </ram:RAM>
-  </annotation>
-  <fbc:geneProductAssociation fbc:id="E_R">
-    <fbc:geneProductRef fbc:geneProduct="E_R"/>
-  </fbc:geneProductAssociation>
-  <listOfReactants>
-    <speciesReference species="Z" stoichiometry="210" constant="true"/>
-    <speciesReference species="ATP" stoichiometry="630" constant="true"/>
-  </listOfReactants>
-  <listOfProducts>
-    <speciesReference species="RP_crp" stoichiometry="1.0" constant="true"/>
-    <speciesReference species="AMP" stoichiometry="210" constant="true"/>
-    <speciesReference species="PPI" stoichiometry="210" constant="true"/>
-    <speciesReference species="ADP" stoichiometry="420" constant="true"/>
-    <speciesReference species="PI" stoichiometry="420" constant="true"/>
-  </listOfProducts>
-</reaction>
 <reaction id="T_dcuR" reversible="false" fbc:lowerFluxBound="T_dcuR_FBClower" fbc:upperFluxBound="T_dcuR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
@@ -5297,22 +5269,22 @@
 <reaction id="T_Quota_protein" reversible="false">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:reaction ram:kcatForward="2.24917" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
+      <ram:reaction ram:kcatForward="2.21258" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
   <fbc:geneProductAssociation fbc:id="E_R">
     <fbc:geneProductRef fbc:geneProduct="E_R"/>
   </fbc:geneProductAssociation>
   <listOfReactants>
-    <speciesReference species="Z" stoichiometry="453.5" constant="true"/>
-    <speciesReference species="ATP" stoichiometry="1360.5" constant="true"/>
+    <speciesReference species="Z" stoichiometry="461.0" constant="true"/>
+    <speciesReference species="ATP" stoichiometry="1383.0" constant="true"/>
   </listOfReactants>
   <listOfProducts>
     <speciesReference species="Quota_protein" stoichiometry="1.0" constant="true"/>
-    <speciesReference species="AMP" stoichiometry="453.5" constant="true"/>
-    <speciesReference species="PPI" stoichiometry="453.5" constant="true"/>
-    <speciesReference species="ADP" stoichiometry="907.0" constant="true"/>
-    <speciesReference species="PI" stoichiometry="907.0" constant="true"/>
+    <speciesReference species="AMP" stoichiometry="461.0" constant="true"/>
+    <speciesReference species="PPI" stoichiometry="461.0" constant="true"/>
+    <speciesReference species="ADP" stoichiometry="922.0" constant="true"/>
+    <speciesReference species="PI" stoichiometry="922.0" constant="true"/>
   </listOfProducts>
 </reaction>
 <reaction id="R_Quota_rest" reversible="false">
@@ -5457,7 +5429,6 @@
   <fbc:geneProduct fbc:id="E_R" fbc:label="rplA, rplB, rplC, rplD, rplE, rplF, rplI, rplJ, rplK, rplL, rplM, rplN, rplO, rplP, rplQ, rplR, rplS, rplT, rplU, rplV, rplW, rplX, rplY, rpmA, rpmB, rpmC, rpmD, rpmE, rpmF, rpmG, rpmH, rpmI, rpmJ, rpsA, rpsB, rpsC, rpsD, rpsE, rpsF, rpsG, rpsH, rpsI, rpsJ, rpsK, rpsL, rpsM, rpsN, rpsO, rpsP, rpsQ, rpsR, rpsS, rpsT, rpsU_R" fbc:associatedSpecies="E_R"/>
   <fbc:geneProduct fbc:id="RP_arcA" fbc:label="arcA" fbc:associatedSpecies="RP_arcA"/>
   <fbc:geneProduct fbc:id="RP_cra" fbc:label="cra" fbc:associatedSpecies="RP_cra"/>
-  <fbc:geneProduct fbc:id="RP_crp" fbc:label="crp" fbc:associatedSpecies="RP_crp"/>
   <fbc:geneProduct fbc:id="RP_dcuR" fbc:label="dcuR" fbc:associatedSpecies="RP_dcuR"/>
   <fbc:geneProduct fbc:id="RP_dcuS" fbc:label="dcuS" fbc:associatedSpecies="RP_dcuS"/>
   <fbc:geneProduct fbc:id="RP_fadR" fbc:label="fadR" fbc:associatedSpecies="RP_fadR"/>
@@ -5476,7 +5447,6 @@
 <qual:listOfQualitativeSpecies>
   <qual:qualitativeSpecies qual:id="arcA_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="cra_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="crp_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="dcuR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="dcuS_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="fadR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
@@ -5503,7 +5473,6 @@
   <qual:qualitativeSpecies qual:id="FRDA_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="FUMAR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="FUMBR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
-  <qual:qualitativeSpecies qual:id="FUMCR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="GALER_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="GALKR_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
   <qual:qualitativeSpecies qual:id="GALM1R_bar" qual:maxLevel="1" qual:compartment="cytosol" qual:constant="false"/>
@@ -5769,24 +5738,6 @@
         <times/>
         <ci>epsilon_trans</ci>
         <ci>qual_con_FUMBR_bar</ci>
-      </apply>
-    </math>
-  </assignmentRule>
-  <assignmentRule variable="T_FUMCR_FBCupper">
-    <math xmlns="http://www.w3.org/1998/Math/MathML">
-      <apply>
-        <times/>
-        <ci>NaN</ci>
-        <ci>qual_con_FUMCR_bar</ci>
-      </apply>
-    </math>
-  </assignmentRule>
-  <assignmentRule variable="T_FUMCR_FBClower">
-    <math xmlns="http://www.w3.org/1998/Math/MathML">
-      <apply>
-        <times/>
-        <ci>epsilon_trans</ci>
-        <ci>qual_con_FUMCR_bar</ci>
       </apply>
     </math>
   </assignmentRule>
@@ -6366,24 +6317,6 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_crp_FBCupper">
-    <math xmlns="http://www.w3.org/1998/Math/MathML">
-      <apply>
-        <times/>
-        <ci>NaN</ci>
-        <ci>qual_con_crp_bar</ci>
-      </apply>
-    </math>
-  </assignmentRule>
-  <assignmentRule variable="T_crp_FBClower">
-    <math xmlns="http://www.w3.org/1998/Math/MathML">
-      <apply>
-        <times/>
-        <ci>epsilon_trans</ci>
-        <ci>qual_con_crp_bar</ci>
-      </apply>
-    </math>
-  </assignmentRule>
   <assignmentRule variable="T_dcuR_FBCupper">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
@@ -6646,11 +6579,6 @@
     <ci>qual_con_cra_bar</ci>
   </math>
 </assignmentRule>
-<assignmentRule variable="crp_bar">
-  <math xmlns="http://www.w3.org/1998/Math/MathML">
-    <ci>qual_con_crp_bar</ci>
-  </math>
-</assignmentRule>
 <assignmentRule variable="dcuR_bar">
   <math xmlns="http://www.w3.org/1998/Math/MathML">
     <ci>qual_con_dcuR_bar</ci>
@@ -6779,11 +6707,6 @@
 <assignmentRule variable="FUMBR_bar">
   <math xmlns="http://www.w3.org/1998/Math/MathML">
     <ci>qual_con_FUMBR_bar</ci>
-  </math>
-</assignmentRule>
-<assignmentRule variable="FUMCR_bar">
-  <math xmlns="http://www.w3.org/1998/Math/MathML">
-    <ci>qual_con_FUMCR_bar</ci>
   </math>
 </assignmentRule>
 <assignmentRule variable="GALER_bar">
@@ -7106,6 +7029,15 @@
     </apply>
   </math>
 </assignmentRule>
+<assignmentRule variable="qual_con_FRDA_bar">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <apply>
+      <or/>
+      <ci>FNR_aux</ci>
+      <ci>DcuR_aux</ci>
+    </apply>
+  </math>
+</assignmentRule>
 <assignmentRule variable="DFPP_aux">
   <math xmlns="http://www.w3.org/1998/Math/MathML">
     <apply>
@@ -7173,7 +7105,7 @@
   <listOfEventAssignments>
     <eventAssignment variable="Lcts_neg_aux">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <cn type="integer">1</cn>
+        <cn type="integer">0</cn>
       </math>
     </eventAssignment>
   </listOfEventAssignments>
@@ -8587,9 +8519,10 @@
 </listOfEvents>
 
 <listOfParameters>
-  <parameter id="epsilon_trans" constant="true" value="1e-06"/>
-  <parameter id="theta_xt" constant="true" value="0.0001"/>
+  <parameter id="epsilon_trans" constant="true" value="0.001"/>
+  <parameter id="theta_xt" constant="true" value="1e-05"/>
   <parameter id="theta_RP" constant="true" value="1e-06"/>
+  <parameter id="theta_v" constant="true" value="1e-05"/>
   <parameter id="LACUP_FBCupper" value="NaN" constant="false" />
   <parameter id="LACUP_FBClower" value="NaN" constant="false" />
   <parameter id="T_ACEA_FBCupper" value="NaN" constant="false" />
@@ -8618,8 +8551,6 @@
   <parameter id="T_FUMAR_FBClower" value="NaN" constant="false" />
   <parameter id="T_FUMBR_FBCupper" value="NaN" constant="false" />
   <parameter id="T_FUMBR_FBClower" value="NaN" constant="false" />
-  <parameter id="T_FUMCR_FBCupper" value="NaN" constant="false" />
-  <parameter id="T_FUMCR_FBClower" value="NaN" constant="false" />
   <parameter id="T_GALER_FBCupper" value="NaN" constant="false" />
   <parameter id="T_GALER_FBClower" value="NaN" constant="false" />
   <parameter id="T_GALKR_FBCupper" value="NaN" constant="false" />
@@ -8684,8 +8615,6 @@
   <parameter id="T_arcA_FBClower" value="NaN" constant="false" />
   <parameter id="T_cra_FBCupper" value="NaN" constant="false" />
   <parameter id="T_cra_FBClower" value="NaN" constant="false" />
-  <parameter id="T_crp_FBCupper" value="NaN" constant="false" />
-  <parameter id="T_crp_FBClower" value="NaN" constant="false" />
   <parameter id="T_dcuR_FBCupper" value="NaN" constant="false" />
   <parameter id="T_dcuR_FBClower" value="NaN" constant="false" />
   <parameter id="T_dcuS_FBCupper" value="NaN" constant="false" />
@@ -8712,57 +8641,86 @@
   <parameter id="T_rbsR_FBClower" value="NaN" constant="false" />
   <parameter id="T_rpiR_FBCupper" value="NaN" constant="false" />
   <parameter id="T_rpiR_FBClower" value="NaN" constant="false" />
-  <parameter id="FNR_aux" value="NaN" constant="false" />
-  <parameter id="qual_con_arcA_bar" value="NaN" constant="false" />
-  <parameter id="Cra_neg" value="NaN" constant="false" />
-  <parameter id="Rib_neg_aux" value="NaN" constant="false" />
-  <parameter id="qual_con_glpR_bar" value="NaN" constant="false" />
-  <parameter id="Glc_aux" value="NaN" constant="false" />
-  <parameter id="carbon" value="NaN" constant="false" />
-  <parameter id="qual_con_dcuS_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_fnr_bar" value="NaN" constant="false" />
-  <parameter id="IclR_neg" value="NaN" constant="false" />
-  <parameter id="ArcA_aux" value="NaN" constant="false" />
-  <parameter id="DcuR_aux" value="NaN" constant="false" />
-  <parameter id="qual_con_PPSA_bar" value="NaN" constant="false" />
-  <parameter id="GalRS_neg" value="NaN" constant="false" />
-  <parameter id="PYR_neg_aux3" value="NaN" constant="false" />
-  <parameter id="Mlc_neg" value="NaN" constant="false" />
-  <parameter id="qual_con_rbsR_bar" value="NaN" constant="false" />
-  <parameter id="FDP_aux" value="NaN" constant="false" />
-  <parameter id="GlpR_neg" value="NaN" constant="false" />
-  <parameter id="qual_con_lacI_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_SUCA_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_PYKF_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_ACEE_bar" value="NaN" constant="false" />
-  <parameter id="FNR_neg" value="NaN" constant="false" />
-  <parameter id="Glc_neg" value="NaN" constant="false" />
-  <parameter id="qual_con_RPIBR_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_rpiR_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_FDNG_bar" value="NaN" constant="false" />
-  <parameter id="PYR_aux1" value="NaN" constant="false" />
-  <parameter id="qual_con_galS_bar" value="NaN" constant="false" />
-  <parameter id="LacPyr_neg_aux" value="NaN" constant="false" />
   <parameter id="Lcts_neg_aux" value="NaN" constant="false" />
-  <parameter id="RbsR_neg" value="NaN" constant="false" />
-  <parameter id="SuccEth_neg_aux" value="NaN" constant="false" />
-  <parameter id="qual_con_galR_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_NDH_bar" value="NaN" constant="false" />
-  <parameter id="ArcA_neg" value="NaN" constant="false" />
+  <parameter id="carbon" value="NaN" constant="false" />
+  <parameter id="qual_con_PYKF_bar" value="NaN" constant="false" />
+  <parameter id="SuccEth_neg" value="NaN" constant="false" />
+  <parameter id="GG_aux" value="NaN" constant="false" />
+  <parameter id="DcuR_aux" value="NaN" constant="false" />
   <parameter id="qual_con_ACEA_bar" value="NaN" constant="false" />
-  <parameter id="Arca_GlpR_neg" value="NaN" constant="false" />
-  <parameter id="F6P_neg" value="NaN" constant="false" />
-  <parameter id="qual_con_iclR_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_FUMBR_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_dcuR_bar" value="NaN" constant="false" />
-  <parameter id="LacI_neg" value="NaN" constant="false" />
-  <parameter id="AC_neg" value="NaN" constant="false" />
-  <parameter id="DLD1R_aux" value="NaN" constant="false" />
-  <parameter id="Gl_neg_aux" value="NaN" constant="false" />
-  <parameter id="carbon_neg" value="NaN" constant="false" />
-  <parameter id="O2_neg" value="NaN" constant="false" />
-  <parameter id="qual_con_MDHR_bar" value="NaN" constant="false" />
+  <parameter id="Glc_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_CYDA_bar" value="NaN" constant="false" />
+  <parameter id="Glcpts_aux2" value="NaN" constant="false" />
+  <parameter id="qual_con_ACEE_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_GLCPTS_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_galR_bar" value="NaN" constant="false" />
+  <parameter id="Lcts_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_SUCA_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_NDH_bar" value="NaN" constant="false" />
+  <parameter id="GLC_aux" value="NaN" constant="false" />
+  <parameter id="qual_con_DCUBR_bar" value="NaN" constant="false" />
+  <parameter id="IclR_neg" value="NaN" constant="false" />
+  <parameter id="FDP_aux" value="NaN" constant="false" />
+  <parameter id="Rib_aux" value="NaN" constant="false" />
+  <parameter id="qual_con_galS_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_rbsR_bar" value="NaN" constant="false" />
+  <parameter id="Cra_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_GLPD_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_ACS_bar" value="NaN" constant="false" />
+  <parameter id="FNR_neg" value="NaN" constant="false" />
+  <parameter id="LacPyr_neg" value="NaN" constant="false" />
+  <parameter id="GL_neg" value="NaN" constant="false" />
   <parameter id="qual_con_mlc_bar" value="NaN" constant="false" />
+  <parameter id="Glc_aux" value="NaN" constant="false" />
+  <parameter id="qual_con_MDHR_bar" value="NaN" constant="false" />
+  <parameter id="LacPyr_neg_aux" value="NaN" constant="false" />
+  <parameter id="qual_con_ACEB_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_iclR_bar" value="NaN" constant="false" />
+  <parameter id="LacI_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_fadR_bar" value="NaN" constant="false" />
+  <parameter id="DLD1R_aux" value="NaN" constant="false" />
+  <parameter id="CFSS_aux" value="NaN" constant="false" />
+  <parameter id="qual_con_dcuS_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_PPSA_bar" value="NaN" constant="false" />
+  <parameter id="Rib_neg" value="NaN" constant="false" />
+  <parameter id="GalRS_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_lacI_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_cra_bar" value="NaN" constant="false" />
+  <parameter id="GlpR_neg" value="NaN" constant="false" />
+  <parameter id="Gl_neg_aux" value="NaN" constant="false" />
+  <parameter id="qual_con_arcA_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_pdhR_bar" value="NaN" constant="false" />
+  <parameter id="Lcts_aux" value="NaN" constant="false" />
+  <parameter id="AC_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_FDNG_bar" value="NaN" constant="false" />
+  <parameter id="Gal_aux" value="NaN" constant="false" />
+  <parameter id="ArcA_neg" value="NaN" constant="false" />
+  <parameter id="RbsR_neg" value="NaN" constant="false" />
+  <parameter id="carbon_neg" value="NaN" constant="false" />
+  <parameter id="DFPP_aux" value="NaN" constant="false" />
+  <parameter id="FNR_aux" value="NaN" constant="false" />
+  <parameter id="qual_con_dcuR_bar" value="NaN" constant="false" />
+  <parameter id="SuccEth_neg_aux" value="NaN" constant="false" />
+  <parameter id="Glcpts_aux1" value="NaN" constant="false" />
+  <parameter id="qual_con_fnr_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_RPIBR_bar" value="NaN" constant="false" />
+  <parameter id="Rib_neg_aux" value="NaN" constant="false" />
+  <parameter id="PYR_neg_aux3" value="NaN" constant="false" />
+  <parameter id="Arca_GlpR_neg" value="NaN" constant="false" />
+  <parameter id="PYR_aux1" value="NaN" constant="false" />
+  <parameter id="O2_neg" value="NaN" constant="false" />
+  <parameter id="Mlc_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_DCTAR_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_FUMBR_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_ADHER_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_rpiR_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_GLPA_bar" value="NaN" constant="false" />
+  <parameter id="F6P_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_FRDA_bar" value="NaN" constant="false" />
+  <parameter id="ArcA_aux" value="NaN" constant="false" />
+  <parameter id="O2_Cra_neg" value="NaN" constant="false" />
+  <parameter id="Arca_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_glpR_bar" value="NaN" constant="false" />
 </listOfParameters>
 </model>
 </sbml>
