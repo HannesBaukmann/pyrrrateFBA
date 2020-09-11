@@ -1198,105 +1198,105 @@
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_arcA" name="Aerobic/Anaerobic response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_ArcA" name="Aerobic/Anaerobic response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="31.677799999999998" ram:objectiveWeight="31.677799999999998" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_cra" name="Catabolite activator protein" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_Cra" name="Catabolite activator protein" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="44.4554" ram:objectiveWeight="44.4554" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_dcuR" name="Dicarboxylate response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_DcuR" name="Dicarboxylate response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="31.8109" ram:objectiveWeight="31.8109" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_dcuS" name="Dicarboxylate response sensor" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_DcuS" name="Dicarboxylate response sensor" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="72.27329999999999" ram:objectiveWeight="72.27329999999999" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_fadR" name="Fatty acid/Acetate response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_FadR" name="Fatty acid/Acetate response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="31.8109" ram:objectiveWeight="31.8109" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_fnr" name="Aerobic/Anaerobic response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_FNR" name="Aerobic/Anaerobic response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="33.275" ram:objectiveWeight="33.275" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_galR" name="Galactose operon repressor" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_GalR" name="Galactose operon repressor" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="45.6533" ram:objectiveWeight="45.6533" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_galS" name="Galactose operon repressor" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_GalS" name="Galactose operon repressor" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="46.0526" ram:objectiveWeight="46.0526" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_glpR" name="Glycerol response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_GlpR" name="Glycerol response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="33.541199999999996" ram:objectiveWeight="33.541199999999996" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_iclR" name="Fatty acid/Acetate response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_IclR" name="Fatty acid/Acetate response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="36.4694" ram:objectiveWeight="36.4694" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_lacI" name="Lactose operon repressor" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_LacI" name="Lactose operon repressor" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="47.916" ram:objectiveWeight="47.916" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_mlc" name="Glucose response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_Mlc" name="Glucose response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="54.038599999999995" ram:objectiveWeight="54.038599999999995" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_pdhR" name="Pyruvate response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_PdhR" name="Pyruvate response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="33.8074" ram:objectiveWeight="33.8074" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_rbsR" name="Ribose response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_RbsR" name="Ribose response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="43.923" ram:objectiveWeight="43.923" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_rpiR" name="Ribose response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_RpiR" name="Ribose response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="39.3976" ram:objectiveWeight="39.3976" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
@@ -2214,7 +2214,7 @@
     <speciesReference species="LAC" stoichiometry="1.0" constant="true"/>
   </listOfProducts>
 </reaction>
-<reaction id="LACUP" reversible="false" fbc:lowerFluxBound="LACUP_FBClower" fbc:upperFluxBound="LACUP_FBCupper">
+<reaction id="LACUP" reversible="false" fbc:lowerFluxBound="T_LACUP_FBClower" fbc:upperFluxBound="T_LACUP_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="0.0" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
@@ -4909,7 +4909,7 @@
     <speciesReference species="PI" stoichiometry="922" constant="true"/>
   </listOfProducts>
 </reaction>
-<reaction id="T_arcA" reversible="false" fbc:lowerFluxBound="T_arcA_FBClower" fbc:upperFluxBound="T_arcA_FBCupper">
+<reaction id="T_ArcA" reversible="false" fbc:lowerFluxBound="T_ArcA_FBClower" fbc:upperFluxBound="T_ArcA_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="4.28571" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
@@ -4923,14 +4923,14 @@
     <speciesReference species="ATP" stoichiometry="714" constant="true"/>
   </listOfReactants>
   <listOfProducts>
-    <speciesReference species="RP_arcA" stoichiometry="1.0" constant="true"/>
+    <speciesReference species="RP_ArcA" stoichiometry="1.0" constant="true"/>
     <speciesReference species="AMP" stoichiometry="238" constant="true"/>
     <speciesReference species="PPI" stoichiometry="238" constant="true"/>
     <speciesReference species="ADP" stoichiometry="476" constant="true"/>
     <speciesReference species="PI" stoichiometry="476" constant="true"/>
   </listOfProducts>
 </reaction>
-<reaction id="T_cra" reversible="false" fbc:lowerFluxBound="T_cra_FBClower" fbc:upperFluxBound="T_cra_FBCupper">
+<reaction id="T_Cra" reversible="false" fbc:lowerFluxBound="T_Cra_FBClower" fbc:upperFluxBound="T_Cra_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="3.05389" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
@@ -4944,14 +4944,14 @@
     <speciesReference species="ATP" stoichiometry="1002" constant="true"/>
   </listOfReactants>
   <listOfProducts>
-    <speciesReference species="RP_cra" stoichiometry="1.0" constant="true"/>
+    <speciesReference species="RP_Cra" stoichiometry="1.0" constant="true"/>
     <speciesReference species="AMP" stoichiometry="334" constant="true"/>
     <speciesReference species="PPI" stoichiometry="334" constant="true"/>
     <speciesReference species="ADP" stoichiometry="668" constant="true"/>
     <speciesReference species="PI" stoichiometry="668" constant="true"/>
   </listOfProducts>
 </reaction>
-<reaction id="T_dcuR" reversible="false" fbc:lowerFluxBound="T_dcuR_FBClower" fbc:upperFluxBound="T_dcuR_FBCupper">
+<reaction id="T_DcuR" reversible="false" fbc:lowerFluxBound="T_DcuR_FBClower" fbc:upperFluxBound="T_DcuR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="4.26778" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
@@ -4965,14 +4965,14 @@
     <speciesReference species="ATP" stoichiometry="717" constant="true"/>
   </listOfReactants>
   <listOfProducts>
-    <speciesReference species="RP_dcuR" stoichiometry="1.0" constant="true"/>
+    <speciesReference species="RP_DcuR" stoichiometry="1.0" constant="true"/>
     <speciesReference species="AMP" stoichiometry="239" constant="true"/>
     <speciesReference species="PPI" stoichiometry="239" constant="true"/>
     <speciesReference species="ADP" stoichiometry="478" constant="true"/>
     <speciesReference species="PI" stoichiometry="478" constant="true"/>
   </listOfProducts>
 </reaction>
-<reaction id="T_dcuS" reversible="false" fbc:lowerFluxBound="T_dcuS_FBClower" fbc:upperFluxBound="T_dcuS_FBCupper">
+<reaction id="T_DcuS" reversible="false" fbc:lowerFluxBound="T_DcuS_FBClower" fbc:upperFluxBound="T_DcuS_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="1.87845" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
@@ -4986,14 +4986,14 @@
     <speciesReference species="ATP" stoichiometry="1629" constant="true"/>
   </listOfReactants>
   <listOfProducts>
-    <speciesReference species="RP_dcuS" stoichiometry="1.0" constant="true"/>
+    <speciesReference species="RP_DcuS" stoichiometry="1.0" constant="true"/>
     <speciesReference species="AMP" stoichiometry="543" constant="true"/>
     <speciesReference species="PPI" stoichiometry="543" constant="true"/>
     <speciesReference species="ADP" stoichiometry="1086" constant="true"/>
     <speciesReference species="PI" stoichiometry="1086" constant="true"/>
   </listOfProducts>
 </reaction>
-<reaction id="T_fadR" reversible="false" fbc:lowerFluxBound="T_fadR_FBClower" fbc:upperFluxBound="T_fadR_FBCupper">
+<reaction id="T_FadR" reversible="false" fbc:lowerFluxBound="T_FadR_FBClower" fbc:upperFluxBound="T_FadR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="4.26778" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
@@ -5007,14 +5007,14 @@
     <speciesReference species="ATP" stoichiometry="717" constant="true"/>
   </listOfReactants>
   <listOfProducts>
-    <speciesReference species="RP_fadR" stoichiometry="1.0" constant="true"/>
+    <speciesReference species="RP_FadR" stoichiometry="1.0" constant="true"/>
     <speciesReference species="AMP" stoichiometry="239" constant="true"/>
     <speciesReference species="PPI" stoichiometry="239" constant="true"/>
     <speciesReference species="ADP" stoichiometry="478" constant="true"/>
     <speciesReference species="PI" stoichiometry="478" constant="true"/>
   </listOfProducts>
 </reaction>
-<reaction id="T_fnr" reversible="false" fbc:lowerFluxBound="T_fnr_FBClower" fbc:upperFluxBound="T_fnr_FBCupper">
+<reaction id="T_FNR" reversible="false" fbc:lowerFluxBound="T_FNR_FBClower" fbc:upperFluxBound="T_FNR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="4.08" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
@@ -5028,14 +5028,14 @@
     <speciesReference species="ATP" stoichiometry="750" constant="true"/>
   </listOfReactants>
   <listOfProducts>
-    <speciesReference species="RP_fnr" stoichiometry="1.0" constant="true"/>
+    <speciesReference species="RP_FNR" stoichiometry="1.0" constant="true"/>
     <speciesReference species="AMP" stoichiometry="250" constant="true"/>
     <speciesReference species="PPI" stoichiometry="250" constant="true"/>
     <speciesReference species="ADP" stoichiometry="500" constant="true"/>
     <speciesReference species="PI" stoichiometry="500" constant="true"/>
   </listOfProducts>
 </reaction>
-<reaction id="T_galR" reversible="false" fbc:lowerFluxBound="T_galR_FBClower" fbc:upperFluxBound="T_galR_FBCupper">
+<reaction id="T_GalR" reversible="false" fbc:lowerFluxBound="T_GalR_FBClower" fbc:upperFluxBound="T_GalR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="2.97376" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
@@ -5049,14 +5049,14 @@
     <speciesReference species="ATP" stoichiometry="1029" constant="true"/>
   </listOfReactants>
   <listOfProducts>
-    <speciesReference species="RP_galR" stoichiometry="1.0" constant="true"/>
+    <speciesReference species="RP_GalR" stoichiometry="1.0" constant="true"/>
     <speciesReference species="AMP" stoichiometry="343" constant="true"/>
     <speciesReference species="PPI" stoichiometry="343" constant="true"/>
     <speciesReference species="ADP" stoichiometry="686" constant="true"/>
     <speciesReference species="PI" stoichiometry="686" constant="true"/>
   </listOfProducts>
 </reaction>
-<reaction id="T_galS" reversible="false" fbc:lowerFluxBound="T_galS_FBClower" fbc:upperFluxBound="T_galS_FBCupper">
+<reaction id="T_GalS" reversible="false" fbc:lowerFluxBound="T_GalS_FBClower" fbc:upperFluxBound="T_GalS_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="2.94798" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
@@ -5070,14 +5070,14 @@
     <speciesReference species="ATP" stoichiometry="1038" constant="true"/>
   </listOfReactants>
   <listOfProducts>
-    <speciesReference species="RP_galS" stoichiometry="1.0" constant="true"/>
+    <speciesReference species="RP_GalS" stoichiometry="1.0" constant="true"/>
     <speciesReference species="AMP" stoichiometry="346" constant="true"/>
     <speciesReference species="PPI" stoichiometry="346" constant="true"/>
     <speciesReference species="ADP" stoichiometry="692" constant="true"/>
     <speciesReference species="PI" stoichiometry="692" constant="true"/>
   </listOfProducts>
 </reaction>
-<reaction id="T_glpR" reversible="false" fbc:lowerFluxBound="T_glpR_FBClower" fbc:upperFluxBound="T_glpR_FBCupper">
+<reaction id="T_GlpR" reversible="false" fbc:lowerFluxBound="T_GlpR_FBClower" fbc:upperFluxBound="T_GlpR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="4.04762" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
@@ -5091,14 +5091,14 @@
     <speciesReference species="ATP" stoichiometry="756" constant="true"/>
   </listOfReactants>
   <listOfProducts>
-    <speciesReference species="RP_glpR" stoichiometry="1.0" constant="true"/>
+    <speciesReference species="RP_GlpR" stoichiometry="1.0" constant="true"/>
     <speciesReference species="AMP" stoichiometry="252" constant="true"/>
     <speciesReference species="PPI" stoichiometry="252" constant="true"/>
     <speciesReference species="ADP" stoichiometry="504" constant="true"/>
     <speciesReference species="PI" stoichiometry="504" constant="true"/>
   </listOfProducts>
 </reaction>
-<reaction id="T_iclR" reversible="false" fbc:lowerFluxBound="T_iclR_FBClower" fbc:upperFluxBound="T_iclR_FBCupper">
+<reaction id="T_IclR" reversible="false" fbc:lowerFluxBound="T_IclR_FBClower" fbc:upperFluxBound="T_IclR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="3.72263" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
@@ -5112,14 +5112,14 @@
     <speciesReference species="ATP" stoichiometry="822" constant="true"/>
   </listOfReactants>
   <listOfProducts>
-    <speciesReference species="RP_iclR" stoichiometry="1.0" constant="true"/>
+    <speciesReference species="RP_IclR" stoichiometry="1.0" constant="true"/>
     <speciesReference species="AMP" stoichiometry="274" constant="true"/>
     <speciesReference species="PPI" stoichiometry="274" constant="true"/>
     <speciesReference species="ADP" stoichiometry="548" constant="true"/>
     <speciesReference species="PI" stoichiometry="548" constant="true"/>
   </listOfProducts>
 </reaction>
-<reaction id="T_lacI" reversible="false" fbc:lowerFluxBound="T_lacI_FBClower" fbc:upperFluxBound="T_lacI_FBCupper">
+<reaction id="T_LacI" reversible="false" fbc:lowerFluxBound="T_LacI_FBClower" fbc:upperFluxBound="T_LacI_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="2.83333" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
@@ -5133,14 +5133,14 @@
     <speciesReference species="ATP" stoichiometry="1080" constant="true"/>
   </listOfReactants>
   <listOfProducts>
-    <speciesReference species="RP_lacI" stoichiometry="1.0" constant="true"/>
+    <speciesReference species="RP_LacI" stoichiometry="1.0" constant="true"/>
     <speciesReference species="AMP" stoichiometry="360" constant="true"/>
     <speciesReference species="PPI" stoichiometry="360" constant="true"/>
     <speciesReference species="ADP" stoichiometry="720" constant="true"/>
     <speciesReference species="PI" stoichiometry="720" constant="true"/>
   </listOfProducts>
 </reaction>
-<reaction id="T_mlc" reversible="false" fbc:lowerFluxBound="T_mlc_FBClower" fbc:upperFluxBound="T_mlc_FBCupper">
+<reaction id="T_Mlc" reversible="false" fbc:lowerFluxBound="T_Mlc_FBClower" fbc:upperFluxBound="T_Mlc_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="2.51232" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
@@ -5154,14 +5154,14 @@
     <speciesReference species="ATP" stoichiometry="1218" constant="true"/>
   </listOfReactants>
   <listOfProducts>
-    <speciesReference species="RP_mlc" stoichiometry="1.0" constant="true"/>
+    <speciesReference species="RP_Mlc" stoichiometry="1.0" constant="true"/>
     <speciesReference species="AMP" stoichiometry="406" constant="true"/>
     <speciesReference species="PPI" stoichiometry="406" constant="true"/>
     <speciesReference species="ADP" stoichiometry="812" constant="true"/>
     <speciesReference species="PI" stoichiometry="812" constant="true"/>
   </listOfProducts>
 </reaction>
-<reaction id="T_pdhR" reversible="false" fbc:lowerFluxBound="T_pdhR_FBClower" fbc:upperFluxBound="T_pdhR_FBCupper">
+<reaction id="T_PdhR" reversible="false" fbc:lowerFluxBound="T_PdhR_FBClower" fbc:upperFluxBound="T_PdhR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="4.01575" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
@@ -5175,14 +5175,14 @@
     <speciesReference species="ATP" stoichiometry="762" constant="true"/>
   </listOfReactants>
   <listOfProducts>
-    <speciesReference species="RP_pdhR" stoichiometry="1.0" constant="true"/>
+    <speciesReference species="RP_PdhR" stoichiometry="1.0" constant="true"/>
     <speciesReference species="AMP" stoichiometry="254" constant="true"/>
     <speciesReference species="PPI" stoichiometry="254" constant="true"/>
     <speciesReference species="ADP" stoichiometry="508" constant="true"/>
     <speciesReference species="PI" stoichiometry="508" constant="true"/>
   </listOfProducts>
 </reaction>
-<reaction id="T_rbsR" reversible="false" fbc:lowerFluxBound="T_rbsR_FBClower" fbc:upperFluxBound="T_rbsR_FBCupper">
+<reaction id="T_RbsR" reversible="false" fbc:lowerFluxBound="T_RbsR_FBClower" fbc:upperFluxBound="T_RbsR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="3.09091" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
@@ -5196,14 +5196,14 @@
     <speciesReference species="ATP" stoichiometry="990" constant="true"/>
   </listOfReactants>
   <listOfProducts>
-    <speciesReference species="RP_rbsR" stoichiometry="1.0" constant="true"/>
+    <speciesReference species="RP_RbsR" stoichiometry="1.0" constant="true"/>
     <speciesReference species="AMP" stoichiometry="330" constant="true"/>
     <speciesReference species="PPI" stoichiometry="330" constant="true"/>
     <speciesReference species="ADP" stoichiometry="660" constant="true"/>
     <speciesReference species="PI" stoichiometry="660" constant="true"/>
   </listOfProducts>
 </reaction>
-<reaction id="T_rpiR" reversible="false" fbc:lowerFluxBound="T_rpiR_FBClower" fbc:upperFluxBound="T_rpiR_FBCupper">
+<reaction id="T_RpiR" reversible="false" fbc:lowerFluxBound="T_RpiR_FBClower" fbc:upperFluxBound="T_RpiR_FBCupper">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:reaction ram:kcatForward="3.44595" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
@@ -5217,7 +5217,7 @@
     <speciesReference species="ATP" stoichiometry="888" constant="true"/>
   </listOfReactants>
   <listOfProducts>
-    <speciesReference species="RP_rpiR" stoichiometry="1.0" constant="true"/>
+    <speciesReference species="RP_RpiR" stoichiometry="1.0" constant="true"/>
     <speciesReference species="AMP" stoichiometry="296" constant="true"/>
     <speciesReference species="PPI" stoichiometry="296" constant="true"/>
     <speciesReference species="ADP" stoichiometry="592" constant="true"/>
@@ -5427,21 +5427,21 @@
   <fbc:geneProduct fbc:id="E_DCUC" fbc:label="dcuC_DCUC" fbc:associatedSpecies="E_DCUC"/>
   <fbc:geneProduct fbc:id="E_ASPT" fbc:label="aspA_ASPT" fbc:associatedSpecies="E_ASPT"/>
   <fbc:geneProduct fbc:id="E_R" fbc:label="rplA, rplB, rplC, rplD, rplE, rplF, rplI, rplJ, rplK, rplL, rplM, rplN, rplO, rplP, rplQ, rplR, rplS, rplT, rplU, rplV, rplW, rplX, rplY, rpmA, rpmB, rpmC, rpmD, rpmE, rpmF, rpmG, rpmH, rpmI, rpmJ, rpsA, rpsB, rpsC, rpsD, rpsE, rpsF, rpsG, rpsH, rpsI, rpsJ, rpsK, rpsL, rpsM, rpsN, rpsO, rpsP, rpsQ, rpsR, rpsS, rpsT, rpsU_R" fbc:associatedSpecies="E_R"/>
-  <fbc:geneProduct fbc:id="RP_arcA" fbc:label="arcA" fbc:associatedSpecies="RP_arcA"/>
-  <fbc:geneProduct fbc:id="RP_cra" fbc:label="cra" fbc:associatedSpecies="RP_cra"/>
-  <fbc:geneProduct fbc:id="RP_dcuR" fbc:label="dcuR" fbc:associatedSpecies="RP_dcuR"/>
-  <fbc:geneProduct fbc:id="RP_dcuS" fbc:label="dcuS" fbc:associatedSpecies="RP_dcuS"/>
-  <fbc:geneProduct fbc:id="RP_fadR" fbc:label="fadR" fbc:associatedSpecies="RP_fadR"/>
-  <fbc:geneProduct fbc:id="RP_fnr" fbc:label="fnr" fbc:associatedSpecies="RP_fnr"/>
-  <fbc:geneProduct fbc:id="RP_galR" fbc:label="galR" fbc:associatedSpecies="RP_galR"/>
-  <fbc:geneProduct fbc:id="RP_galS" fbc:label="galS" fbc:associatedSpecies="RP_galS"/>
-  <fbc:geneProduct fbc:id="RP_glpR" fbc:label="glpR" fbc:associatedSpecies="RP_glpR"/>
-  <fbc:geneProduct fbc:id="RP_iclR" fbc:label="iclR" fbc:associatedSpecies="RP_iclR"/>
-  <fbc:geneProduct fbc:id="RP_lacI" fbc:label="lacI" fbc:associatedSpecies="RP_lacI"/>
-  <fbc:geneProduct fbc:id="RP_mlc" fbc:label="mlc" fbc:associatedSpecies="RP_mlc"/>
-  <fbc:geneProduct fbc:id="RP_pdhR" fbc:label="pdhR" fbc:associatedSpecies="RP_pdhR"/>
-  <fbc:geneProduct fbc:id="RP_rbsR" fbc:label="rbsR" fbc:associatedSpecies="RP_rbsR"/>
-  <fbc:geneProduct fbc:id="RP_rpiR" fbc:label="rpiR" fbc:associatedSpecies="RP_rpiR"/>
+  <fbc:geneProduct fbc:id="RP_ArcA" fbc:label="arcA" fbc:associatedSpecies="RP_ArcA"/>
+  <fbc:geneProduct fbc:id="RP_Cra" fbc:label="cra" fbc:associatedSpecies="RP_Cra"/>
+  <fbc:geneProduct fbc:id="RP_DcuR" fbc:label="dcuR" fbc:associatedSpecies="RP_DcuR"/>
+  <fbc:geneProduct fbc:id="RP_DcuS" fbc:label="dcuS" fbc:associatedSpecies="RP_DcuS"/>
+  <fbc:geneProduct fbc:id="RP_FadR" fbc:label="fadR" fbc:associatedSpecies="RP_FadR"/>
+  <fbc:geneProduct fbc:id="RP_FNR" fbc:label="fnr" fbc:associatedSpecies="RP_FNR"/>
+  <fbc:geneProduct fbc:id="RP_GalR" fbc:label="galR" fbc:associatedSpecies="RP_GalR"/>
+  <fbc:geneProduct fbc:id="RP_GalS" fbc:label="galS" fbc:associatedSpecies="RP_GalS"/>
+  <fbc:geneProduct fbc:id="RP_GlpR" fbc:label="glpR" fbc:associatedSpecies="RP_GlpR"/>
+  <fbc:geneProduct fbc:id="RP_IclR" fbc:label="iclR" fbc:associatedSpecies="RP_IclR"/>
+  <fbc:geneProduct fbc:id="RP_LacI" fbc:label="lacI" fbc:associatedSpecies="RP_LacI"/>
+  <fbc:geneProduct fbc:id="RP_Mlc" fbc:label="mlc" fbc:associatedSpecies="RP_Mlc"/>
+  <fbc:geneProduct fbc:id="RP_PdhR" fbc:label="pdhR" fbc:associatedSpecies="RP_PdhR"/>
+  <fbc:geneProduct fbc:id="RP_RbsR" fbc:label="rbsR" fbc:associatedSpecies="RP_RbsR"/>
+  <fbc:geneProduct fbc:id="RP_RpiR" fbc:label="rpiR" fbc:associatedSpecies="RP_RpiR"/>
 </fbc:listOfGeneProducts>
 
 <qual:listOfQualitativeSpecies>
@@ -6281,7 +6281,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_arcA_FBCupper">
+  <assignmentRule variable="T_ArcA_FBCupper">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6290,7 +6290,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_arcA_FBClower">
+  <assignmentRule variable="T_ArcA_FBClower">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6299,7 +6299,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_cra_FBCupper">
+  <assignmentRule variable="T_Cra_FBCupper">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6308,7 +6308,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_cra_FBClower">
+  <assignmentRule variable="T_Cra_FBClower">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6317,7 +6317,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_dcuR_FBCupper">
+  <assignmentRule variable="T_DcuR_FBCupper">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6326,7 +6326,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_dcuR_FBClower">
+  <assignmentRule variable="T_DcuR_FBClower">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6335,7 +6335,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_dcuS_FBCupper">
+  <assignmentRule variable="T_DcuS_FBCupper">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6344,7 +6344,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_dcuS_FBClower">
+  <assignmentRule variable="T_DcuS_FBClower">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6353,7 +6353,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_fadR_FBCupper">
+  <assignmentRule variable="T_FadR_FBCupper">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6362,7 +6362,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_fadR_FBClower">
+  <assignmentRule variable="T_FadR_FBClower">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6371,7 +6371,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_fnr_FBCupper">
+  <assignmentRule variable="T_FNR_FBCupper">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6380,7 +6380,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_fnr_FBClower">
+  <assignmentRule variable="T_FNR_FBClower">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6389,7 +6389,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_galR_FBCupper">
+  <assignmentRule variable="T_GalR_FBCupper">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6398,7 +6398,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_galR_FBClower">
+  <assignmentRule variable="T_GalR_FBClower">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6407,7 +6407,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_galS_FBCupper">
+  <assignmentRule variable="T_GalS_FBCupper">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6416,7 +6416,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_galS_FBClower">
+  <assignmentRule variable="T_GalS_FBClower">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6425,7 +6425,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_glpR_FBCupper">
+  <assignmentRule variable="T_GlpR_FBCupper">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6434,7 +6434,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_glpR_FBClower">
+  <assignmentRule variable="T_GlpR_FBClower">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6443,7 +6443,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_iclR_FBCupper">
+  <assignmentRule variable="T_IclR_FBCupper">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6452,7 +6452,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_iclR_FBClower">
+  <assignmentRule variable="T_IclR_FBClower">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6461,7 +6461,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_lacI_FBCupper">
+  <assignmentRule variable="T_LacI_FBCupper">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6470,7 +6470,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_lacI_FBClower">
+  <assignmentRule variable="T_LacI_FBClower">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6479,7 +6479,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_mlc_FBCupper">
+  <assignmentRule variable="T_Mlc_FBCupper">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6488,7 +6488,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_mlc_FBClower">
+  <assignmentRule variable="T_Mlc_FBClower">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6497,7 +6497,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_pdhR_FBCupper">
+  <assignmentRule variable="T_PdhR_FBCupper">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6506,7 +6506,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_pdhR_FBClower">
+  <assignmentRule variable="T_PdhR_FBClower">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6515,7 +6515,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_rbsR_FBCupper">
+  <assignmentRule variable="T_RbsR_FBCupper">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6524,7 +6524,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_rbsR_FBClower">
+  <assignmentRule variable="T_RbsR_FBClower">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6533,7 +6533,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_rpiR_FBCupper">
+  <assignmentRule variable="T_RpiR_FBCupper">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6542,7 +6542,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="T_rpiR_FBClower">
+  <assignmentRule variable="T_RpiR_FBClower">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6551,7 +6551,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="LACUP_FBClower">
+  <assignmentRule variable="T_LACUP_FBClower">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -6560,7 +6560,7 @@
       </apply>
     </math>
   </assignmentRule>
-  <assignmentRule variable="LACUP_FBCupper">
+  <assignmentRule variable="T_LACUP_FBCupper">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <times/>
@@ -7072,7 +7072,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <apply>
+        <lt/>
+        <apply>
           <plus/>
           <ci>GLCxt</ci>
           <ci>LCTSxt</ci>
@@ -7093,7 +7094,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <apply>
+        <geq/>
+        <apply>
           <plus/>
           <ci>GLCxt</ci>
           <ci>LCTSxt</ci>
@@ -7114,7 +7116,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <apply>
+        <lt/>
+        <apply>
           <plus/>
           <ci>GLCxt</ci>
           <ci>LCTSxt</ci>
@@ -7136,7 +7139,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <apply>
+        <geq/>
+        <apply>
           <plus/>
           <ci>GLCxt</ci>
           <ci>LCTSxt</ci>
@@ -7158,7 +7162,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <apply>
+        <lt/>
+        <apply>
           <plus/>
           <ci>GLCxt</ci>
           <ci>LCTSxt</ci>
@@ -7181,7 +7186,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <apply>
+        <geq/>
+        <apply>
           <plus/>
           <ci>GLCxt</ci>
           <ci>LCTSxt</ci>
@@ -7204,7 +7210,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <apply>
+        <lt/>
+        <apply>
           <plus/>
           <ci>GLCxt</ci>
           <ci>LCTSxt</ci>
@@ -7229,7 +7236,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <apply>
+        <geq/>
+        <apply>
           <plus/>
           <ci>GLCxt</ci>
           <ci>LCTSxt</ci>
@@ -7254,7 +7262,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <apply>
+        <lt/>
+        <apply>
           <plus/>
           <ci>GLCxt</ci>
           <ci>LCTSxt</ci>
@@ -7281,7 +7290,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <apply>
+        <geq/>
+        <apply>
           <plus/>
           <ci>GLCxt</ci>
           <ci>LCTSxt</ci>
@@ -7308,7 +7318,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <apply>
+        <lt/>
+        <apply>
           <plus/>
           <ci>GLCxt</ci>
           <ci>LCTSxt</ci>
@@ -7342,7 +7353,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <apply>
+        <geq/>
+        <apply>
           <plus/>
           <ci>GLCxt</ci>
           <ci>LCTSxt</ci>
@@ -7376,7 +7388,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <ci>RP_Mlc</ci>
+        <lt/>
+        <ci>RP_Mlc</ci>
         <ci>theta_RP</ci>
       </apply>
     </math>
@@ -7393,7 +7406,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <ci>RP_Mlc</ci>
+        <geq/>
+        <ci>RP_Mlc</ci>
         <ci>theta_RP</ci>
       </apply>
     </math>
@@ -7410,7 +7424,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <apply>
+        <lt/>
+        <apply>
           <plus/>
           <ci>RP_GalR</ci>
           <ci>RP_GalS</ci>
@@ -7431,7 +7446,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <apply>
+        <geq/>
+        <apply>
           <plus/>
           <ci>RP_GalR</ci>
           <ci>RP_GalS</ci>
@@ -7452,7 +7468,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <ci>RP_LacI</ci>
+        <lt/>
+        <ci>RP_LacI</ci>
         <ci>theta_RP</ci>
       </apply>
     </math>
@@ -7469,7 +7486,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <ci>RP_LacI</ci>
+        <geq/>
+        <ci>RP_LacI</ci>
         <ci>theta_RP</ci>
       </apply>
     </math>
@@ -7486,7 +7504,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <ci>RP_RbsR</ci>
+        <lt/>
+        <ci>RP_RbsR</ci>
         <ci>theta_RP</ci>
       </apply>
     </math>
@@ -7503,7 +7522,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <ci>RP_RbsR</ci>
+        <geq/>
+        <ci>RP_RbsR</ci>
         <ci>theta_RP</ci>
       </apply>
     </math>
@@ -7520,7 +7540,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <ci>RP_GlpR</ci>
+        <lt/>
+        <ci>RP_GlpR</ci>
         <ci>theta_RP</ci>
       </apply>
     </math>
@@ -7537,7 +7558,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <ci>RP_GlpR</ci>
+        <geq/>
+        <ci>RP_GlpR</ci>
         <ci>theta_RP</ci>
       </apply>
     </math>
@@ -7554,7 +7576,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <apply>
+        <lt/>
+        <apply>
           <plus/>
           <ci>RP_ArcA</ci>
           <ci>RP_GlpR</ci>
@@ -7575,7 +7598,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <apply>
+        <geq/>
+        <apply>
           <plus/>
           <ci>RP_ArcA</ci>
           <ci>RP_GlpR</ci>
@@ -7596,7 +7620,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <ci>RP_DcuR</ci>
+        <lt/>
+        <ci>RP_DcuR</ci>
         <ci>theta_RP</ci>
       </apply>
     </math>
@@ -7613,7 +7638,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <ci>RP_DcuR</ci>
+        <geq/>
+        <ci>RP_DcuR</ci>
         <ci>theta_RP</ci>
       </apply>
     </math>
@@ -7630,7 +7656,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <ci>FBP</ci>
+        <lt/>
+        <ci>FBP</ci>
         <ci>theta_v</ci>
       </apply>
     </math>
@@ -7647,7 +7674,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <ci>FBP</ci>
+        <geq/>
+        <ci>FBP</ci>
         <ci>theta_v</ci>
       </apply>
     </math>
@@ -7664,7 +7692,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <apply>
+        <lt/>
+        <apply>
           <plus/>
           <ci>TKTA2R</ci>
           <ci>TKTB2R</ci>
@@ -7688,7 +7717,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <apply>
+        <geq/>
+        <apply>
           <plus/>
           <ci>TKTA2R</ci>
           <ci>TKTB2R</ci>
@@ -7712,7 +7742,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <apply>
+        <lt/>
+        <apply>
           <plus/>
           <ci>MAEB</ci>
           <ci>SFCA</ci>
@@ -7733,7 +7764,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <apply>
+        <geq/>
+        <apply>
           <plus/>
           <ci>MAEB</ci>
           <ci>SFCA</ci>
@@ -7754,7 +7786,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <ci>DLD1R</ci>
+        <lt/>
+        <ci>DLD1R</ci>
         <ci>theta_v</ci>
       </apply>
     </math>
@@ -7771,7 +7804,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <ci>DLD1R</ci>
+        <geq/>
+        <ci>DLD1R</ci>
         <ci>theta_v</ci>
       </apply>
     </math>
@@ -7788,10 +7822,11 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <apply>
+        <lt/>
+        <apply>
           <plus/>
           <ci>GLCPTS</ci>
-          <ci>PYFK</ci>
+          <ci>PYKF</ci>
           <ci>PYKA</ci>
           <ci>DLD2</ci>
           <ci>DCTAR</ci>
@@ -7814,10 +7849,11 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <apply>
+        <geq/>
+        <apply>
           <plus/>
           <ci>GLCPTS</ci>
-          <ci>PYFK</ci>
+          <ci>PYKF</ci>
           <ci>PYKA</ci>
           <ci>DLD2</ci>
           <ci>DCTAR</ci>
@@ -7840,7 +7876,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <ci>ACxt</ci>
+        <lt/>
+        <ci>ACxt</ci>
         <ci>theta_xt</ci>
       </apply>
     </math>
@@ -7857,7 +7894,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <ci>ACxt</ci>
+        <geq/>
+        <ci>ACxt</ci>
         <ci>theta_xt</ci>
       </apply>
     </math>
@@ -7874,7 +7912,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <ci>O2xt</ci>
+        <lt/>
+        <ci>O2xt</ci>
         <ci>theta_xt</ci>
       </apply>
     </math>
@@ -7901,7 +7940,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <ci>O2xt</ci>
+        <geq/>
+        <ci>O2xt</ci>
         <ci>theta_xt</ci>
       </apply>
     </math>
@@ -7928,7 +7968,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <ci>SUCCxt</ci>
+        <lt/>
+        <ci>SUCCxt</ci>
         <ci>theta_xt</ci>
       </apply>
     </math>
@@ -7945,7 +7986,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <ci>SUCCxt</ci>
+        <geq/>
+        <ci>SUCCxt</ci>
         <ci>theta_xt</ci>
       </apply>
     </math>
@@ -7962,7 +8004,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <ci>LCTSxt</ci>
+        <lt/>
+        <ci>LCTSxt</ci>
         <ci>theta_xt</ci>
       </apply>
     </math>
@@ -7989,7 +8032,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <ci>LCTSxt</ci>
+        <geq/>
+        <ci>LCTSxt</ci>
         <ci>theta_xt</ci>
       </apply>
     </math>
@@ -8016,7 +8060,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <ci>GLxt</ci>
+        <lt/>
+        <ci>GLxt</ci>
         <ci>theta_xt</ci>
       </apply>
     </math>
@@ -8033,7 +8078,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <ci>GLxt</ci>
+        <geq/>
+        <ci>GLxt</ci>
         <ci>theta_xt</ci>
       </apply>
     </math>
@@ -8050,7 +8096,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <ci>GLCxt</ci>
+        <lt/>
+        <ci>GLCxt</ci>
         <ci>theta_xt</ci>
       </apply>
     </math>
@@ -8077,7 +8124,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <ci>GLCxt</ci>
+        <geq/>
+        <ci>GLCxt</ci>
         <ci>theta_xt</ci>
       </apply>
     </math>
@@ -8104,7 +8152,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <ci>RIBxt</ci>
+        <lt/>
+        <ci>RIBxt</ci>
         <ci>theta_xt</ci>
       </apply>
     </math>
@@ -8126,7 +8175,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <ci>RIBxt</ci>
+        <geq/>
+        <ci>RIBxt</ci>
         <ci>theta_xt</ci>
       </apply>
     </math>
@@ -8148,7 +8198,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <ci>RP_dcuS</ci>
+        <lt/>
+        <ci>RP_DcuS</ci>
         <ci>theta_RP</ci>
       </apply>
     </math>
@@ -8165,7 +8216,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <ci>RP_dcuS</ci>
+        <geq/>
+        <ci>RP_DcuS</ci>
         <ci>theta_RP</ci>
       </apply>
     </math>
@@ -8182,7 +8234,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <ci>RP_fadR</ci>
+        <lt/>
+        <ci>RP_FadR</ci>
         <ci>theta_RP</ci>
       </apply>
     </math>
@@ -8199,7 +8252,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <ci>RP_fadR</ci>
+        <geq/>
+        <ci>RP_FadR</ci>
         <ci>theta_RP</ci>
       </apply>
     </math>
@@ -8216,7 +8270,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <ci>RP_iclR</ci>
+        <lt/>
+        <ci>RP_IclR</ci>
         <ci>theta_RP</ci>
       </apply>
     </math>
@@ -8238,7 +8293,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <ci>RP_iclR</ci>
+        <geq/>
+        <ci>RP_IclR</ci>
         <ci>theta_RP</ci>
       </apply>
     </math>
@@ -8260,7 +8316,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <ci>RP_pdhR</ci>
+        <lt/>
+        <ci>RP_PdhR</ci>
         <ci>theta_RP</ci>
       </apply>
     </math>
@@ -8282,7 +8339,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <ci>RP_pdhR</ci>
+        <geq/>
+        <ci>RP_PdhR</ci>
         <ci>theta_RP</ci>
       </apply>
     </math>
@@ -8304,7 +8362,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <ci>RP_FNR</ci>
+        <lt/>
+        <ci>RP_FNR</ci>
         <ci>theta_RP</ci>
       </apply>
     </math>
@@ -8341,7 +8400,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <ci>RP_FNR</ci>
+        <geq/>
+        <ci>RP_FNR</ci>
         <ci>theta_RP</ci>
       </apply>
     </math>
@@ -8378,7 +8438,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <ci>RP_arcA</ci>
+        <lt/>
+        <ci>RP_ArcA</ci>
         <ci>theta_RP</ci>
       </apply>
     </math>
@@ -8405,7 +8466,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <ci>RP_arcA</ci>
+        <geq/>
+        <ci>RP_ArcA</ci>
         <ci>theta_RP</ci>
       </apply>
     </math>
@@ -8432,7 +8494,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <ci>RP_cra</ci>
+        <lt/>
+        <ci>RP_Cra</ci>
         <ci>theta_RP</ci>
       </apply>
     </math>
@@ -8459,7 +8522,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <ci>RP_cra</ci>
+        <geq/>
+        <ci>RP_Cra</ci>
         <ci>theta_RP</ci>
       </apply>
     </math>
@@ -8486,7 +8550,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <lt/>        <ci>RP_rpiR</ci>
+        <lt/>
+        <ci>RP_RpiR</ci>
         <ci>theta_RP</ci>
       </apply>
     </math>
@@ -8503,7 +8568,8 @@
   <trigger persistent="true" initialValue="true">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
-        <geq/>        <ci>RP_rpiR</ci>
+        <geq/>
+        <ci>RP_RpiR</ci>
         <ci>theta_RP</ci>
       </apply>
     </math>
@@ -8523,8 +8589,8 @@
   <parameter id="theta_xt" constant="true" value="1e-05"/>
   <parameter id="theta_RP" constant="true" value="1e-06"/>
   <parameter id="theta_v" constant="true" value="1e-05"/>
-  <parameter id="LACUP_FBCupper" value="NaN" constant="false" />
-  <parameter id="LACUP_FBClower" value="NaN" constant="false" />
+  <parameter id="T_LACUP_FBClower" value="NaN" constant="false" />
+  <parameter id="T_LACUP_FBCupper" value="NaN" constant="false" />
   <parameter id="T_ACEA_FBCupper" value="NaN" constant="false" />
   <parameter id="T_ACEA_FBClower" value="NaN" constant="false" />
   <parameter id="T_ACEB_FBCupper" value="NaN" constant="false" />
@@ -8611,116 +8677,116 @@
   <parameter id="T_DCUBR_FBClower" value="NaN" constant="false" />
   <parameter id="T_DCUC_FBCupper" value="NaN" constant="false" />
   <parameter id="T_DCUC_FBClower" value="NaN" constant="false" />
-  <parameter id="T_arcA_FBCupper" value="NaN" constant="false" />
-  <parameter id="T_arcA_FBClower" value="NaN" constant="false" />
-  <parameter id="T_cra_FBCupper" value="NaN" constant="false" />
-  <parameter id="T_cra_FBClower" value="NaN" constant="false" />
-  <parameter id="T_dcuR_FBCupper" value="NaN" constant="false" />
-  <parameter id="T_dcuR_FBClower" value="NaN" constant="false" />
-  <parameter id="T_dcuS_FBCupper" value="NaN" constant="false" />
-  <parameter id="T_dcuS_FBClower" value="NaN" constant="false" />
-  <parameter id="T_fadR_FBCupper" value="NaN" constant="false" />
-  <parameter id="T_fadR_FBClower" value="NaN" constant="false" />
-  <parameter id="T_fnr_FBCupper" value="NaN" constant="false" />
-  <parameter id="T_fnr_FBClower" value="NaN" constant="false" />
-  <parameter id="T_galR_FBCupper" value="NaN" constant="false" />
-  <parameter id="T_galR_FBClower" value="NaN" constant="false" />
-  <parameter id="T_galS_FBCupper" value="NaN" constant="false" />
-  <parameter id="T_galS_FBClower" value="NaN" constant="false" />
-  <parameter id="T_glpR_FBCupper" value="NaN" constant="false" />
-  <parameter id="T_glpR_FBClower" value="NaN" constant="false" />
-  <parameter id="T_iclR_FBCupper" value="NaN" constant="false" />
-  <parameter id="T_iclR_FBClower" value="NaN" constant="false" />
-  <parameter id="T_lacI_FBCupper" value="NaN" constant="false" />
-  <parameter id="T_lacI_FBClower" value="NaN" constant="false" />
-  <parameter id="T_mlc_FBCupper" value="NaN" constant="false" />
-  <parameter id="T_mlc_FBClower" value="NaN" constant="false" />
-  <parameter id="T_pdhR_FBCupper" value="NaN" constant="false" />
-  <parameter id="T_pdhR_FBClower" value="NaN" constant="false" />
-  <parameter id="T_rbsR_FBCupper" value="NaN" constant="false" />
-  <parameter id="T_rbsR_FBClower" value="NaN" constant="false" />
-  <parameter id="T_rpiR_FBCupper" value="NaN" constant="false" />
-  <parameter id="T_rpiR_FBClower" value="NaN" constant="false" />
-  <parameter id="Lcts_neg_aux" value="NaN" constant="false" />
-  <parameter id="carbon" value="NaN" constant="false" />
-  <parameter id="qual_con_PYKF_bar" value="NaN" constant="false" />
-  <parameter id="SuccEth_neg" value="NaN" constant="false" />
-  <parameter id="GG_aux" value="NaN" constant="false" />
-  <parameter id="DcuR_aux" value="NaN" constant="false" />
-  <parameter id="qual_con_ACEA_bar" value="NaN" constant="false" />
-  <parameter id="Glc_neg" value="NaN" constant="false" />
-  <parameter id="qual_con_CYDA_bar" value="NaN" constant="false" />
-  <parameter id="Glcpts_aux2" value="NaN" constant="false" />
-  <parameter id="qual_con_ACEE_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_GLCPTS_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_galR_bar" value="NaN" constant="false" />
-  <parameter id="Lcts_neg" value="NaN" constant="false" />
-  <parameter id="qual_con_SUCA_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_NDH_bar" value="NaN" constant="false" />
-  <parameter id="GLC_aux" value="NaN" constant="false" />
-  <parameter id="qual_con_DCUBR_bar" value="NaN" constant="false" />
-  <parameter id="IclR_neg" value="NaN" constant="false" />
-  <parameter id="FDP_aux" value="NaN" constant="false" />
-  <parameter id="Rib_aux" value="NaN" constant="false" />
-  <parameter id="qual_con_galS_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_rbsR_bar" value="NaN" constant="false" />
-  <parameter id="Cra_neg" value="NaN" constant="false" />
-  <parameter id="qual_con_GLPD_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_ACS_bar" value="NaN" constant="false" />
-  <parameter id="FNR_neg" value="NaN" constant="false" />
-  <parameter id="LacPyr_neg" value="NaN" constant="false" />
-  <parameter id="GL_neg" value="NaN" constant="false" />
-  <parameter id="qual_con_mlc_bar" value="NaN" constant="false" />
-  <parameter id="Glc_aux" value="NaN" constant="false" />
-  <parameter id="qual_con_MDHR_bar" value="NaN" constant="false" />
-  <parameter id="LacPyr_neg_aux" value="NaN" constant="false" />
-  <parameter id="qual_con_ACEB_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_iclR_bar" value="NaN" constant="false" />
+  <parameter id="T_ArcA_FBCupper" value="NaN" constant="false" />
+  <parameter id="T_ArcA_FBClower" value="NaN" constant="false" />
+  <parameter id="T_Cra_FBCupper" value="NaN" constant="false" />
+  <parameter id="T_Cra_FBClower" value="NaN" constant="false" />
+  <parameter id="T_DcuR_FBCupper" value="NaN" constant="false" />
+  <parameter id="T_DcuR_FBClower" value="NaN" constant="false" />
+  <parameter id="T_DcuS_FBCupper" value="NaN" constant="false" />
+  <parameter id="T_DcuS_FBClower" value="NaN" constant="false" />
+  <parameter id="T_FadR_FBCupper" value="NaN" constant="false" />
+  <parameter id="T_FadR_FBClower" value="NaN" constant="false" />
+  <parameter id="T_FNR_FBCupper" value="NaN" constant="false" />
+  <parameter id="T_FNR_FBClower" value="NaN" constant="false" />
+  <parameter id="T_GalR_FBCupper" value="NaN" constant="false" />
+  <parameter id="T_GalR_FBClower" value="NaN" constant="false" />
+  <parameter id="T_GalS_FBCupper" value="NaN" constant="false" />
+  <parameter id="T_GalS_FBClower" value="NaN" constant="false" />
+  <parameter id="T_GlpR_FBCupper" value="NaN" constant="false" />
+  <parameter id="T_GlpR_FBClower" value="NaN" constant="false" />
+  <parameter id="T_IclR_FBCupper" value="NaN" constant="false" />
+  <parameter id="T_IclR_FBClower" value="NaN" constant="false" />
+  <parameter id="T_LacI_FBCupper" value="NaN" constant="false" />
+  <parameter id="T_LacI_FBClower" value="NaN" constant="false" />
+  <parameter id="T_Mlc_FBCupper" value="NaN" constant="false" />
+  <parameter id="T_Mlc_FBClower" value="NaN" constant="false" />
+  <parameter id="T_PdhR_FBCupper" value="NaN" constant="false" />
+  <parameter id="T_PdhR_FBClower" value="NaN" constant="false" />
+  <parameter id="T_RbsR_FBCupper" value="NaN" constant="false" />
+  <parameter id="T_RbsR_FBClower" value="NaN" constant="false" />
+  <parameter id="T_RpiR_FBCupper" value="NaN" constant="false" />
+  <parameter id="T_RpiR_FBClower" value="NaN" constant="false" />
+  <parameter id="Arca_GlpR_neg" value="NaN" constant="false" />
+  <parameter id="PYR_neg_aux3" value="NaN" constant="false" />
+  <parameter id="qual_con_pdhR_bar" value="NaN" constant="false" />
+  <parameter id="RbsR_neg" value="NaN" constant="false" />
   <parameter id="LacI_neg" value="NaN" constant="false" />
-  <parameter id="qual_con_fadR_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_rbsR_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_GLCPTS_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_FUMBR_bar" value="NaN" constant="false" />
+  <parameter id="SuccEth_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_ADHER_bar" value="NaN" constant="false" />
   <parameter id="DLD1R_aux" value="NaN" constant="false" />
-  <parameter id="CFSS_aux" value="NaN" constant="false" />
-  <parameter id="qual_con_dcuS_bar" value="NaN" constant="false" />
   <parameter id="qual_con_PPSA_bar" value="NaN" constant="false" />
-  <parameter id="Rib_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_galR_bar" value="NaN" constant="false" />
+  <parameter id="ArcA_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_RPIBR_bar" value="NaN" constant="false" />
+  <parameter id="F6P_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_CYDA_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_dcuS_bar" value="NaN" constant="false" />
   <parameter id="GalRS_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_GLPD_bar" value="NaN" constant="false" />
+  <parameter id="ArcA_aux" value="NaN" constant="false" />
+  <parameter id="FDP_aux" value="NaN" constant="false" />
+  <parameter id="qual_con_SUCA_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_galS_bar" value="NaN" constant="false" />
+  <parameter id="IclR_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_FDNG_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_mlc_bar" value="NaN" constant="false" />
+  <parameter id="FNR_aux" value="NaN" constant="false" />
+  <parameter id="qual_con_GLPA_bar" value="NaN" constant="false" />
+  <parameter id="LacPyr_neg" value="NaN" constant="false" />
   <parameter id="qual_con_lacI_bar" value="NaN" constant="false" />
   <parameter id="qual_con_cra_bar" value="NaN" constant="false" />
-  <parameter id="GlpR_neg" value="NaN" constant="false" />
-  <parameter id="Gl_neg_aux" value="NaN" constant="false" />
-  <parameter id="qual_con_arcA_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_pdhR_bar" value="NaN" constant="false" />
-  <parameter id="Lcts_aux" value="NaN" constant="false" />
-  <parameter id="AC_neg" value="NaN" constant="false" />
-  <parameter id="qual_con_FDNG_bar" value="NaN" constant="false" />
-  <parameter id="Gal_aux" value="NaN" constant="false" />
-  <parameter id="ArcA_neg" value="NaN" constant="false" />
-  <parameter id="RbsR_neg" value="NaN" constant="false" />
-  <parameter id="carbon_neg" value="NaN" constant="false" />
   <parameter id="DFPP_aux" value="NaN" constant="false" />
-  <parameter id="FNR_aux" value="NaN" constant="false" />
+  <parameter id="qual_con_PYKF_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_fadR_bar" value="NaN" constant="false" />
+  <parameter id="Glcpts_aux2" value="NaN" constant="false" />
   <parameter id="qual_con_dcuR_bar" value="NaN" constant="false" />
-  <parameter id="SuccEth_neg_aux" value="NaN" constant="false" />
-  <parameter id="Glcpts_aux1" value="NaN" constant="false" />
-  <parameter id="qual_con_fnr_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_RPIBR_bar" value="NaN" constant="false" />
   <parameter id="Rib_neg_aux" value="NaN" constant="false" />
-  <parameter id="PYR_neg_aux3" value="NaN" constant="false" />
-  <parameter id="Arca_GlpR_neg" value="NaN" constant="false" />
-  <parameter id="PYR_aux1" value="NaN" constant="false" />
-  <parameter id="O2_neg" value="NaN" constant="false" />
+  <parameter id="Glc_neg" value="NaN" constant="false" />
+  <parameter id="Glcpts_aux1" value="NaN" constant="false" />
+  <parameter id="Lcts_neg_aux" value="NaN" constant="false" />
+  <parameter id="LacPyr_neg_aux" value="NaN" constant="false" />
+  <parameter id="Rib_neg" value="NaN" constant="false" />
+  <parameter id="DcuR_aux" value="NaN" constant="false" />
+  <parameter id="Gl_neg_aux" value="NaN" constant="false" />
+  <parameter id="qual_con_ACEA_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_arcA_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_NDH_bar" value="NaN" constant="false" />
+  <parameter id="FNR_neg" value="NaN" constant="false" />
+  <parameter id="carbon" value="NaN" constant="false" />
   <parameter id="Mlc_neg" value="NaN" constant="false" />
-  <parameter id="qual_con_DCTAR_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_FUMBR_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_ADHER_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_rpiR_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_GLPA_bar" value="NaN" constant="false" />
-  <parameter id="F6P_neg" value="NaN" constant="false" />
+  <parameter id="Glc_aux" value="NaN" constant="false" />
+  <parameter id="AC_neg" value="NaN" constant="false" />
+  <parameter id="SuccEth_neg_aux" value="NaN" constant="false" />
+  <parameter id="O2_neg" value="NaN" constant="false" />
+  <parameter id="Gal_aux" value="NaN" constant="false" />
+  <parameter id="qual_con_MDHR_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_iclR_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_fnr_bar" value="NaN" constant="false" />
+  <parameter id="CFSS_aux" value="NaN" constant="false" />
+  <parameter id="Lcts_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_ACS_bar" value="NaN" constant="false" />
+  <parameter id="Lcts_aux" value="NaN" constant="false" />
   <parameter id="qual_con_FRDA_bar" value="NaN" constant="false" />
-  <parameter id="ArcA_aux" value="NaN" constant="false" />
-  <parameter id="O2_Cra_neg" value="NaN" constant="false" />
-  <parameter id="Arca_neg" value="NaN" constant="false" />
+  <parameter id="PYR_aux1" value="NaN" constant="false" />
+  <parameter id="Rib_aux" value="NaN" constant="false" />
   <parameter id="qual_con_glpR_bar" value="NaN" constant="false" />
+  <parameter id="GlpR_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_ACEE_bar" value="NaN" constant="false" />
+  <parameter id="carbon_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_DCTAR_bar" value="NaN" constant="false" />
+  <parameter id="Arca_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_rpiR_bar" value="NaN" constant="false" />
+  <parameter id="Cra_neg" value="NaN" constant="false" />
+  <parameter id="GLC_aux" value="NaN" constant="false" />
+  <parameter id="GG_aux" value="NaN" constant="false" />
+  <parameter id="O2_Cra_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_ACEB_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_DCUBR_bar" value="NaN" constant="false" />
+  <parameter id="GL_neg" value="NaN" constant="false" />
 </listOfParameters>
 </model>
 </sbml>
