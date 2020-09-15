@@ -554,766 +554,766 @@
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_ACEA" name="Isocitrate lyase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_ACEA" name="Isocitrate lyase" compartment="cytosol" initialAmount="0.00010858872144295075" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="57.7654" ram:objectiveWeight="57.7654" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_ACEB" name="Malate synthase A" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_ACEB" name="Malate synthase A" compartment="cytosol" initialAmount="7.939356791003239e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="70.9423" ram:objectiveWeight="70.9423" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_ACEE" name="Pyruvate dehydrogenase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_ACEE" name="Pyruvate dehydrogenase" compartment="cytosol" initialAmount="0.00044916965483777485" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="265.0021" ram:objectiveWeight="265.0021" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_ACKAR" name="Acetate kinase A" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_ACKAR" name="Acetate kinase A" compartment="cytosol" initialAmount="1.5040673458580627e-06" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="53.239999999999995" ram:objectiveWeight="53.239999999999995" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_ACNAR" name="Aconitase A" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_ACNAR" name="Aconitase A" compartment="cytosol" initialAmount="1.3575945513462175e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="118.5921" ram:objectiveWeight="118.5921" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_ACNBR" name="Aconitase B" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_ACNBR" name="Aconitase B" compartment="cytosol" initialAmount="0.00011711971139293036" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="115.1315" ram:objectiveWeight="115.1315" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_ACS" name="Acetyl-CoA synthetase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_ACS" name="Acetyl-CoA synthetase" compartment="cytosol" initialAmount="7.410434707062671e-06" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="86.7812" ram:objectiveWeight="86.7812" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_ADHER" name="Acetaldehyde dehydrogenase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_ADHER" name="Acetaldehyde dehydrogenase" compartment="cytosol" initialAmount="7.381723505985757e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="118.5921" ram:objectiveWeight="118.5921" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_ADK" name="Adenylate kinase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_ADK" name="Adenylate kinase" compartment="cytosol" initialAmount="2.7148249761504266e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="28.4834" ram:objectiveWeight="28.4834" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_ATPAR" name="F0F1-ATPase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_ATPAR" name="F0F1-ATPase" compartment="cytosol" initialAmount="0.002186031333868705" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="293.8848" ram:objectiveWeight="293.8848" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_CYDA" name="Cytochrome oxidase bd" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_CYDA" name="Cytochrome oxidase bd" compartment="cytosol" initialAmount="1.688168423352783e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="119.92309999999999" ram:objectiveWeight="119.92309999999999" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_CYOA" name="Cytochrome oxidase bo3" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_CYOA" name="Cytochrome oxidase bo3" compartment="cytosol" initialAmount="0.0002922528588807186" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="171.8321" ram:objectiveWeight="171.8321" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_DLD1R" name="D-Lactate dehydrogenase 1" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_DLD1R" name="D-Lactate dehydrogenase 1" compartment="cytosol" initialAmount="1.077934761456224e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="76.0001" ram:objectiveWeight="76.0001" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_DLD2" name="D-Lactate dehydrogenase (cyctochrome)" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_DLD2" name="D-Lactate dehydrogenase (cyctochrome)" compartment="cytosol" initialAmount="1.077934761456224e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="76.0001" ram:objectiveWeight="76.0001" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_ENOR" name="Enolase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_ENOR" name="Enolase" compartment="cytosol" initialAmount="2.8815668591284964e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="57.4992" ram:objectiveWeight="57.4992" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_FBAR" name="Fructose-1,6-bisphosphatate aldolase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_FBAR" name="Fructose-1,6-bisphosphatate aldolase" compartment="cytosol" initialAmount="1.5763499073475093e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="47.7829" ram:objectiveWeight="47.7829" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_FBP" name="Fructose-1,6-bisphosphatase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_FBP" name="Fructose-1,6-bisphosphatase" compartment="cytosol" initialAmount="1.0721223242945423e-06" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="44.1892" ram:objectiveWeight="44.1892" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_FDNG" name="Formate dehydrogenase-N" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_FDNG" name="Formate dehydrogenase-N" compartment="cytosol" initialAmount="8.092093734539236e-08" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="203.1106" ram:objectiveWeight="203.1106" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_FDOH" name="Formate dehydrogenase-O" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_FDOH" name="Formate dehydrogenase-O" compartment="cytosol" initialAmount="1.0796528731010407e-06" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="203.2437" ram:objectiveWeight="203.2437" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_FRDA" name="Fumarate reductase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_FRDA" name="Fumarate reductase" compartment="cytosol" initialAmount="1.0558255634589288e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="145.8776" ram:objectiveWeight="145.8776" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_FUMAR" name="Fumarase A" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_FUMAR" name="Fumarase A" compartment="cytosol" initialAmount="1.907266545367551e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="72.9388" ram:objectiveWeight="72.9388" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_FUMBR" name="Fumarase B" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_FUMBR" name="Fumarase B" compartment="cytosol" initialAmount="2.034159342443808e-07" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="72.9388" ram:objectiveWeight="72.9388" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_FUMCR" name="Fumarase C" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_FUMCR" name="Fumarase C" compartment="cytosol" initialAmount="3.5412720293988512e-06" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="62.1577" ram:objectiveWeight="62.1577" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_GALER" name="UDP-glucose 4-epimerase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_GALER" name="UDP-glucose 4-epimerase" compartment="cytosol" initialAmount="4.349438516154789e-06" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="44.9878" ram:objectiveWeight="44.9878" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_GALKR" name="Galactokinase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_GALKR" name="Galactokinase" compartment="cytosol" initialAmount="1.7420803628249213e-06" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="50.8442" ram:objectiveWeight="50.8442" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_GALM1R" name="Aldose 1-epimerase (mutorotase)" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_GALM1R" name="Aldose 1-epimerase (mutorotase)" compartment="cytosol" initialAmount="6.207650499416413e-06" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="46.0526" ram:objectiveWeight="46.0526" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_GALM2R" name="Aldose 1-epimerase (mutorotase)" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_GALM2R" name="Aldose 1-epimerase (mutorotase)" compartment="cytosol" initialAmount="6.207650499416413e-06" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="46.0526" ram:objectiveWeight="46.0526" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_GALTR" name="Galactose-1-phosphate uridylyltransferase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_GALTR" name="Galactose-1-phosphate uridylyltransferase" compartment="cytosol" initialAmount="8.304206283282073e-07" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="46.318799999999996" ram:objectiveWeight="46.318799999999996" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_GALUR" name="UDP-glucose-1-phosphate uridylyltransferase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_GALUR" name="UDP-glucose-1-phosphate uridylyltransferase" compartment="cytosol" initialAmount="1.5651502155002292e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="40.1962" ram:objectiveWeight="40.1962" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_GAPAR" name="Glyceraldehyde-3-phosphate dehydrogenase-A complex" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_GAPAR" name="Glyceraldehyde-3-phosphate dehydrogenase-A complex" compartment="cytosol" initialAmount="0.00034564015563958675" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="44.0561" ram:objectiveWeight="44.0561" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_GLK" name="Glucokinase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_GLK" name="Glucokinase" compartment="cytosol" initialAmount="3.0866618093057652e-06" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="42.7251" ram:objectiveWeight="42.7251" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_GLPA" name="Glycerol-3-phosphate dehydrogenase (anaerobic)" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_GLPA" name="Glycerol-3-phosphate dehydrogenase (anaerobic)" compartment="cytosol" initialAmount="1.1993197026834582e-07" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="180.6167" ram:objectiveWeight="180.6167" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_GLPD" name="Glycerol-3-phosphate dehydrogenase (aerobic)" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_GLPD" name="Glycerol-3-phosphate dehydrogenase (aerobic)" compartment="cytosol" initialAmount="3.985064509506052e-07" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="66.6831" ram:objectiveWeight="66.6831" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_GLPK" name="Glycerol kinase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_GLPK" name="Glycerol kinase" compartment="cytosol" initialAmount="1.1446653692907204e-06" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="66.8162" ram:objectiveWeight="66.8162" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_GLTA" name="Citrate synthase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_GLTA" name="Citrate synthase" compartment="cytosol" initialAmount="6.437409044610082e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="56.8337" ram:objectiveWeight="56.8337" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_GND" name="6-Phosphogluconate dehydrogenase (decarboxylating)" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_GND" name="6-Phosphogluconate dehydrogenase (decarboxylating)" compartment="cytosol" initialAmount="8.07964272792803e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="62.2908" ram:objectiveWeight="62.2908" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_GPMAR" name="Phosphoglycerate mutase 1" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_GPMAR" name="Phosphoglycerate mutase 1" compartment="cytosol" initialAmount="5.1569863413102266e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="33.275" ram:objectiveWeight="33.275" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_GPMBR" name="Phosphoglycerate mutase 2" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_GPMBR" name="Phosphoglycerate mutase 2" compartment="cytosol" initialAmount="5.1569863413102266e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="33.275" ram:objectiveWeight="33.275" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_GPSAR" name="Glycerol-3-phosphate-dehydrogenase-[NAD(P)+]" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_GPSAR" name="Glycerol-3-phosphate-dehydrogenase-[NAD(P)+]" compartment="cytosol" initialAmount="2.1272237232047274e-06" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="45.1209" ram:objectiveWeight="45.1209" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_ICDAR" name="Isocitrate dehydrogenase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_ICDAR" name="Isocitrate dehydrogenase" compartment="cytosol" initialAmount="5.083290251796284e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="55.3696" ram:objectiveWeight="55.3696" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_LACZ" name="Beta-galactosidase (LACTase)" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_LACZ" name="Beta-galactosidase (LACTase)" compartment="cytosol" initialAmount="1.8100270826055432e-07" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="136.2944" ram:objectiveWeight="136.2944" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_MAEB" name="Malic enzyme (NADP)" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_MAEB" name="Malic enzyme (NADP)" compartment="cytosol" initialAmount="1.3671024963436151e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="101.02289999999999" ram:objectiveWeight="101.02289999999999" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_MDHR" name="Malate dehydrogenase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_MDHR" name="Malate dehydrogenase" compartment="cytosol" initialAmount="8.906054429085e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="41.5272" ram:objectiveWeight="41.5272" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_NDH" name="NADH dehydrogenase II" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_NDH" name="NADH dehydrogenase II" compartment="cytosol" initialAmount="7.0960485577343295e-06" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="57.7654" ram:objectiveWeight="57.7654" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_NUOA" name="NADH dehydrogenase I" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_NUOA" name="NADH dehydrogenase I" compartment="cytosol" initialAmount="0.0008324257282514734" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="569.9342" ram:objectiveWeight="569.9342" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_PCKA" name="Phosphoenolpyruvate carboxykinase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_PCKA" name="Phosphoenolpyruvate carboxykinase" compartment="cytosol" initialAmount="6.09929633910028e-06" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="71.874" ram:objectiveWeight="71.874" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_PFKA" name="Phosphofructokinase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_PFKA" name="Phosphofructokinase" compartment="cytosol" initialAmount="1.5899956653763068e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="42.592" ram:objectiveWeight="42.592" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_PFKB" name="Phosphofructokinase B" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_PFKB" name="Phosphofructokinase B" compartment="cytosol" initialAmount="6.29210664590752e-06" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="41.1279" ram:objectiveWeight="41.1279" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_PFLA" name="Pyruvate formate lyase 1" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_PFLA" name="Pyruvate formate lyase 1" compartment="cytosol" initialAmount="0.00010803794636249469" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="133.8986" ram:objectiveWeight="133.8986" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_PFLC" name="Pyruvate formate lyase 2" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_PFLC" name="Pyruvate formate lyase 2" compartment="cytosol" initialAmount="2.615701246913753e-07" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="140.6867" ram:objectiveWeight="140.6867" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_PGIR" name="Phosphoglucose isomerase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_PGIR" name="Phosphoglucose isomerase" compartment="cytosol" initialAmount="3.506109071631007e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="73.0719" ram:objectiveWeight="73.0719" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_PGKR" name="Phosphoglycerate kinase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_PGKR" name="Phosphoglycerate kinase" compartment="cytosol" initialAmount="8.348988545135403e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="51.509699999999995" ram:objectiveWeight="51.509699999999995" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_PGL" name="6-Phosphogluconolactonase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_PGL" name="6-Phosphogluconolactonase" compartment="cytosol" initialAmount="1.214620087866108e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="44.0561" ram:objectiveWeight="44.0561" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_PGMR" name="Phosphoglucomutase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_PGMR" name="Phosphoglucomutase" compartment="cytosol" initialAmount="1.1311113774260533e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="72.6726" ram:objectiveWeight="72.6726" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_PNTA1" name="Pyridine nucleotide transhydrogenase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_PNTA1" name="Pyridine nucleotide transhydrogenase" compartment="cytosol" initialAmount="0.00015167489600444303" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="129.3732" ram:objectiveWeight="129.3732" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_PNTA2" name="Pyridine nucleotide transhydrogenase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_PNTA2" name="Pyridine nucleotide transhydrogenase" compartment="cytosol" initialAmount="0.00015167489600444303" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="129.3732" ram:objectiveWeight="129.3732" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_PPA" name="Inorganic pyrophosphatase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_PPA" name="Inorganic pyrophosphatase" compartment="cytosol" initialAmount="5.1241018258367955e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="23.4256" ram:objectiveWeight="23.4256" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_PPC" name="Phosphoenolpyruvate carboxylase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_PPC" name="Phosphoenolpyruvate carboxylase" compartment="cytosol" initialAmount="6.931489874815064e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="117.5273" ram:objectiveWeight="117.5273" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_PPSA" name="Phosphoenolpyruvate synthase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_PPSA" name="Phosphoenolpyruvate synthase" compartment="cytosol" initialAmount="3.5676929794891554e-06" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="105.4152" ram:objectiveWeight="105.4152" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_PTAR" name="Phosphotransacetylase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_PTAR" name="Phosphotransacetylase" compartment="cytosol" initialAmount="1.460214602428002e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="95.0334" ram:objectiveWeight="95.0334" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_PYKA" name="Pyruvate Kinase II" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_PYKA" name="Pyruvate Kinase II" compartment="cytosol" initialAmount="1.3668532640988423e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="63.888" ram:objectiveWeight="63.888" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_PYKF" name="Pyruvate Kinase I" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_PYKF" name="Pyruvate Kinase I" compartment="cytosol" initialAmount="5.137507338917343e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="62.556999999999995" ram:objectiveWeight="62.556999999999995" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_RBSK" name="Ribokinase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_RBSK" name="Ribokinase" compartment="cytosol" initialAmount="7.8651333073844e-07" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="41.1279" ram:objectiveWeight="41.1279" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_RPER" name="Ribulose phosphate 3-epimerase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_RPER" name="Ribulose phosphate 3-epimerase" compartment="cytosol" initialAmount="6.578140417887236e-06" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="29.947499999999998" ram:objectiveWeight="29.947499999999998" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_RPIAR" name="Ribose-5-phosphate isomerase A" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_RPIAR" name="Ribose-5-phosphate isomerase A" compartment="cytosol" initialAmount="1.0912501267035553e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="29.148899999999998" ram:objectiveWeight="29.148899999999998" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_RPIBR" name="Ribose-5-phosphate isomerase B" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_RPIBR" name="Ribose-5-phosphate isomerase B" compartment="cytosol" initialAmount="1.369540023049585e-07" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="19.8319" ram:objectiveWeight="19.8319" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_SDHA1" name="Succinate dehydrogenase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_SDHA1" name="Succinate dehydrogenase" compartment="cytosol" initialAmount="0.0002569948570149923" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="142.417" ram:objectiveWeight="142.417" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_SDHA2" name="Succinate dehydrogenase complex" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_SDHA2" name="Succinate dehydrogenase complex" compartment="cytosol" initialAmount="0.0002569948570149923" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="142.417" ram:objectiveWeight="142.417" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_SFCA" name="Malic enzyme (NAD)" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_SFCA" name="Malic enzyme (NAD)" compartment="cytosol" initialAmount="8.598777585348688e-06" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="75.2015" ram:objectiveWeight="75.2015" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_SUCA" name="2-Ketoglutarate dehyrogenase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_SUCA" name="2-Ketoglutarate dehyrogenase" compartment="cytosol" initialAmount="0.0003042446106840186" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="241.1772" ram:objectiveWeight="241.1772" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_SUCCR" name="Succinyl-CoA synthetase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_SUCCR" name="Succinyl-CoA synthetase" compartment="cytosol" initialAmount="0.0001530538750359117" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="90.1087" ram:objectiveWeight="90.1087" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_TALAR" name="Transaldolase A" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_TALAR" name="Transaldolase A" compartment="cytosol" initialAmount="7.814296999869033e-06" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="42.059599999999996" ram:objectiveWeight="42.059599999999996" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_TALBR" name="Transaldolase B" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_TALBR" name="Transaldolase B" compartment="cytosol" initialAmount="5.003752700889256e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="42.1927" ram:objectiveWeight="42.1927" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_TKTA1R" name="Transketolase I" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_TKTA1R" name="Transketolase I" compartment="cytosol" initialAmount="5.496313391161581e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="88.2453" ram:objectiveWeight="88.2453" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_TKTA2R" name="Transketolase I" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_TKTA2R" name="Transketolase I" compartment="cytosol" initialAmount="5.496313391161581e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="88.2453" ram:objectiveWeight="88.2453" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_TKTB1R" name="Transketolase II" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_TKTB1R" name="Transketolase II" compartment="cytosol" initialAmount="1.4324755838661576e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="88.7777" ram:objectiveWeight="88.7777" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_TKTB2R" name="Transketolase II" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_TKTB2R" name="Transketolase II" compartment="cytosol" initialAmount="1.4324755838661576e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="88.7777" ram:objectiveWeight="88.7777" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_TPIAR" name="Triosphosphate Isomerase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_TPIAR" name="Triosphosphate Isomerase" compartment="cytosol" initialAmount="3.536950236218216e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="33.9405" ram:objectiveWeight="33.9405" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_ZWFR" name="Glucose 6-phosphate-1-dehydrogenase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_ZWFR" name="Glucose 6-phosphate-1-dehydrogenase" compartment="cytosol" initialAmount="1.6732993336859106e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="65.3521" ram:objectiveWeight="65.3521" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_FORUPR" name="Formate transport" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_FORUPR" name="Formate transport" compartment="cytosol" initialAmount="6.700105133414367e-07" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="37.9335" ram:objectiveWeight="37.9335" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_GLCPTS" name="Glucose transport" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_GLCPTS" name="Glucose transport" compartment="cytosol" initialAmount="0.001079127470317805" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="173.8286" ram:objectiveWeight="173.8286" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_GLCUP" name="Glucose transport (low affinity)" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_GLCUP" name="Glucose transport (low affinity)" compartment="cytosol" initialAmount="1.5911269323029354e-06" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="61.758399999999995" ram:objectiveWeight="61.758399999999995" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_GLUPR" name="Glycerol transporter" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_GLUPR" name="Glycerol transporter" compartment="cytosol" initialAmount="3.973575079782482e-08" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="37.4011" ram:objectiveWeight="37.4011" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_LACYR" name="Lactose permease" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_LACYR" name="Lactose permease" compartment="cytosol" initialAmount="1.4741822137627179e-08" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="55.5027" ram:objectiveWeight="55.5027" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_PIUP2R" name="Phosphate transport" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_PIUP2R" name="Phosphate transport" compartment="cytosol" initialAmount="7.462013408498638e-06" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="132.8338" ram:objectiveWeight="132.8338" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_RIBUPR" name="Ribose transport" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_RIBUPR" name="Ribose transport" compartment="cytosol" initialAmount="8.32357974337075e-06" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="167.3067" ram:objectiveWeight="167.3067" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_DCTAR" name="Succinate transport" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_DCTAR" name="Succinate transport" compartment="cytosol" initialAmount="8.094921901855807e-07" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="56.9668" ram:objectiveWeight="56.9668" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_DCUAR" name="Succinate transport" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_DCUAR" name="Succinate transport" compartment="cytosol" initialAmount="4.393239757470185e-06" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="57.6323" ram:objectiveWeight="57.6323" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_DCUBR" name="Succinate transport" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_DCUBR" name="Succinate transport" compartment="cytosol" initialAmount="0.0" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="59.3626" ram:objectiveWeight="59.3626" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_DCUC" name="Succinate efflux" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_DCUC" name="Succinate efflux" compartment="cytosol" initialAmount="0.0" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="61.3591" ram:objectiveWeight="61.3591" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_ASPT" name="L-aspartase" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_ASPT" name="L-aspartase" compartment="cytosol" initialAmount="5.998896399362005e-07" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="63.6218" ram:objectiveWeight="63.6218" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="E_R" name="Ribosome" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="E_R" name="Ribosome" compartment="cytosol" initialAmount="0.15872599261028503" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="949.2692" ram:objectiveWeight="949.2692" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_ArcA" name="Aerobic/Anaerobic response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_ArcA" name="Aerobic/Anaerobic response regulator" compartment="cytosol" initialAmount="1.5237387755673358e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="31.677799999999998" ram:objectiveWeight="31.677799999999998" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_Cra" name="Catabolite activator protein" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_Cra" name="Catabolite activator protein" compartment="cytosol" initialAmount="1.853792971829482e-06" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="44.4554" ram:objectiveWeight="44.4554" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_DcuR" name="Dicarboxylate response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_DcuR" name="Dicarboxylate response regulator" compartment="cytosol" initialAmount="7.055040131644048e-07" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="31.8109" ram:objectiveWeight="31.8109" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_DcuS" name="Dicarboxylate response sensor" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_DcuS" name="Dicarboxylate response sensor" compartment="cytosol" initialAmount="2.0155994944288096e-07" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="72.27329999999999" ram:objectiveWeight="72.27329999999999" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_FadR" name="Fatty acid/Acetate response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_FadR" name="Fatty acid/Acetate response regulator" compartment="cytosol" initialAmount="1.6687070970056281e-06" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="31.8109" ram:objectiveWeight="31.8109" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_FNR" name="Aerobic/Anaerobic response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_FNR" name="Aerobic/Anaerobic response regulator" compartment="cytosol" initialAmount="1.140988751779178e-05" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="33.275" ram:objectiveWeight="33.275" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_GalR" name="Galactose operon repressor" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_GalR" name="Galactose operon repressor" compartment="cytosol" initialAmount="5.820368337503451e-07" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="45.6533" ram:objectiveWeight="45.6533" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_GalS" name="Galactose operon repressor" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_GalS" name="Galactose operon repressor" compartment="cytosol" initialAmount="4.8927294576681094e-08" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="46.0526" ram:objectiveWeight="46.0526" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_GlpR" name="Glycerol response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_GlpR" name="Glycerol response regulator" compartment="cytosol" initialAmount="2.3352624580425134e-07" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="33.541199999999996" ram:objectiveWeight="33.541199999999996" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_IclR" name="Fatty acid/Acetate response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_IclR" name="Fatty acid/Acetate response regulator" compartment="cytosol" initialAmount="7.119557698553328e-07" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="36.4694" ram:objectiveWeight="36.4694" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_LacI" name="Lactose operon repressor" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_LacI" name="Lactose operon repressor" compartment="cytosol" initialAmount="1.458832237710473e-07" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="47.916" ram:objectiveWeight="47.916" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_Mlc" name="Glucose response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_Mlc" name="Glucose response regulator" compartment="cytosol" initialAmount="4.01882575684762e-07" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="54.038599999999995" ram:objectiveWeight="54.038599999999995" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_PdhR" name="Pyruvate response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_PdhR" name="Pyruvate response regulator" compartment="cytosol" initialAmount="1.2122232160653142e-06" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="33.8074" ram:objectiveWeight="33.8074" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_RbsR" name="Ribose response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_RbsR" name="Ribose response regulator" compartment="cytosol" initialAmount="1.7499285271284064e-07" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="43.923" ram:objectiveWeight="43.923" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="RP_RpiR" name="Ribose response regulator" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="RP_RpiR" name="Ribose response regulator" compartment="cytosol" initialAmount="1.1529926454141779e-07" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
       <ram:species ram:molecularWeight="39.3976" ram:objectiveWeight="39.3976" ram:biomassPercentage="0.0" ram:speciesType="enzyme"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="Quota_rest" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="Quota_rest" compartment="cytosol" initialAmount="0.45" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:species ram:molecularWeight="0.8648008000000029" ram:objectiveWeight="0.8648008000000029" ram:biomassPercentage="0.3" ram:speciesType="quota"/>
+      <ram:species ram:molecularWeight="1.0" ram:objectiveWeight="1.0" ram:biomassPercentage="0.45" ram:speciesType="quota"/>
     </ram:RAM>
   </annotation>
 </species>
-<species id="Quota_protein" compartment="cytosol" initialAmount="NaN" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
+<species id="Quota_protein" compartment="cytosol" initialAmount="0.3082484062125674" constant="false" boundaryCondition="false" hasOnlySubstanceUnits="true">
   <annotation>
     <ram:RAM xmlns:ram="https://www.fairdomhub.org/sops/304">
-      <ram:species ram:molecularWeight="61.3591" ram:objectiveWeight="61.3591" ram:biomassPercentage="0.3836738857523882" ram:speciesType="quota"/>
+      <ram:species ram:molecularWeight="61.3591" ram:objectiveWeight="61.3591" ram:biomassPercentage="0.3082484062125674" ram:speciesType="quota"/>
     </ram:RAM>
   </annotation>
 </species>
@@ -8585,7 +8585,7 @@
 </listOfEvents>
 
 <listOfParameters>
-  <parameter id="epsilon_trans" constant="true" value="0.001"/>
+  <parameter id="epsilon_trans" constant="true" value="0.0001"/>
   <parameter id="theta_xt" constant="true" value="1e-05"/>
   <parameter id="theta_RP" constant="true" value="1e-06"/>
   <parameter id="theta_v" constant="true" value="1e-05"/>
@@ -8707,86 +8707,86 @@
   <parameter id="T_RbsR_FBClower" value="NaN" constant="false" />
   <parameter id="T_RpiR_FBCupper" value="NaN" constant="false" />
   <parameter id="T_RpiR_FBClower" value="NaN" constant="false" />
-  <parameter id="Arca_GlpR_neg" value="NaN" constant="false" />
-  <parameter id="PYR_neg_aux3" value="NaN" constant="false" />
-  <parameter id="qual_con_pdhR_bar" value="NaN" constant="false" />
-  <parameter id="RbsR_neg" value="NaN" constant="false" />
-  <parameter id="LacI_neg" value="NaN" constant="false" />
-  <parameter id="qual_con_rbsR_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_GLCPTS_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_FUMBR_bar" value="NaN" constant="false" />
-  <parameter id="SuccEth_neg" value="NaN" constant="false" />
-  <parameter id="qual_con_ADHER_bar" value="NaN" constant="false" />
-  <parameter id="DLD1R_aux" value="NaN" constant="false" />
-  <parameter id="qual_con_PPSA_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_galR_bar" value="NaN" constant="false" />
-  <parameter id="ArcA_neg" value="NaN" constant="false" />
-  <parameter id="qual_con_RPIBR_bar" value="NaN" constant="false" />
-  <parameter id="F6P_neg" value="NaN" constant="false" />
-  <parameter id="qual_con_CYDA_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_dcuS_bar" value="NaN" constant="false" />
-  <parameter id="GalRS_neg" value="NaN" constant="false" />
-  <parameter id="qual_con_GLPD_bar" value="NaN" constant="false" />
-  <parameter id="ArcA_aux" value="NaN" constant="false" />
-  <parameter id="FDP_aux" value="NaN" constant="false" />
-  <parameter id="qual_con_SUCA_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_galS_bar" value="NaN" constant="false" />
-  <parameter id="IclR_neg" value="NaN" constant="false" />
   <parameter id="qual_con_FDNG_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_mlc_bar" value="NaN" constant="false" />
-  <parameter id="FNR_aux" value="NaN" constant="false" />
-  <parameter id="qual_con_GLPA_bar" value="NaN" constant="false" />
-  <parameter id="LacPyr_neg" value="NaN" constant="false" />
-  <parameter id="qual_con_lacI_bar" value="NaN" constant="false" />
+  <parameter id="SuccEth_neg" value="NaN" constant="false" />
   <parameter id="qual_con_cra_bar" value="NaN" constant="false" />
-  <parameter id="DFPP_aux" value="NaN" constant="false" />
-  <parameter id="qual_con_PYKF_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_fadR_bar" value="NaN" constant="false" />
-  <parameter id="Glcpts_aux2" value="NaN" constant="false" />
-  <parameter id="qual_con_dcuR_bar" value="NaN" constant="false" />
-  <parameter id="Rib_neg_aux" value="NaN" constant="false" />
-  <parameter id="Glc_neg" value="NaN" constant="false" />
-  <parameter id="Glcpts_aux1" value="NaN" constant="false" />
-  <parameter id="Lcts_neg_aux" value="NaN" constant="false" />
-  <parameter id="LacPyr_neg_aux" value="NaN" constant="false" />
-  <parameter id="Rib_neg" value="NaN" constant="false" />
-  <parameter id="DcuR_aux" value="NaN" constant="false" />
-  <parameter id="Gl_neg_aux" value="NaN" constant="false" />
-  <parameter id="qual_con_ACEA_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_arcA_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_NDH_bar" value="NaN" constant="false" />
-  <parameter id="FNR_neg" value="NaN" constant="false" />
-  <parameter id="carbon" value="NaN" constant="false" />
-  <parameter id="Mlc_neg" value="NaN" constant="false" />
-  <parameter id="Glc_aux" value="NaN" constant="false" />
-  <parameter id="AC_neg" value="NaN" constant="false" />
-  <parameter id="SuccEth_neg_aux" value="NaN" constant="false" />
-  <parameter id="O2_neg" value="NaN" constant="false" />
-  <parameter id="Gal_aux" value="NaN" constant="false" />
   <parameter id="qual_con_MDHR_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_iclR_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_fnr_bar" value="NaN" constant="false" />
-  <parameter id="CFSS_aux" value="NaN" constant="false" />
-  <parameter id="Lcts_neg" value="NaN" constant="false" />
-  <parameter id="qual_con_ACS_bar" value="NaN" constant="false" />
-  <parameter id="Lcts_aux" value="NaN" constant="false" />
-  <parameter id="qual_con_FRDA_bar" value="NaN" constant="false" />
-  <parameter id="PYR_aux1" value="NaN" constant="false" />
-  <parameter id="Rib_aux" value="NaN" constant="false" />
-  <parameter id="qual_con_glpR_bar" value="NaN" constant="false" />
-  <parameter id="GlpR_neg" value="NaN" constant="false" />
+  <parameter id="Gal_aux" value="NaN" constant="false" />
+  <parameter id="FDP_aux" value="NaN" constant="false" />
+  <parameter id="qual_con_ACEA_bar" value="NaN" constant="false" />
   <parameter id="qual_con_ACEE_bar" value="NaN" constant="false" />
+  <parameter id="RbsR_neg" value="NaN" constant="false" />
+  <parameter id="LacPyr_neg" value="NaN" constant="false" />
+  <parameter id="AC_neg" value="NaN" constant="false" />
+  <parameter id="Arca_GlpR_neg" value="NaN" constant="false" />
+  <parameter id="GlpR_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_glpR_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_iclR_bar" value="NaN" constant="false" />
+  <parameter id="LacI_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_GLPA_bar" value="NaN" constant="false" />
+  <parameter id="Glcpts_aux1" value="NaN" constant="false" />
+  <parameter id="qual_con_ACS_bar" value="NaN" constant="false" />
   <parameter id="carbon_neg" value="NaN" constant="false" />
-  <parameter id="qual_con_DCTAR_bar" value="NaN" constant="false" />
+  <parameter id="SuccEth_neg_aux" value="NaN" constant="false" />
+  <parameter id="LacPyr_neg_aux" value="NaN" constant="false" />
+  <parameter id="Lcts_neg_aux" value="NaN" constant="false" />
+  <parameter id="qual_con_arcA_bar" value="NaN" constant="false" />
   <parameter id="Arca_neg" value="NaN" constant="false" />
-  <parameter id="qual_con_rpiR_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_ADHER_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_pdhR_bar" value="NaN" constant="false" />
   <parameter id="Cra_neg" value="NaN" constant="false" />
-  <parameter id="GLC_aux" value="NaN" constant="false" />
+  <parameter id="Glcpts_aux2" value="NaN" constant="false" />
+  <parameter id="qual_con_FRDA_bar" value="NaN" constant="false" />
+  <parameter id="GalRS_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_fnr_bar" value="NaN" constant="false" />
+  <parameter id="O2_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_RPIBR_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_dcuR_bar" value="NaN" constant="false" />
   <parameter id="GG_aux" value="NaN" constant="false" />
-  <parameter id="O2_Cra_neg" value="NaN" constant="false" />
-  <parameter id="qual_con_ACEB_bar" value="NaN" constant="false" />
-  <parameter id="qual_con_DCUBR_bar" value="NaN" constant="false" />
+  <parameter id="CFSS_aux" value="NaN" constant="false" />
+  <parameter id="ArcA_aux" value="NaN" constant="false" />
+  <parameter id="FNR_neg" value="NaN" constant="false" />
   <parameter id="GL_neg" value="NaN" constant="false" />
+  <parameter id="IclR_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_PPSA_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_GLCPTS_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_PYKF_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_CYDA_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_FUMBR_bar" value="NaN" constant="false" />
+  <parameter id="ArcA_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_rpiR_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_mlc_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_ACEB_bar" value="NaN" constant="false" />
+  <parameter id="Rib_aux" value="NaN" constant="false" />
+  <parameter id="O2_Cra_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_DCUBR_bar" value="NaN" constant="false" />
+  <parameter id="GLC_aux" value="NaN" constant="false" />
+  <parameter id="DcuR_aux" value="NaN" constant="false" />
+  <parameter id="qual_con_galS_bar" value="NaN" constant="false" />
+  <parameter id="Lcts_aux" value="NaN" constant="false" />
+  <parameter id="Glc_aux" value="NaN" constant="false" />
+  <parameter id="PYR_neg_aux3" value="NaN" constant="false" />
+  <parameter id="qual_con_lacI_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_SUCA_bar" value="NaN" constant="false" />
+  <parameter id="Rib_neg_aux" value="NaN" constant="false" />
+  <parameter id="qual_con_GLPD_bar" value="NaN" constant="false" />
+  <parameter id="DFPP_aux" value="NaN" constant="false" />
+  <parameter id="Gl_neg_aux" value="NaN" constant="false" />
+  <parameter id="Mlc_neg" value="NaN" constant="false" />
+  <parameter id="FNR_aux" value="NaN" constant="false" />
+  <parameter id="qual_con_dcuS_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_galR_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_rbsR_bar" value="NaN" constant="false" />
+  <parameter id="carbon" value="NaN" constant="false" />
+  <parameter id="PYR_aux1" value="NaN" constant="false" />
+  <parameter id="qual_con_fadR_bar" value="NaN" constant="false" />
+  <parameter id="qual_con_DCTAR_bar" value="NaN" constant="false" />
+  <parameter id="DLD1R_aux" value="NaN" constant="false" />
+  <parameter id="Rib_neg" value="NaN" constant="false" />
+  <parameter id="Lcts_neg" value="NaN" constant="false" />
+  <parameter id="qual_con_NDH_bar" value="NaN" constant="false" />
+  <parameter id="Glc_neg" value="NaN" constant="false" />
+  <parameter id="F6P_neg" value="NaN" constant="false" />
 </listOfParameters>
 </model>
 </sbml>
