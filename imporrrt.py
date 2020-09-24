@@ -1,6 +1,10 @@
+"""
+SBML import: mainly wrapper to libsbml and some additional features to allow
+RAM and rdeFBa event handling
+"""
 import re
-import numpy as np
 from collections import OrderedDict
+import numpy as np
 
 try:
     import libsbml as sbml
@@ -170,7 +174,7 @@ class Parrrser:
             # no annotation -> no deFBA
             else:
                 raise RAMError('Species ' + s_id + ' has no RAM annotation. Aborting import.')
-            
+
             # get species attributes
             if s_type == 'extracellular':
                 self.extracellular_dict[s_id]['name'] = s.getName()
@@ -197,7 +201,7 @@ class Parrrser:
         # QUALITATIVE SPECIES
         if is_rdeFBA:
             qual_model = sbmlmodel.getPlugin('qual')
-    
+
             for q in qual_model.getListOfQualitativeSpecies():
                 q_id = q.getId()
                 self.qualitative_species_dict[q_id] = {}
@@ -224,7 +228,7 @@ class Parrrser:
                     except AttributeError:
                         print("Error: Variable " + v + " not defined!")
                 self.rules_dict[v] = {}
-    
+
                 # import variables on right-hand side (don't import equalities of qual species for now)
                 if rule.getMath().getNumChildren() > 1:
                     type_code = rule.getMath().getType()
@@ -355,7 +359,7 @@ class Parrrser:
 
                     # Import forward kcat values
                     # check whether reaction is spontaneous
-                    if self.reactions_dict[r_id]['geneProduct'] == None:
+                    if self.reactions_dict[r_id]['geneProduct'] is None:
                         # 'NaN' is marker for degradation reactions
                         if ram_element.getAttrValue('kcatForward', url) == 'NaN':
                             self.reactions_dict[r_id]['kcatForward'] = np.nan
@@ -387,10 +391,10 @@ class Parrrser:
 
                     # Import backward kcat values
                     # first check if reaction is reversible
-                    if self.reactions_dict[r_id]['reversible'] == True:
+                    if self.reactions_dict[r_id]['reversible']:
                         # check whether reaction is spontaneous
-                        if self.reactions_dict[r_id]['geneProduct'] == None:
-                           self.reactions_dict[r_id]['kcatBackward'] = 0.0
+                        if self.reactions_dict[r_id]['geneProduct'] is None:
+                            self.reactions_dict[r_id]['kcatBackward'] = 0.0
                         # enzymatically catalyzed reactions
                         else:
                             # kcatForward not given is only allowed for spontaneous reactions
@@ -425,7 +429,7 @@ class Parrrser:
             # no annotation -> no (r-)deFBA
             else:
                 raise RAMError('Reaction ' + r_id + ' has no RAM annotation. Aborting import.')
-    
+
             # fill stoichiometric matrix (and degradation stoichiometric matrix)
             j = list(sbmlmodel.reactions).index(r)
             for educt in r.getListOfReactants():
@@ -473,7 +477,7 @@ class Parrrser:
                 if not e.getTrigger().getInitialValue():
                     print(
                         "Warning: Initial value of trigger element of event " + e_id + " is set to False, but should be True to prevent triggering at the initial time.")
-                trigger = re.split('\(|, |\)', sbml.formulaToString(e.getTrigger().getMath()))
+                trigger = re.split(r'\(|, |\)', sbml.formulaToString(e.getTrigger().getMath()))
                 self.events_dict[e_id]['variable'] = trigger[1]
                 self.events_dict[e_id]['relation'] = trigger[0]
                 try:
@@ -481,10 +485,10 @@ class Parrrser:
                 except AttributeError:
                     raise SBMLError('The parameter ' + trigger[2] + ' has no value.')
                 self.events_dict[e_id]['threshold'] = threshold
-                            
+
                 self.events_dict[e_id]['listOfAssignments'] = []
                 self.events_dict[e_id]['listOfEffects'] = []
-    
+
                 for ass in e.getListOfEventAssignments():
                     self.events_dict[e_id]['listOfAssignments'].append(ass.getVariable())
                     self.events_dict[e_id]['listOfEffects'].append(int(sbml.formulaToString(ass.getMath())))

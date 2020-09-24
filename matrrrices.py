@@ -1,6 +1,11 @@
+"""
+Wrapper to interface PyrrrateFBa models and the underlying optimal control
+framework
+"""
+import sys
 import numpy as np
 import scipy.sparse as sp
-import sys
+from .optimization.lp import INFINITY
 
 
 class Matrrrices:
@@ -17,11 +22,11 @@ class Matrrrices:
                                        y in R^{n_y}, u in R^{n_u},
                                        x in B^{n_x}
     """
-    
+
     def __init__(self, model, run_rdeFBA=True):
         if run_rdeFBA and not model.is_rdeFBA:
             sys.exit('Cannot perform r-deFBA on a deFBA model!')
-        
+
         self.construct_vectors(model)
         self.construct_objective(model)
         self.construct_boundary(model)
@@ -110,7 +115,7 @@ class Matrrrices:
         matrix_start = np.zeros((0, len(self.y_vec)), dtype=float)
         # how to encode cyclic behaviour in SBML?
         # matrix_end = np.zeros((0, len(self.y_vec)), dtype=float)
-        vec_bndry = np.zeros((0,1), dtype=float)
+        vec_bndry = np.zeros((0, 1), dtype=float)
         # append rows if initialAmount is given and fill bndry vector
         for ext in model.extracellular_dict.keys():
             if np.isnan(model.extracellular_dict[ext]["initialAmount"]):
@@ -132,7 +137,7 @@ class Matrrrices:
                 new_row[self.y_vec.index(macrom)] = 1
                 matrix_start = np.append(matrix_start, [new_row], axis=0)
                 vec_bndry = np.append(vec_bndry, [[amount]], axis=0)
-                
+
         # enforce that the weighted sum of all macromolecules is 1
         # only if there is a macromolecule without an initialAmount specified
         enforce_biomass = False
@@ -198,10 +203,6 @@ class Matrrrices:
         """
         construct vectors lb, ub
         """
-        # define this at a higher level?
-        import gurobipy
-        INFINITY = gurobipy.GRB.INFINITY
-
         lbvec = np.array(len(self.u_vec) * [[0.0]])
         ubvec = np.array(len(self.u_vec) * [[INFINITY]])
 
@@ -237,7 +238,7 @@ class Matrrrices:
         n_assignments = 0
         for event in model.events_dict.keys():
             n_assignments += len(model.events_dict[event]['listOfAssignments'])
-        
+
         matrix_B_y_1 = np.zeros((n_assignments, len(self.y_vec)), dtype=float)
         matrix_B_u_1 = np.zeros((n_assignments, len(self.u_vec)), dtype=float)
         matrix_B_x_1 = np.zeros((n_assignments, len(self.x_vec)), dtype=float)
@@ -274,7 +275,7 @@ class Matrrrices:
                         else:
                             print(variable + ' not defined as Species or Reaction!')
                 event_index += 1
- 
+
 
             # Difference between leq and lt??
             elif model.events_dict[event]['relation'] == 'leq' or model.events_dict[event]['relation'] == 'lt':
@@ -290,7 +291,7 @@ class Matrrrices:
                             elif model.events_dict[event]['listOfEffects'][i] == 1:
                                 matrix_B_x_1[event_index][self.x_vec.index(affected_bool)] = l
                                 vec_B_1[event_index] = -model.events_dict[event]['threshold']
-    
+
                         # boolean variable depends on flux
                         elif variable in self.u_vec:
                             flux_index = self.u_vec.index(variable)
@@ -313,16 +314,15 @@ class Matrrrices:
                 n_rules += 1
             elif 'operator' in model.rules_dict[rule]:
                 n_rules += len(model.rules_dict[rule]['indicators']) + 1
-                                
 
         matrix_B_y_2 = np.zeros((n_rules, len(self.y_vec)), dtype=float)
         matrix_B_u_2 = np.zeros((n_rules, len(self.u_vec)), dtype=float)
         matrix_B_x_2 = np.zeros((n_rules, len(self.x_vec)), dtype=float)
         vec_B_2 = np.array(n_rules * [[0.0]])
-        
+
         rule_row_index = 0
 
-        for index, rule in enumerate(model.rules_dict):
+        for rule in model.rules_dict.keys():
             # Control of continuous dynamics by discrete states
             if 'reactionID' in model.rules_dict[rule]:
                 rxn_index = self.u_vec.index(model.rules_dict[rule]['reactionID'])
@@ -332,7 +332,7 @@ class Matrrrices:
                     if np.isnan(model.rules_dict[rule]['threshold']):
                         matrix_B_x_2[rule_row_index][par_index] = l
                     else:
-                        matrix_B_x_2[rule_row_index][par_index] = float(model.rules_dict[rule]['threshold'])                        
+                        matrix_B_x_2[rule_row_index][par_index] = float(model.rules_dict[rule]['threshold'])
                 if model.rules_dict[rule]['direction'] == 'upper':
                     matrix_B_u_2[rule_row_index][rxn_index] = 1
                     if np.isnan(model.rules_dict[rule]['threshold']):
@@ -392,12 +392,12 @@ class Matrrrices:
 
         # check whether the model contains a maintenance reaction; if so, pass index
         main_rxn = None
-        for index, rxn in enumerate(model.reactions_dict.keys()):
+        for rxn in model.reactions_dict.keys():
             if model.reactions_dict[rxn]['maintenanceScaling'] > 0:
                 main_rxn = rxn
                 matrix_y_3, matrix_u_3 = self.construct_Hm(model, main_rxn)
                 break
-        
+
         # stacking of the resulting matrices
         if n_quota > 0:
             if main_rxn:
@@ -413,7 +413,7 @@ class Matrrrices:
             self.matrix_u = sp.csr_matrix(matrix_u_2)
             self.matrix_y = sp.csr_matrix(matrix_y_2)
         # h always contains only zeros
-        self.vec_h = np.zeros((self.matrix_u.shape[0],1), dtype=float)
+        self.vec_h = np.zeros((self.matrix_u.shape[0], 1), dtype=float)
 
     def construct_Hb(self, model, n_rows):
         """
@@ -437,7 +437,7 @@ class Matrrrices:
                                                                      model.macromolecules_dict[macrom][
                                                                          'molecularWeight']
                     i += 1
-                
+
         return HB_matrix
 
     def construct_HcHe(self, model):
@@ -479,7 +479,7 @@ class Matrrrices:
                 c_rev = 0  # reversible-reaction-per-enzyme counter
                 # iterate over reactions
                 if c_rev <= n_rev[e]:
-                    for rxn, key in model.reactions_dict.items():
+                    for rxn in model.reactions_dict.keys():
                         # if there is a reaction catalyzed by this macromolecule (i.e. it is a true enzyme)
                         if model.reactions_dict[rxn]['geneProduct'] == enzyme:
                             enzyme_catalyzes_anything = True
@@ -529,11 +529,11 @@ class Matrrrices:
 
         main_scaling = model.reactions_dict[main_rxn]['maintenanceScaling']
         main_index = self.u_vec.index(main_rxn)
-        
+
         # matrix has entry -1 where the column corresponds to the maintenance reaction, zeros elsewhere
         matrix_HM_u = np.zeros(len(self.u_vec), dtype=float)
         matrix_HM_u[main_index] = -1.0
-        
+
         # entries in matrix correspond to weights * maintenanceScaling
         matrix_HM_y = np.zeros(len(self.y_vec), dtype=float)
         for macrom in model.macromolecules_dict.keys():

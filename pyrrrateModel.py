@@ -1,7 +1,13 @@
+"""
+Main class for PyrrrateFBA models
+"""
+
 import numpy as np
 
-class Model(object):
-
+class Model():
+    """
+    PyrrrateFBA Models
+    """
     def __init__(self, ram_model):
         self.name = ram_model.name
         self.is_rdeFBA = ram_model.is_rdeFBA
@@ -17,6 +23,9 @@ class Model(object):
 
 
     def print_numbers(self):
+        """
+        display relevant integer values of a pyrrrateFBA model
+        """
         quota = 0
         stor = 0
 
@@ -35,8 +44,10 @@ class Model(object):
             if not self.reactions_dict[rxn]['geneProduct']:
                 spon += 1
 
-        print('species\t\t\t\t' + str(len(self.extracellular_dict) + len(self.metabolites_dict) + len(self.macromolecules_dict)) \
-              + '\n\t metabolites\t\t' + str(len(self.extracellular_dict) + len(self.metabolites_dict)) \
+        print('species\t\t\t\t' + str(len(self.extracellular_dict) + len(self.metabolites_dict) \
+              + len(self.macromolecules_dict)) \
+              + '\n\t metabolites\t\t' + str(len(self.extracellular_dict) \
+              + len(self.metabolites_dict)) \
               + '\n\t\t extracellular\t' + str(len(self.extracellular_dict)) \
               + '\n\t\t intracellular\t' + str(len(self.metabolites_dict)) \
               + '\n\t macromolecules\t\t' + str(len(self.macromolecules_dict)) \
@@ -71,7 +82,8 @@ class Model(object):
                 if 'biomass' in rxn:
                     brxns = [list(self.reactions_dict.keys()).index(rxn)]
             if not brxns:
-                print('Could not find biomass reaction. Please specify reaction flux to be optimized.')
+                print('Could not find biomass reaction.' \
+                      + ' Please specify reaction flux to be optimized.')
                 return None
         else:
             # check whether rxn exists
@@ -110,23 +122,23 @@ class Model(object):
         gpmodel.setParam('OutputFlag', False)
 
         # Add variables to model
-        vars = []
+        model_vars = []
         for j in range(cols):
-            vars.append(gpmodel.addVar(lb=lb[j], ub=ub[j], vtype=GRB.CONTINUOUS))
+            model_vars.append(gpmodel.addVar(lb=lb[j], ub=ub[j], vtype=GRB.CONTINUOUS))
 
         # Populate S matrix
         for i in range(rows):
             expr = gp.LinExpr()
             for j in range(cols):
                 if S[i, j] != 0:
-                    expr += S[i, j] * vars[j]
+                    expr += S[i, j] * model_vars[j]
             gpmodel.addConstr(expr, GRB.EQUAL, 0)
 
         # Populate objective
         obj = gp.LinExpr()
         for j in range(cols):
             if c[j] != 0:
-                obj += c[j] * vars[j]
+                obj += c[j] * model_vars[j]
         gpmodel.setObjective(obj, GRB.MAXIMIZE)
 
         # Solve
@@ -134,7 +146,7 @@ class Model(object):
 
         # Save optimal flux for biomass reactions
         if gpmodel.status == GRB.Status.OPTIMAL:
-            x = gpmodel.getAttr('x', vars)
+            x = gpmodel.getAttr('x', model_vars)
             sols = [x[i] for i in brxns]
 
         return sols
