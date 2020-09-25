@@ -4,7 +4,10 @@ Simple flux balance analysis
 
 import numpy as np
 from scipy.sparse import csr_matrix
+from .results import Solutions
+from .. import matrrrices as mat
 from ..optimization.lp import LPModel
+from ..optimization.oc import mi_cp_linprog
 
 
 def perform_fba(model, **kwargs):
@@ -29,7 +32,7 @@ def perform_fba(model, **kwargs):
     # Get QSSA stoichiometric matrix
     smat = model.stoich # FIXME: This is wrong if we have macromolecules in the model,
     # better: choose smat1 from the Matrrrices but then we probably need other flux
-    # constraints of have to give an error message
+    # constraints or have to give an error message
     nrows, ncols = smat.shape
     high_reaction_flux = 1000.0
     lbvec = np.zeros(ncols)  # lower flux bounds
@@ -62,3 +65,35 @@ def perform_fba(model, **kwargs):
     lp_model.optimize()
     sol = lp_model.get_solution()
     return sol
+
+
+def perform_rdefba(model, **kwargs):
+    """
+    Use (r)deFBA to approximate the dynamic behavior of the model
+
+    Parameters
+    ----------
+    model : PyrrrateFBAModel
+        main biochemical model.
+    **kwargs : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    sol : Solutions instance containing the time series information
+
+    TODO : More options to "play around"
+    """
+    run_rdeFBA = kwargs.get("run_rdeFBA", True) # TODO Check whether it is possible at all first(!?) or obtain automatically from model
+    t_0 = kwargs.get("t_0", 0.0)
+    t_end = kwargs.get("t_end", 1.0)
+    n_steps = kwargs.get("n_steps", 51)
+    varphi = kwargs.get("varphi", 0.0)
+    #
+    mtx = mat.Matrrrices(model, run_rdeFBA=run_rdeFBA)
+    # Call the OC routine
+    tt, tt_shift, sol_y, sol_u, sol_x = mi_cp_linprog(mtx, t_0, t_end, n_steps=n_steps, varphi=varphi)
+    
+    sols = Solutions(tt, tt_shift, sol_y, sol_u, sol_x)
+    
+    return sols

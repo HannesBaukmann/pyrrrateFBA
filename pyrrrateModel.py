@@ -3,7 +3,8 @@ Main class for PyrrrateFBA models
 """
 
 import numpy as np
-from .simulation.fba import perform_fba
+from .simulation import fba
+#from .simulation.fba import perform_fba
 
 class Model():
     """
@@ -71,8 +72,23 @@ class Model():
         """
         performs Flux Balance Analysis
         """
-        sol = perform_fba(self, objective=None, maximize=True)
+        sol = fba.perform_fba(self, objective=None, maximize=True)
         return sol
+    
+    
+    #def rdeFBA(self, tspan, varphi, run_rdeFBA=True):
+    def rdeFBA(self, tspan, varphi, **kwargs):
+        """
+        Perform (r)deFBA
+        """
+        kwargs['t_0'] = tspan[0]
+        kwargs['t_end'] = tspan[-1]
+        kwargs['varphi'] = varphi
+        #sol = fba.perform_rdefba(self, run_rdeFBA=run_rdeFBA, varphi=varphi, t_0=tspan[0], t_end=tspan[-1])
+        sol = fba.perform_rdefba(self, **kwargs)
+
+        return sol
+        
 """
         import gurobipy as gp
         from gurobipy import GRB
