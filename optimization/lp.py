@@ -5,6 +5,7 @@ Collection of routines for (Mixed Integer) Linear Programming
 import numpy as np
 import scipy.sparse as sp
 import gurobipy # TODO Make this dependent on installed/configured solvers
+#import scipy.optimize as sciopt -> linprog, 
 
 
 # Module constants
@@ -12,10 +13,15 @@ INFINITY = gurobipy.GRB.INFINITY
 OPTIMAL = gurobipy.GRB.OPTIMAL
 MINIMIZE = gurobipy.GRB.MINIMIZE
 
+# Constants for BigM and small M constraints
+EPSILON = 10**-7
+BIGM = 10**8
+MINUSBIGM = -BIGM
+
 class LPModel():
     """
     Simple wrapper class to handle various LP solvers in a unified way
-    TODO - add more solvers, more options
+    TODO - add more solvers, more options, allow for heuristics
     """
     def __init__(self, name=""):
         self.name = name
@@ -73,7 +79,7 @@ class MILPModel(LPModel):
         """
         cf. sparse_model_setup for the LPModel class
         """
-        n_booles = len(barf)
+        n_booles = len(barf) # TODO: Test the case n_booles == 0 and fix if necessary
         m_aeqmat = aeqmat.shape[0]
         _sparse_model_setup_gurobi(
             self.solver_model,
@@ -123,7 +129,6 @@ def _sparse_model_setup_gurobi(model, fvec, amat, bvec, aeqmat, beq, lbvec,
     _add_sparse_constraints_gurobi(model, amat, bvec, x_variables, gurobipy.GRB.LESS_EQUAL)
     _add_sparse_constraints_gurobi(model, aeqmat, beq, x_variables, gurobipy.GRB.EQUAL)
     model.update()
-#    return model
 
 
 def _add_sparse_constraints_gurobi(model, amat, bvec, x_variables, sense):

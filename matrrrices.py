@@ -5,7 +5,7 @@ framework
 import sys
 import numpy as np
 import scipy.sparse as sp
-from .optimization.lp import INFINITY
+from .optimization.lp import INFINITY, EPSILON, BIGM, MINUSBIGM
 
 
 class Matrrrices:
@@ -21,14 +21,37 @@ class Matrrrices:
              bmaty0*y_0 + bmatyend*y_end == b_bndry
                                        y in R^{n_y}, u in R^{n_u},
                                        x in B^{n_x}
+    TODO: Create names for the constraints such that is becomes easier to "play
+          with them" (meaning: to relax some or see which make the problem infeasible)
+    Class Matrrrices has fields:
+        phi1
+        phi2
+        phi3
+        smat1
+        smat2
+        smat3
+        smat4
+        f_1
+        lbvec
+        ubvec
+        hmaty
+        hmatu
+        hvec
+        - matrix_B_y:  hbmaty
+        - matrix_B_u:  hbmatu
+        - matrix_B_x:  hbmatx
+        - vec_B:       hbvec
+        bmaty0
+        bmatyend
+        b_bndry
     """
 
     def __init__(self, model, run_rdeFBA=True):
         if run_rdeFBA and not model.is_rdeFBA:
             sys.exit('Cannot perform r-deFBA on a deFBA model!')
 
-        self.construct_vectors(model)
-        self.construct_objective(model)
+        self.construct_vectors(model)   # TODO: Where is f_1?
+        self.construct_objective(model) # TODO: It would be great to be more flexible here
         self.construct_boundary(model)
         self.construct_reactions(model)
         self.construct_flux_bounds(model)
@@ -38,6 +61,7 @@ class Matrrrices:
         # corresponding deFBA model is obtained by omitting the regulatory constraints
         else:
             # matrices must have (at least) one row to keep linprog working
+            # TODO: Change this behavior in lp
             self.matrix_B_y = np.zeros((1, len(self.y_vec)), dtype=float)
             self.matrix_B_u = np.zeros((1, len(self.u_vec)), dtype=float)
             self.matrix_B_x = np.zeros((1, 1), dtype=float)
@@ -45,7 +69,8 @@ class Matrrrices:
 
     def construct_vectors(self, model):
         """
-        construct vectors containing the IDs of dynamical species, reactions, and boolean variables, respectively
+        construct vectors containing the IDs of dynamical species, reactions,
+        and boolean variables, respectively
         """
 
         # species vector y contains only dynamical species, i.e.:
@@ -163,7 +188,8 @@ class Matrrrices:
         """
 
         # select rows of species with QSSA
-        # # (first entries in stoichiometric matrix belong to extreacellular species, followed by internal metabolites)
+        # # (first entries in stoichiometric matrix belong to extreacellular species,
+        # followed by internal metabolites)
         # initialize with indices of internal metabolites
         rows_qssa = list(
             range(len(model.extracellular_dict), len(model.extracellular_dict) + len(model.metabolites_dict)))
@@ -227,18 +253,15 @@ class Matrrrices:
         construct matrices for regulation
         """
 
-        # define at a higher level!
-        epsilon = 0.001
-        u = 10.0 ** 8
-        l = -10.0 ** 8
+        epsilon = EPSILON
+        u = BIGM
+        l = MINUSBIGM
 
         # control of discrete jumps
 
         # initialize matrices
-        n_assignments = 0
-        for event in model.events_dict.keys():
-            n_assignments += len(model.events_dict[event]['listOfAssignments'])
-
+        n_assignments = sum([len(evnt['listOfAssignments']) 
+                             for evnt in model.events_dict.values()])
         matrix_B_y_1 = np.zeros((n_assignments, len(self.y_vec)), dtype=float)
         matrix_B_u_1 = np.zeros((n_assignments, len(self.u_vec)), dtype=float)
         matrix_B_x_1 = np.zeros((n_assignments, len(self.x_vec)), dtype=float)
@@ -277,7 +300,7 @@ class Matrrrices:
                 event_index += 1
 
 
-            # Difference between leq and lt??
+            # TODO Difference between leq and lt??
             elif model.events_dict[event]['relation'] == 'leq' or model.events_dict[event]['relation'] == 'lt':
                 for i, affected_bool in enumerate(model.events_dict[event]['listOfAssignments']):
                     for variable in variables:
@@ -378,6 +401,7 @@ class Matrrrices:
         """
         constructs matrices H_y and H_u
         """
+        # TODO: What if more than one enzyme catalyzes one reactions? One should at least check.
         # check whether the model contains quota compounds
         n_quota = 0  # number of quota and storage compounds
         for macrom in model.macromolecules_dict.keys():
