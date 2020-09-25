@@ -3,6 +3,7 @@ Main class for PyrrrateFBA models
 """
 
 import numpy as np
+from .simulation.fba import perform_fba
 
 class Model():
     """
@@ -70,7 +71,9 @@ class Model():
         """
         performs Flux Balance Analysis
         """
-
+        sol = perform_fba(self, objective=None, maximize=True)
+        return sol
+"""
         import gurobipy as gp
         from gurobipy import GRB
 
@@ -150,3 +153,4 @@ class Model():
             sols = [x[i] for i in brxns]
 
         return sols
+"""
