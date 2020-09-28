@@ -6,7 +6,7 @@ import scipy.sparse as sp
 from . import lp as lp_wrapper
 
 
-# TODO: Change at least order of arguments, add additive vector f_1 in qssa rows
+# TODO: add additive vector f_1 in qssa rows (first in Matrrrices)
 def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0):
     """
     Approximate the solution of the mixed integer optimal control problem
@@ -25,15 +25,17 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0):
      objective
     all vectors are always supposed to be np.array, all matrices
      scipy.sparse.csr_matrix
-    @DEBUG
+    DEBUG
      - This is supposed to be temporary and replaced by a more general oc
        routine
-    @TODO
-     - create/use a class for the time series data in the output
+    TODO
      - more security checks
      - add additional terms in objective and dynamics
      - allow irregular time grid
+     - allow more integration schemes
      - ...
+    MAYBE
+     - create/use a class for the time series data in the output    
     """
 
 
@@ -51,13 +53,13 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0):
 
     # Discretization of objective
     # Lagrange part @MAYBE: add possib. for  more complicated objective
-    f_y = np.hstack([0.5 * del_t * matrices.phi1,
-                     np.hstack((n_steps - 1) * [del_t * matrices.phi1]),
+    f_y = np.vstack([0.5 * del_t * matrices.phi1,
+                     np.vstack((n_steps - 1) * [del_t * matrices.phi1]),
                      0.5 * del_t * matrices.phi1])
     expvals = np.exp(-varphi * tgrid)
-    f_y *= np.repeat(expvals, n_y)
-    f_u = np.array(n_allu * [0.0])
-    f_x = np.array(n_allx * [0.0])
+    f_y *= np.repeat(expvals, n_y)[:,None]
+    f_u = np.zeros((n_allu, 1))
+    f_x = np.zeros((n_allx, 1))
     # Mayer part
     f_y[0:n_y] += matrices.phi2
     f_y[n_steps * n_y:n_ally] += matrices.phi3
@@ -65,7 +67,7 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0):
     # Discretization of dynamics
     (aeqmat1_y, aeqmat1_u, beq1) = \
         _inflate_constraints(-sp.eye(n_y) + 0.5 * del_t * matrices.smat4, sp.eye(n_y) + 0.5 * del_t * matrices.smat4,
-                             del_t * matrices.smat2, np.array(n_y * [[0.0]]), n_steps=n_steps)
+                             del_t * matrices.smat2, np.zeros((n_y, 1)), n_steps=n_steps)
 
     # Discretization of QSSA rows (this is simplified and only works for constant smat1)
     (aeqmat2_y, aeqmat2_u, beq2) = \
@@ -76,7 +78,7 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0):
     ub_u = np.vstack(n_steps*[matrices.ubvec])
 
     # Discretization of positivity
-    lb_y = np.array(n_ally*[[0.0]])
+    lb_y = np.zeros((n_ally,1))
     ub_y = np.array(n_ally*[[lp_wrapper.INFINITY]])
 
     # Discretization of mixed constraints, This only works for constant smat2
@@ -96,7 +98,7 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0):
     beq3 = matrices.vec_bndry
 
     # Collect all data
-    f_all = np.hstack([f_y, f_u])
+    f_all = np.vstack([f_y, f_u])
     fbar_all = f_x
 
     aeqmat = sp.bmat([[aeqmat1_y, aeqmat1_u],
@@ -118,13 +120,14 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0):
     variable_names += ["x_"+str(j+1)+"_"+str(i) for i in range(n_steps) for j in range(n_x)]
 
     model = lp_wrapper.MILPModel(name="MIOC Model - Full par., midpoint rule")
-    # TODO: Name should be derived from biological model
+    # TODO: Name should be derived from biological model/it should be possible to provide it from outside.
     model.sparse_mip_model_setup(f_all, fbar_all, amat, abarmat, bineq, aeqmat,
                                  beq, lb_all, ub_all, variable_names)
 
     model.optimize()
 
     if model.status == lp_wrapper.OPTIMAL:
+        # TODO Outsource this deslicing
         y_data = np.reshape(model.get_solution()[:n_ally], (n_steps+1, n_y))
         u_data = np.reshape(model.get_solution()[n_ally:n_ally+n_allu], (n_steps, n_u))
         x_data = np.reshape(model.get_solution()[n_ally+n_allu:], (n_steps, n_x))

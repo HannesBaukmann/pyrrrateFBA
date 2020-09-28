@@ -83,13 +83,13 @@ class MILPModel(LPModel):
         m_aeqmat = aeqmat.shape[0]
         _sparse_model_setup_gurobi(
             self.solver_model,
-            np.hstack([fvec, barf]), # f
+            np.vstack([fvec, barf]), # f
             sp.bmat([[amat, baramat]], format='csr'), # A,
             bvec, # b
             sp.bmat([[aeqmat, sp.csr_matrix((m_aeqmat, n_booles))]], format='csr'), # Aeq
             beq, # beq
-            np.vstack([lbvec, np.array([[0.0]]*n_booles)]), # lb
-            np.vstack([ubvec, np.array([[1.0]]*n_booles)]), # ub
+            np.vstack([lbvec, np.zeros((n_booles,1))]), # lb
+            np.vstack([ubvec, np.ones((n_booles,1))]), # ub
             variable_names,
             nbooles=n_booles)
 
@@ -115,6 +115,7 @@ def _sparse_model_setup_gurobi(model, fvec, amat, bvec, aeqmat, beq, lbvec,
     model.setObjective(MINIMIZE)
 
     n_x = lbvec.size - nbooles
+    print(fvec)
     x_variables = [model.addVar(lb=lbvec[i],
                                 ub=ubvec[i],
                                 obj=fvec[i],

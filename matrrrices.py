@@ -24,26 +24,29 @@ class Matrrrices:
     TODO: Create names for the constraints such that is becomes easier to "play
           with them" (meaning: to relax some or see which make the problem infeasible)
     Class Matrrrices has fields:
-        phi1
-        phi2
-        phi3
-        smat1
-        smat2
-        smat3
-        smat4
-        f_1
-        lbvec
-        ubvec
-        hmaty
-        hmatu
-        hvec
+        - y_vec : IDs
+        - u_vec : of the
+        - x_vec : respective entries in the model
+        - phi1 : phi1
+        - phi2 : phi2
+        - phi3 : phi3
+        - smat1 : smat1
+        - smat2 : smat2
+        - smat3 : smat3
+        - smat4: smat4
+        - <so-far-no-existent> : f_1
+        - lbvec        : lbvec
+        - ubvec        : ubvec
+        - matrix_u : hmaty
+        - matrix_y : hmatu
+        - vec_h : hvec
         - matrix_B_y:  hbmaty
         - matrix_B_u:  hbmatu
         - matrix_B_x:  hbmatx
         - vec_B:       hbvec
-        bmaty0
-        bmatyend
-        b_bndry
+        - matrix_start : bmaty0
+        - matrix_end: bmatyend
+        - vec_bndry : b_bndry
     """
 
     def __init__(self, model, run_rdeFBA=True):
@@ -62,10 +65,10 @@ class Matrrrices:
         else:
             # matrices must have (at least) one row to keep linprog working
             # TODO: Change this behavior in lp
-            self.matrix_B_y = np.zeros((1, len(self.y_vec)), dtype=float)
-            self.matrix_B_u = np.zeros((1, len(self.u_vec)), dtype=float)
-            self.matrix_B_x = np.zeros((1, 1), dtype=float)
-            self.vec_B = np.array([0.0])
+            self.matrix_B_y = np.zeros((0, len(self.y_vec)), dtype=float)
+            self.matrix_B_u = np.zeros((0, len(self.u_vec)), dtype=float)
+            self.matrix_B_x = np.zeros((0, 0), dtype=float)
+            self.vec_B = np.zeros((0, 1))
 
     def construct_vectors(self, model):
         """
@@ -117,7 +120,7 @@ class Matrrrices:
         constructs objective vectors Phi_1, Phi_2 and Phi_3.
         """
 
-        self.phi1 = np.zeros(len(self.y_vec), dtype=float)
+        self.phi1 = np.zeros((len(self.y_vec), 1), dtype=float)
 
         for macrom in model.macromolecules_dict.keys():
             self.phi1[self.y_vec.index(macrom)] = -model.macromolecules_dict[macrom]['objectiveWeight']
@@ -125,12 +128,12 @@ class Matrrrices:
         if phi2:
             self.phi2 = phi2
         else:
-            self.phi2 = np.zeros(len(self.y_vec), dtype=float)
+            self.phi2 = np.zeros((len(self.y_vec), 1), dtype=float)
 
         if phi3:
             self.phi3 = phi3
         else:
-            self.phi3 = np.zeros(len(self.y_vec), dtype=float)
+            self.phi3 = np.zeros((len(self.y_vec), 1), dtype=float)
 
     def construct_boundary(self, model):
         """
@@ -260,7 +263,7 @@ class Matrrrices:
         # control of discrete jumps
 
         # initialize matrices
-        n_assignments = sum([len(evnt['listOfAssignments']) 
+        n_assignments = sum([len(evnt['listOfAssignments'])
                              for evnt in model.events_dict.values()])
         matrix_B_y_1 = np.zeros((n_assignments, len(self.y_vec)), dtype=float)
         matrix_B_u_1 = np.zeros((n_assignments, len(self.u_vec)), dtype=float)
