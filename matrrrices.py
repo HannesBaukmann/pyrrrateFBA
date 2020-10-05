@@ -256,8 +256,8 @@ class Matrrrices:
         """
         construct vectors lb, ub
         """
-        lbvec = np.array(len(self.u_vec) * [[0.0]])
-        ubvec = np.array(len(self.u_vec) * [[INFINITY]])
+        lbvec = np.zeros((len(self.u_vec), 1))
+        ubvec = INFINITY*np.ones((len(self.u_vec), 1))
 
         # flux bounds determined by regulation are not considered here
         for index, rxn in enumerate(model.reactions_dict):

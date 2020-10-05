@@ -77,7 +77,7 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0):
     # Discretization of QSSA rows (this is simplified and only works for constant smat1)
     (aeqmat2_y, aeqmat2_u, beq2) = \
         _inflate_constraints(-0.5 * matrices.smat3, 0.5 * matrices.smat3, matrices.smat1,
-                             n_qssa * [[0.0]], n_steps=n_steps)
+                             np.zeros((n_qssa, 1)), n_steps=n_steps)
 
     # Discretization of flux bounds @MAYBE: allow time dependency here
     lb_u = np.vstack(n_steps*[matrices.lbvec])
