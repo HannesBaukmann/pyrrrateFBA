@@ -22,6 +22,7 @@ class Model():
         self.rules_dict = ram_model.rules_dict
         self.stoich = ram_model.stoich
         self.stoich_degradation = ram_model.stoich_degradation
+        # MAYBE: Add other fields/put the direct SBML-relations into a sub-structure
 
 
     def print_numbers(self):
@@ -72,101 +73,22 @@ class Model():
         """
         performs Flux Balance Analysis
         """
-        sol = fba.perform_fba(self, objective=None, maximize=True)
+        sol = fba.perform_fba(self, objective=objective, maximize=maximize)
         return sol
-    
-    
-    #def rdeFBA(self, tspan, varphi, run_rdeFBA=True):
-    def rdeFBA(self, tspan, varphi, **kwargs):
+
+
+    def rdeFBA(self, tspan, varphi, do_soa=False, **kwargs):
         """
         Perform (r)deFBA
         """
-        kwargs['t_0'] = tspan[0]
+        kwargs['t_0'] = tspan[0]     # QUESTION: Is this bad practice to alter kwargs within method?
         kwargs['t_end'] = tspan[-1]
         kwargs['varphi'] = varphi
-        #sol = fba.perform_rdefba(self, run_rdeFBA=run_rdeFBA, varphi=varphi, t_0=tspan[0], t_end=tspan[-1])
-        sol = fba.perform_rdefba(self, **kwargs)
+        if do_soa:
+            sol = fba.perform_soa_rdeFBA(self, **kwargs)
+        else:
+            sol = fba.perform_rdefba(self, **kwargs)
 
         return sol
-        
-"""
-        import gurobipy as gp
-        from gurobipy import GRB
 
-        brxns = []
-
-        if not objective:
-            # default objective is (first) biomass function
-            for rxn in self.reactions_dict.keys():
-                if 'biomass' in rxn:
-                    brxns = [list(self.reactions_dict.keys()).index(rxn)]
-            if not brxns:
-                print('Could not find biomass reaction.' \
-                      + ' Please specify reaction flux to be optimized.')
-                return None
-        else:
-            # check whether rxn exists
-            brxns = [list(self.reactions_dict.keys()).index(objective)]
-
-        S = self.stoich
-        rows, cols = S.shape
-
-        lb = [None] * cols  # lower bounds on v
-        ub = [None] * cols  # upper bounds on v
-
-        for index, rxn in enumerate(self.reactions_dict.keys(), start=0):
-            try:
-                ub[index] = self.reactions_dict[rxn]['upperFluxBound']
-            except KeyError:
-                ub[index] = 1000
-            if self.reactions_dict[rxn]['reversible']:
-                try:
-                    lb[index] = self.reactions_dict[rxn]['lowerFluxBound']
-                except KeyError:
-                    lb[index] = -1000
-            else:
-                lb[index] = 0
-
-        # c vector objective function
-        c = np.zeros(cols)
-        if maximize:
-            c[brxns] = 1
-        else:
-            c[brxns] = -1
-
-        # save solutions
-        sols = np.zeros(len(brxns))
-
-        gpmodel = gp.Model()
-        gpmodel.setParam('OutputFlag', False)
-
-        # Add variables to model
-        model_vars = []
-        for j in range(cols):
-            model_vars.append(gpmodel.addVar(lb=lb[j], ub=ub[j], vtype=GRB.CONTINUOUS))
-
-        # Populate S matrix
-        for i in range(rows):
-            expr = gp.LinExpr()
-            for j in range(cols):
-                if S[i, j] != 0:
-                    expr += S[i, j] * model_vars[j]
-            gpmodel.addConstr(expr, GRB.EQUAL, 0)
-
-        # Populate objective
-        obj = gp.LinExpr()
-        for j in range(cols):
-            if c[j] != 0:
-                obj += c[j] * model_vars[j]
-        gpmodel.setObjective(obj, GRB.MAXIMIZE)
-
-        # Solve
-        gpmodel.optimize()
-
-        # Save optimal flux for biomass reactions
-        if gpmodel.status == GRB.Status.OPTIMAL:
-            x = gpmodel.getAttr('x', model_vars)
-            sols = [x[i] for i in brxns]
-
-        return sols
-"""
+    # TODO output functions, especially solutions and constraint fulfillment, objective

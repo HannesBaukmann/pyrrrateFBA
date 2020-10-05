@@ -6,7 +6,7 @@ import sys
 import numpy as np
 import scipy.sparse as sp
 from .optimization.lp import INFINITY, EPSILON, BIGM, MINUSBIGM
-
+from .util.linalg import solve_if_unique
 
 class Matrrrices:
     """
@@ -47,6 +47,8 @@ class Matrrrices:
         - matrix_start : bmaty0
         - matrix_end: bmatyend
         - vec_bndry : b_bndry
+
+    TODO: setter for some parts (e.g. initial/boundary values)
     """
 
     def __init__(self, model, run_rdeFBA=True):
@@ -69,6 +71,28 @@ class Matrrrices:
             self.matrix_B_u = np.zeros((0, len(self.u_vec)), dtype=float)
             self.matrix_B_x = np.zeros((0, 0), dtype=float)
             self.vec_B = np.zeros((0, 1))
+
+
+    def extract_initial_values(self):
+        """
+        Boundary values: Is it possible to get a complete description
+        of the initial values from the given boundary matrices?
+        If so, return it
+        """
+        # Any constraints on the end points?
+        if self.matrix_end.nnz > 0:
+            print('Unable to extract initial values from model matrrrices.',
+                  'End point constraints given')
+            # TODO: control prints/warnings via verbosity level parameter?
+            return None # MAYBE: This is technically not correct: We can have a full
+            # description of initial values PLUS constraints on the end points
+        y0 = solve_if_unique(self.matrix_start, self.vec_bndry)
+        if y0 is None:
+            print('Unable to extract initial values from model matrrrices.',
+                  'System appears to be not uniquely solvable.')
+            return None
+        return np.expand_dims(y0, axis=1).transpose() # MAYBE: Transpose is :-(, change structure
+
 
     def construct_vectors(self, model):
         """

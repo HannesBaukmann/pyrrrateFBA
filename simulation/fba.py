@@ -4,7 +4,7 @@ Simple flux balance analysis
 
 import numpy as np
 from scipy.sparse import csr_matrix
-from .results import Solutions
+from ..simulation.results import Solutions
 from .. import matrrrices as mat
 from ..optimization.lp import LPModel
 from ..optimization.oc import mi_cp_linprog
@@ -50,7 +50,6 @@ def perform_fba(model, **kwargs):
         brxns = [idx for idx, reac in enumerate(model.reactions_dict.keys())
                  if 'biomass' in reac.lower()]
         if not brxns:
-            # TODO create Error/error message handler
             print('No biomass reaction found and no objective provided, exiting.')
             return None
         fvec[brxns] = -1.0
@@ -84,16 +83,69 @@ def perform_rdefba(model, **kwargs):
 
     TODO : More options to "play around"
     """
-    run_rdeFBA = kwargs.get("run_rdeFBA", True) # TODO Check whether it is possible at all first(!?) or obtain automatically from model
-    t_0 = kwargs.get("t_0", 0.0)
-    t_end = kwargs.get("t_end", 1.0)
-    n_steps = kwargs.get("n_steps", 51)
-    varphi = kwargs.get("varphi", 0.0)
+    run_rdeFBA = kwargs.get('run_rdeFBA', True)
+    t_0 = kwargs.get('t_0', 0.0)
+    t_end = kwargs.get('t_end', 1.0)
+    n_steps = kwargs.get('n_steps', 51)
+    varphi = kwargs.get('varphi', 0.0)
     #
     mtx = mat.Matrrrices(model, run_rdeFBA=run_rdeFBA)
+    # adapt initial values if explicitly given
+    y_0 = kwargs.get('set_y0', None)
+    if y_0 is not None:
+        mtx.matrix_end = csr_matrix((y_0.size, y_0.size))
+        mtx.matrix_start = csr_matrix(np.eye(y_0.size))
+        mtx.vec_bndry = y_0.transpose()
     # Call the OC routine
-    tt, tt_shift, sol_y, sol_u, sol_x = mi_cp_linprog(mtx, t_0, t_end, n_steps=n_steps, varphi=varphi)
-    
-    sols = Solutions(tt, tt_shift, sol_y, sol_u, sol_x)
-    
+    tgrid, tt_shift, sol_y, sol_u, sol_x = mi_cp_linprog(mtx, t_0, t_end, n_steps=n_steps,
+                                                         varphi=varphi)
+
+    sols = Solutions(tgrid, tt_shift, sol_y, sol_u, sol_x)
+
     return sols
+
+
+def perform_soa_rdeFBA(model, **kwargs):
+    """
+    iterative process consisting of several (r)deFBA runs with a very crude one-step
+    approximation in each step (quasi-_S_tatic _O_ptimization _A_pproach)
+    # MAYBE: This could become a special case of short-term (r-)deFBA
+    # QUESTION: Can it be a problem if set_y0 is set from the start?
+       (quasi-recursive call of the algorithms...)
+    """
+    run_rdeFBA = kwargs.get('run_rdeFBA', True)
+    n_steps = kwargs.get('n_steps', 51)
+    tgrid = np.linspace(kwargs.get('t_0', 0.0), kwargs.get('t_end', 1.0), n_steps)
+    varphi = kwargs.get('varphi', 0.0)
+    kwargs.pop('varphi', kwargs)
+    #
+    mtx = mat.Matrrrices(model, run_rdeFBA=run_rdeFBA)
+    y_0 = mtx.extract_initial_values()
+    if y_0 is None:
+        print('SOA (r)deFBA cannot be perforrrmed.')
+        return None
+    kwargs['set_y0'] = y_0
+    kwargs['n_steps'] = 1
+    #
+    tslice = tgrid[0:2]
+    sols = model.rdeFBA(tslice, varphi, do_soa=False, **kwargs)
+    y_new = np.array(sols.dyndata.tail(n=1)) # row
+    for k in range(1, n_steps-1):
+        kwargs['set_y0'] = y_new # row
+        tslice = tgrid[k:k+2]
+        sol_tmp = model.rdeFBA(tslice, varphi, do_soa=False, **kwargs)
+        # QUESTION: What if internal error occurs here?
+        new_t_shift = sol_tmp.condata.index[-1]
+        ux_new = np.array(sol_tmp.condata.tail(n=1))
+        y_new = np.array(sol_tmp.dyndata.tail(n=1))
+        sols.extend_y([tslice[-1]], y_new)
+        sols.extend_ux([new_t_shift], ux_new)
+    #print(sols)
+    return sols
+
+
+#def perform_shortterm_rdeFBA(model, **kwargs):
+#    """
+#    short-term (r-)deFBA
+#    """
+#    t_0 = kwargs.get('t_0', 0.0)
