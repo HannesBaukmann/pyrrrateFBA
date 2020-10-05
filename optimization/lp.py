@@ -5,7 +5,7 @@ Collection of routines for (Mixed Integer) Linear Programming
 import numpy as np
 import scipy.sparse as sp
 import gurobipy # TODO Make this dependent on installed/configured solvers
-#import scipy.optimize as sciopt -> linprog, 
+#import scipy.optimize as sciopt -> linprog,
 
 
 # Module constants
@@ -14,7 +14,7 @@ OPTIMAL = gurobipy.GRB.OPTIMAL
 MINIMIZE = gurobipy.GRB.MINIMIZE
 
 # Constants for BigM and small M constraints
-EPSILON = 10**-7
+EPSILON = 10**-6
 BIGM = 10**8
 MINUSBIGM = -BIGM
 
@@ -79,7 +79,7 @@ class MILPModel(LPModel):
         """
         cf. sparse_model_setup for the LPModel class
         """
-        n_booles = len(barf) # TODO: Test the case n_booles == 0 and fix if necessary
+        n_booles = len(barf)
         m_aeqmat = aeqmat.shape[0]
         _sparse_model_setup_gurobi(
             self.solver_model,
@@ -88,8 +88,8 @@ class MILPModel(LPModel):
             bvec, # b
             sp.bmat([[aeqmat, sp.csr_matrix((m_aeqmat, n_booles))]], format='csr'), # Aeq
             beq, # beq
-            np.vstack([lbvec, np.zeros((n_booles,1))]), # lb
-            np.vstack([ubvec, np.ones((n_booles,1))]), # ub
+            np.vstack([lbvec, np.zeros((n_booles, 1))]), # lb
+            np.vstack([ubvec, np.ones((n_booles, 1))]), # ub
             variable_names,
             nbooles=n_booles)
 
@@ -113,9 +113,9 @@ def _sparse_model_setup_gurobi(model, fvec, amat, bvec, aeqmat, beq, lbvec,
         indices and are the dimensions correct in the first place?
     """
     model.setObjective(MINIMIZE)
+    model.setParam('OutputFlag', 0) # DEBUG
 
     n_x = lbvec.size - nbooles
-    print(fvec)
     x_variables = [model.addVar(lb=lbvec[i],
                                 ub=ubvec[i],
                                 obj=fvec[i],

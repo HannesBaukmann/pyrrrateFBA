@@ -35,7 +35,7 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0):
      - allow more integration schemes
      - ...
     MAYBE
-     - create/use a class for the time series data in the output    
+     - create/use a class for the time series data in the output
     """
 
 
@@ -53,11 +53,15 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0):
 
     # Discretization of objective
     # Lagrange part @MAYBE: add possib. for  more complicated objective
-    f_y = np.vstack([0.5 * del_t * matrices.phi1,
-                     np.vstack((n_steps - 1) * [del_t * matrices.phi1]),
-                     0.5 * del_t * matrices.phi1])
+    # QUESTION: Is the next if really necessary?????????
+    if n_steps > 1:
+        f_y = np.vstack([0.5 * del_t * matrices.phi1,
+                         np.vstack((n_steps - 1) * [del_t * matrices.phi1]),
+                         0.5 * del_t * matrices.phi1])
+    else:
+        f_y = np.vstack(2*[0.5 * del_t * matrices.phi1])
     expvals = np.exp(-varphi * tgrid)
-    f_y *= np.repeat(expvals, n_y)[:,None]
+    f_y *= np.repeat(expvals, n_y)[:, None]
     f_u = np.zeros((n_allu, 1))
     f_x = np.zeros((n_allx, 1))
     # Mayer part
@@ -66,34 +70,43 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0):
 
     # Discretization of dynamics
     (aeqmat1_y, aeqmat1_u, beq1) = \
-        _inflate_constraints(-sp.eye(n_y) + 0.5 * del_t * matrices.smat4, sp.eye(n_y) + 0.5 * del_t * matrices.smat4,
+        _inflate_constraints(-sp.eye(n_y) + 0.5 * del_t * matrices.smat4, sp.eye(n_y) +
+                             0.5 * del_t * matrices.smat4,
                              del_t * matrices.smat2, np.zeros((n_y, 1)), n_steps=n_steps)
 
     # Discretization of QSSA rows (this is simplified and only works for constant smat1)
     (aeqmat2_y, aeqmat2_u, beq2) = \
-        _inflate_constraints(-0.5 * matrices.smat3, 0.5 * matrices.smat3, matrices.smat1, n_qssa * [[0.0]], n_steps=n_steps)
+        _inflate_constraints(-0.5 * matrices.smat3, 0.5 * matrices.smat3, matrices.smat1,
+                             n_qssa * [[0.0]], n_steps=n_steps)
 
     # Discretization of flux bounds @MAYBE: allow time dependency here
     lb_u = np.vstack(n_steps*[matrices.lbvec])
     ub_u = np.vstack(n_steps*[matrices.ubvec])
 
     # Discretization of positivity
-    lb_y = np.zeros((n_ally,1))
+    lb_y = np.zeros((n_ally, 1))
     ub_y = np.array(n_ally*[[lp_wrapper.INFINITY]])
 
     # Discretization of mixed constraints, This only works for constant smat2
     # TODO: Allow time dependency here
-    (amat1_y, amat1_u, bineq1) = _inflate_constraints(0.5*matrices.matrix_y, 0.5*matrices.matrix_y, matrices.matrix_u,
-                                                      matrices.vec_h, n_steps=n_steps)
+    (amat1_y, amat1_u, bineq1) = _inflate_constraints(0.5*matrices.matrix_y, 0.5*matrices.matrix_y,
+                                                      matrices.matrix_u, matrices.vec_h,
+                                                      n_steps=n_steps)
 
     # Discretization of mixed Boolean constraints
-    (amat2_y, amat2_u, bineq2) = _inflate_constraints(0.5*matrices.matrix_B_y, 0.5*matrices.matrix_B_y, matrices.matrix_B_u,
+    (amat2_y, amat2_u, bineq2) = _inflate_constraints(0.5*matrices.matrix_B_y,
+                                                      0.5*matrices.matrix_B_y,
+                                                      matrices.matrix_B_u,
                                                       matrices.vec_B, n_steps=n_steps)
     amat2_x = sp.kron(sp.eye(n_steps), matrices.matrix_B_x)
     # TODO: Use some "_inflate"-mechanism
 
     # Discretization of equality boundary constraints @MAYBE: also inequality
-    aeqmat3_y = sp.hstack([matrices.matrix_start, sp.csr_matrix((n_bndry, (n_steps-1)*n_y)), matrices.matrix_end])
+    #print(5*'+++++++++++++++++\n','n_steps = ', n_steps)
+    #print(matrices.matrix_start.todense())
+    #print(matrices.matrix_end.todense())
+    aeqmat3_y = sp.hstack([matrices.matrix_start,
+                               sp.csr_matrix((n_bndry, (n_steps-1)*n_y)), matrices.matrix_end])
     aeqmat3_u = sp.csr_matrix((n_bndry, n_allu))
     beq3 = matrices.vec_bndry
 
@@ -132,7 +145,8 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0):
         u_data = np.reshape(model.get_solution()[n_ally:n_ally+n_allu], (n_steps, n_u))
         x_data = np.reshape(model.get_solution()[n_ally+n_allu:], (n_steps, n_x))
         return tgrid, tt_s, y_data, u_data, x_data
-    # TODO: use cleverer output here
+    # TODO: use cleverer output here, control verbosity level (if called from another algorithm), create output
+    # flags depending on why the solution failed
     print("No solution found")
 
     return None
@@ -237,7 +251,7 @@ def _inflate_callable(amat, ttvec, **kwargs):
     indices = list(amat0.indices)
     indptr = list(amat0.indptr[:])
     for i in range(n_tt-1):
-        print("i = ", i)
+        print("i = ", i) # DEBUG
         amat0 = amat(ttvec[i+1])
         data.extend(list(amat0.data))
         indices.extend([n_2*(i+1)+k for k in list(amat0.indices)])

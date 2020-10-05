@@ -5,6 +5,7 @@ RAM and rdeFBa event handling
 import re
 from collections import OrderedDict
 import numpy as np
+from . import pyrrrateModel
 
 try:
     import libsbml as sbml
@@ -16,17 +17,15 @@ class SBMLError(Exception):
     """
     empty error class to state that something with the import of the SBML file gone wrong
     """
-    pass
 
 
 class RAMError(Exception):
     """
     empty error class to state that something with the import of the RAM annotations gone wrong
     """
-    pass
 
 
-def readSBML(filename, is_rdeFBA=True):
+def readSBML(filename, is_rdeFBA=True): # TODO: Why can't the Parrrser find out on its own whether the model is rdeFBA and why is that so important in the first place? If information on that (qual, events etc. is present, we parse them otherwise not)
     """
     Convert SBML file to an (r-)deFBA model object.
     Required argument:
@@ -38,12 +37,10 @@ def readSBML(filename, is_rdeFBA=True):
         # Initialize Parrrser object
         parsed = Parrrser(document, is_rdeFBA)
         # return the model object
-        from . import pyrrrateModel
         model = pyrrrateModel.Model(parsed)
         return model
-    else:
-        raise SBMLError(
-            'The SBML file contains no model. Maybe the filename is wrong or the file does not follow SBML standards. Please run the SBML validator at http://sbml.org/Facilities/Validator/index.jsp to find the problem.')
+    raise SBMLError(
+        'The SBML file contains no model. Maybe the filename is wrong or the file does not follow SBML standards. Please run the SBML validator at http://sbml.org/Facilities/Validator/index.jsp to find the problem.')
 
 
 class Parrrser:
@@ -102,7 +99,7 @@ class Parrrser:
                     elif s_type == 'metabolite':
                         self.metabolites_dict[s_id] = {}
                         self.metabolites_dict[s_id]['speciesType'] = s_type
-                    elif s_type == 'enzyme' or s_type == 'quota' or s_type == 'storage':
+                    elif s_type in ('enzyme', 'quota', 'storage'):
                         self.macromolecules_dict[s_id] = {}
                         self.macromolecules_dict[s_id]['speciesType'] = s_type
                     else:
@@ -120,7 +117,7 @@ class Parrrser:
                             except AttributeError:
                                 raise RAMError('The parameter ' + weight_str + ' has no value.')
                         else:
-                            if s_type == 'extracellular' or s_type == 'metabolite':
+                            if s_type in ('extracellular', 'metabolite'):
                                 weight = 0.0  # default for metabolites
                             else:
                                 raise RAMError(
@@ -137,7 +134,7 @@ class Parrrser:
                             except AttributeError:
                                 raise RAMError('The parameter ' + oweight_str + ' has no value.')
                         else:
-                            if s_type == 'extracellular' or s_type == 'metabolite':
+                            if s_type in ('extracellular', 'metabolite'):
                                 oweight = 0.0  # default for metabolites
                             else:
                                 raise RAMError(
@@ -148,7 +145,7 @@ class Parrrser:
                     elif s_type == 'metabolite':
                         self.metabolites_dict[s_id]['molecularWeight'] = weight
                         self.metabolites_dict[s_id]['objectiveWeight'] = oweight
-                    elif s_type == 'enzyme' or s_type == 'quota' or s_type == 'storage':
+                    elif s_type in ('enzyme', 'quota', 'storage'):
                         self.macromolecules_dict[s_id]['molecularWeight'] = weight
                         self.macromolecules_dict[s_id]['objectiveWeight'] = oweight
 
@@ -190,7 +187,7 @@ class Parrrser:
                 self.metabolites_dict[s_id]['constant'] = s.getConstant()
                 self.metabolites_dict[s_id]['boundaryCondition'] = s.getBoundaryCondition()
                 self.metabolites_dict[s_id]['hasOnlySubstanceUnits'] = s.getHasOnlySubstanceUnits()
-            elif s_type == 'enzyme' or s_type == 'quota' or s_type == 'storage':
+            elif s_type in ('enzyme', 'quota', 'storage'):
                 self.macromolecules_dict[s_id]['name'] = s.getName()
                 self.macromolecules_dict[s_id]['compartment'] = s.getCompartment()
                 self.macromolecules_dict[s_id]['initialAmount'] = s.getInitialAmount()
@@ -266,6 +263,7 @@ class Parrrser:
 
         # REACTIONS
         n_spec = len(self.extracellular_dict) + len(self.metabolites_dict) + len(self.macromolecules_dict)
+        # TODO: make this sparse (for large models)
         self.stoich = np.zeros((n_spec, sbmlmodel.getNumReactions()))
         # degradation is allowed for deFBA models
         self.stoich_degradation = np.zeros((n_spec, n_spec))
@@ -370,24 +368,22 @@ class Parrrser:
                         # kcatForward not given (i.e., "") is only allowed for spontaneous reactions
                         if ram_element.getAttrValue('kcatForward', url) == '':
                             raise RAMError('Reaction ' + r_id + ' has no kcatForward, but is not spontaneous.')
-                        else:
-                            try:
-                                # import value
-                                k_fwd = float(ram_element.getAttrValue('kcatForward', url))
-                                # if input is not float, try to import the parameter
-                            except ValueError:
-                                k_fwd_str = ram_element.getAttrValue('kcatForward', url)
-                                if k_fwd_str:
-                                    # check whether this parameter is defined
-                                    try:
-                                        k_fwd = float(sbmlmodel.getParameter(k_fwd_str).getValue())
-                                    except AttributeError:
-                                        raise RAMError('The parameter ' + k_fwd_str + ' is not defined!')
-                            # kcat=0 is only allowed for spontaneous reactions
-                            if k_fwd == 0.0:
-                                raise RAMError('Reaction ' + r_id + ' has a zero kcatForward, but is not spontaneous.')
-                            else:
-                                self.reactions_dict[r_id]['kcatForward'] = k_fwd
+                        try:
+                            # import value
+                            k_fwd = float(ram_element.getAttrValue('kcatForward', url))
+                            # if input is not float, try to import the parameter
+                        except ValueError:
+                            k_fwd_str = ram_element.getAttrValue('kcatForward', url)
+                            if k_fwd_str:
+                                # check whether this parameter is defined
+                                try:
+                                    k_fwd = float(sbmlmodel.getParameter(k_fwd_str).getValue())
+                                except AttributeError:
+                                    raise RAMError('The parameter ' + k_fwd_str + ' is not defined!')
+                        # kcat=0 is only allowed for spontaneous reactions
+                        if k_fwd == 0.0:
+                            raise RAMError('Reaction ' + r_id + ' has a zero kcatForward, but is not spontaneous.')
+                        self.reactions_dict[r_id]['kcatForward'] = k_fwd
 
                     # Import backward kcat values
                     # first check if reaction is reversible
@@ -400,24 +396,22 @@ class Parrrser:
                             # kcatForward not given is only allowed for spontaneous reactions
                             if ram_element.getAttrValue('kcatBackward', url) == '' or ram_element.getAttrValue('kcatBackward', url) == 'NaN':
                                 raise RAMError('Reaction ' + r_id + ' has no kcatBackward, but is reversible and not spontaneous.')
-                            else:
-                                try:
-                                    # import value
-                                    k_bwd = float(ram_element.getAttrValue('kcatBackward', url))
-                                    # if input is not float, try to import the parameter
-                                except ValueError:
-                                    k_bwd_str = ram_element.getAttrValue('kcatBackward', url)
-                                    if k_bwd_str:
-                                        # check whether this parameter is defined
-                                        try:
-                                            k_bwd = float(sbmlmodel.getParameter(k_bwd_str).getValue())
-                                        except AttributeError:
-                                            raise RAMError('The parameter ' + k_bwd_str + ' is not defined!')
+                            try:
+                                # import value
+                                k_bwd = float(ram_element.getAttrValue('kcatBackward', url))
+                                # if input is not float, try to import the parameter
+                            except ValueError:
+                                k_bwd_str = ram_element.getAttrValue('kcatBackward', url)
+                                if k_bwd_str:
+                                    # check whether this parameter is defined
+                                    try:
+                                        k_bwd = float(sbmlmodel.getParameter(k_bwd_str).getValue())
+                                    except AttributeError:
+                                        raise RAMError('The parameter ' + k_bwd_str + ' is not defined!')
                                 # kcat=0 is only allowed for spontaneous reactions
                                 if k_bwd == 0.0:
                                     raise RAMError('Reaction ' + r_id + ' has a zero kcatBackward, but is reversible and not spontaneous.')
-                                else:
-                                    self.reactions_dict[r_id]['kcatBackward'] = k_bwd
+                                self.reactions_dict[r_id]['kcatBackward'] = k_bwd
                     # if reaction is irreversible, kcat is zero
                     else:
                         self.reactions_dict[r_id]['kcatBackward'] = 0.0

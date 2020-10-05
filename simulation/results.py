@@ -21,17 +21,17 @@ class Solutions:#(pd.DataFrame):
         #super().__init__()
         self.dyndata = pd.DataFrame() #
         self.dyndata['time'] = tt
-        self.dyndata.set_index('time', inplace=True) # MAYBE: This could be done in one step 
+        self.dyndata.set_index('time', inplace=True) # MAYBE: This could be done in one step
         self.condata = pd.DataFrame()
         self.condata['time_shifted'] = tt_shift
         self.condata.set_index('time_shifted', inplace=True)
         #
         for i in range(sol_y.shape[1]):
-            self.dyndata['y'+str(i)] = sol_y[:,i]
+            self.dyndata['y'+str(i)] = sol_y[:, i]
         for i in range(sol_x.shape[1]):
-            self.condata['x'+str(i)] = sol_x[:,i]
+            self.condata['x'+str(i)] = sol_x[:, i]
         for i in range(sol_u.shape[1]):
-            self.condata['u'+str(i)] = sol_u[:,i]
+            self.condata['u'+str(i)] = sol_u[:, i]
 
     def __str__(self):
         return 'Solutions object with dynamics data : \n' \
@@ -45,25 +45,28 @@ class Solutions:#(pd.DataFrame):
         """
         Add new data to the dynamic variables
         """
-        for i, t in enumerate(tnew):
+        for i, timepoint in enumerate(list(tnew)):
             # MAYBE: Additional safety measures: We don't check the y-values by name.
-            self.dyndata.loc[t] = y_new[i,:] # QUESTION: Should we try to eliminate instances with times that are too close?
-        # sort
+            self.dyndata.loc[timepoint] = y_new[i, :]
+            # QUESTION: Should we try to eliminate instances with times that are too close?
         self.dyndata.sort_index(inplace=True)
 
 
-    def extend_ux(self, tshiftnew, u_new, x_new):
+    def extend_ux(self, tshiftnew, u_new, x_new=None):
         """
         Add new data to the dynamic variables
         """
-        for i, t in enumerate(tshiftnew):
+        for i, timepoint in enumerate(list(tshiftnew)):
             # MAYBE: Additional safety measures: We don't check the u/x-values by name.
-            self.condata.loc[t] = np.stack([np.array(u_new[i, :]),
-                                            np.array(x_new[i, :])]).flatten() # QUESTION: Should we try to eliminate instances with times that are too close?
-        # sort
+            if x_new is None:
+                self.condata.loc[timepoint] = np.array(u_new[i, :])
+            else:
+                self.condata.loc[timepoint] = np.stack([np.array(x_new[i, :]),
+                                                        np.array(u_new[i, :])]).flatten()
+                # QUESTION: Should we try to eliminate instances with times that are too close?
         self.dyndata.sort_index(inplace=True)
-        
-        
+
+
     def plot_all(self, **kwargs): # Maybe: Bad name?
         """
         plot the data contained in the DataFrames into three figures
@@ -76,13 +79,11 @@ class Solutions:#(pd.DataFrame):
         y_data_indices = kwargs.get('y_data_indices', None)
         log_y = kwargs.get('logy', False)
         # plot dynamic data
-        ax = None
+        plot_ax = None
         if use_subplots:
-            ax = plt.subplot(3, 1, 1)
-        self.dyndata.plot(#x='time', 
-                          y=self._get_name_from_index(y_data_indices),
-                          marker='.', logy=log_y, ax=ax)
-        #plt.xlim(min(self.dyndata['time']), max(self.dyndata['time']))
+            plot_ax = plt.subplot(3, 1, 1)
+        self.dyndata.plot(y=self._get_name_from_index(y_data_indices),
+                          marker='.', logy=log_y, ax=plot_ax)
         plt.xlim(min(self.dyndata.index), max(self.dyndata.index))
         plt.xlabel('time')
         plt.title('Dynamic Data')
@@ -90,12 +91,10 @@ class Solutions:#(pd.DataFrame):
         # plot control vectors
         u_names = [i for i in self.condata.keys() if 'u' in i]
         if u_names:
-            ax = None
+            plot_ax = None
             if use_subplots:
-                ax = plt.subplot(3, 1, 2)
-            self.condata.plot(#x='time_shifted', 
-                              y=u_names, marker='.', ax=ax)
-            #plt.xlim(min(self.dyndata['time']), max(self.dyndata['time']))
+                plot_ax = plt.subplot(3, 1, 2)
+            self.condata.plot(y=u_names, marker='.', ax=plot_ax)
             plt.xlim(min(self.dyndata.index), max(self.dyndata.index))
             plt.xlabel('time')
             plt.title('Control Data')
@@ -103,12 +102,10 @@ class Solutions:#(pd.DataFrame):
         # plot x control data
         x_names = [i for i in self.condata.keys() if 'x' in i]
         if x_names:
-            ax = None
+            plot_ax = None
             if use_subplots:
-                ax = plt.subplot(3, 1, 3)
-            self.condata.plot(#x='time_shifted', 
-                              y=x_names, marker='.', ax=ax)
-            #plt.xlim(min(self.dyndata['time']), max(self.dyndata['time']))
+                plot_ax = plt.subplot(3, 1, 3)
+            self.condata.plot(y=x_names, marker='.', ax=plot_ax)
             plt.xlim(min(self.dyndata.index), max(self.dyndata.index))
             plt.xlabel('time')
             plt.title('x Control Data')
@@ -137,9 +134,8 @@ class Solutions:#(pd.DataFrame):
         return index_set
 
 
-    def _create_data_names(sol_y, sol_u, sol_x):
-        dyndata_names = ['y'+str(i) for i in range(sol_y.shape[1])]
-        condata_names = ['x'+str(i) for i in range(sol_x.shape[1])]
-        condata_names += ['u'+str(i) for i in range(sol_u.shape[1])]
-        return dyndata_names, condata_names
-
+ #   def _create_data_names(sol_y, sol_u, sol_x):
+ #       dyndata_names = ['y'+str(i) for i in range(sol_y.shape[1])]
+ #       condata_names = ['x'+str(i) for i in range(sol_x.shape[1])]
+ #       condata_names += ['u'+str(i) for i in range(sol_u.shape[1])]
+ #       return dyndata_names, condata_names
