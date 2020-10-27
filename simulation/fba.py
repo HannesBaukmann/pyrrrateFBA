@@ -7,7 +7,7 @@ from scipy.sparse import csr_matrix
 from ..simulation.results import Solutions
 from .. import matrrrices as mat
 from ..optimization.lp import LPModel
-from ..optimization.oc import mi_cp_linprog
+from ..optimization.oc import mi_cp_linprog, cp_rk_linprog
 
 
 def perform_fba(model, **kwargs):
@@ -88,6 +88,7 @@ def perform_rdefba(model, **kwargs):
     t_end = kwargs.get('t_end', 1.0)
     n_steps = kwargs.get('n_steps', 51)
     varphi = kwargs.get('varphi', 0.0)
+    rkm = kwargs.get('runge_kutta', None)
     #
     mtx = mat.Matrrrices(model, run_rdeFBA=run_rdeFBA)
     # adapt initial values if explicitly given
@@ -97,8 +98,14 @@ def perform_rdefba(model, **kwargs):
         mtx.matrix_start = csr_matrix(np.eye(y_0.size))
         mtx.vec_bndry = y_0.transpose()
     # Call the OC routine
-    tgrid, tt_shift, sol_y, sol_u, sol_x = mi_cp_linprog(mtx, t_0, t_end, n_steps=n_steps,
-                                                         varphi=varphi)
+    if rkm is None:
+        tgrid, tt_shift, sol_y, sol_u, sol_x = mi_cp_linprog(mtx, t_0, t_end, n_steps=n_steps,
+                                                             varphi=varphi)
+    else:
+        tgrid, tt_shift, sol_y, sol_u = cp_rk_linprog(mtx, rkm, t_0, t_end, n_steps=n_steps,
+                                                      varphi=varphi)
+        #sol_x = np.zeros((0, sol_u.shape[1]))
+        sol_x = np.zeros((sol_u.shape[0], 0))
 
     sols = Solutions(tgrid, tt_shift, sol_y, sol_u, sol_x)
 
