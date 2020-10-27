@@ -655,9 +655,9 @@ The updates of the state approximations give furthermore
 %\end{pmatrix}
 ((\Imat_N, \nullvec_N) - (\nullvec_N, \Imat_N)) \kron \Imat_{n_{\yvec}}
 \right) \cdot \yfrakvec 
-+ (\Imat_N \kron b \kron \Imat_{n_{\yvec}}) \cdot \kfrakvec = \nullvec
++ \Delta_t \cdot  (\Imat_N \kron b \kron \Imat_{n_{\yvec}}) \cdot \kfrakvec = \nullvec
 \]
-If, on the other hand, the slope variables are eliminated, we introduce the vektors
+If, on the other hand, the slope variables are eliminated, we introduce the vectors
 \[
 \tildeyfrakvec^{(m+1)} \defeq (\tildeyvec_{m+1}^{(1)}, \tildeyvec_{m+1}^{(2)}, \ldots, \tildeyvec_{m+1}^{(s)})^{\tp}\,,
 \quad
@@ -667,7 +667,7 @@ The elimination works as follows:
 \begin{align*}
 \tildeyvec_{m+1}^{(i)} &= \yvec_m + \Delta_t \cdot \sum_{j=1}^s a_{ij} \cdot \fvec(t_{m+1}^{(j)}, \tildeyvec_{m+1}^{(j)}, \uvec_{m+1}^{(j)})
 \\
- =& \yvec_m + \Delta_t \cdot \sum_{j=1}^s a_{ij} \cdot \left( \fvec_2  + \Smat_4 \cdot \tildeyvec_{m+1}^{(j)} + \Smat_2 \cdot \uvec_{m+1}^{(j)}\right)\,,\quad i = 1 ,\ldots,s,\, m = 0,\ldots, N-1\,.
+ &= \yvec_m + \Delta_t \cdot \sum_{j=1}^s a_{ij} \cdot \left( \fvec_2  + \Smat_4 \cdot \tildeyvec_{m+1}^{(j)} + \Smat_2 \cdot \uvec_{m+1}^{(j)}\right)\,,\quad i = 1 ,\ldots,s,\, m = 0,\ldots, N-1\,.
 \end{align*}
 At one time step, this can be summarized to
 \[
@@ -792,7 +792,8 @@ If we use stage variables, it remains as straight away as before:
 %
 \subsection*{Boundary Values}
 %
-They are also directly implemented, no surprises.
+On the state vector level they are also directly implemented, no surprises.
+For the control variables, one first has to define variables for $\uvec(t_0)$ and $\uvec(t_{\mathrm{end}})$ (and potentially connect them to the ones on the control grid).
 
 
 
@@ -804,15 +805,16 @@ They are also directly implemented, no surprises.
 \section*{Extension 2 --- Time Dependency}
 
 To continue the relatively concise notation, we introduce a new operator.
-Let $B \defeq (b_{ij})_{i=1,\ldots,m_B, j=1,\ldots,n_B}$, $C(t) %\defeq (c_{ij}(t))_{i=1,\ldots,m_C, j=1,\ldots,n_C} 
-\colon \setR \to \setR^{m_C \times n_C}$ be two given matrices (the latter dependent on a real parameter) and $(t_i)_{i=1,\ldots, m_B}$ a vector with the same number of entries as the matrix $B$ has rows.
+Let $B \defeq (b_{ij})_{i=1,\ldots,m_B, j=1,\ldots,n_B}$, $T \defeq (t_{ij})_{i=1,\ldots,m_B, j=1,\ldots,n_B}$, $C(t) %\defeq (c_{ij}(t))_{i=1,\ldots,m_C, j=1,\ldots,n_C} 
+\colon \setR \to \setR^{m_C \times n_C}$ be three given matrices (the latter dependent on a real parameter).
 Then the `d-Kronecker product' is given by
 \[
-B \dkron{t} C \defeq \begin{pmatrix}
- b_{11} \cdot C(t_1) & b_{12}\cdot C(t_1)
+B \dkron{T} C \defeq \begin{pmatrix}
+ b_{11} \cdot C(t_{11}) & b_{12}\cdot C(t_{12}) & \cdots & b_{1,n_B} \cdot C(t_{1,n_B}) \\
+ \vdots                 & \vdots                &        & \vdots                       \\
+ b_{m_B1} \cdot C(t_{m_B1}) & b_{m_B2}\cdot C(t_{m_B2}) & \cdots & b_{m_B,n_B} \cdot C(t_{m_B,n_B}) \\
 \end{pmatrix}
 \]
-????? (Probably not general enough yet...)
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -834,6 +836,7 @@ B \dkron[h]{T} C(t) \defeq ...
   \item time-dependent matrices on almost all levels
 	%\item additional constant terms in the dynamics and the control constraints
 	\item non-equidistant time grid
+	\item Add absolute-value constraints/objective terms (e.g. total variation)
 	\item It is possible to fully eliminate the state approximations $\yvec_{m}$ from the LP and instead calculate them in a post-processing step.
 	But then, (at least) the boundary values and objective are more complicated.
 	\item Formulation with stage values instead of slope values
