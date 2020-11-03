@@ -33,9 +33,12 @@
 \newcommand{\defeq}{\mathrel{:=}}%     is per definition equal to
 \newcommand{\tp}{\top}%                transpose
 \newcommand{\kron}{\otimes}%           Kronecker product
-\newcommand{\dkron}[2][]{\mathbin{{}_{#1}\negthinspace\kron_{#2}}}% generalized Kronecker product
+%\newcommand{\dkron}[2][]{\mathbin{{}_{#1}\negthinspace\kron_{#2}}}% generalized Kronecker product
+\newcommand{\dkron}[2][]{\mathbin{\kron_{#2}^{#1}}}% generalized Kronecker product
 \newcommand{\setR}{\mathbb{R}}%        real numbers
 \newcommand{\expe}{\mathrm{e}}%        Eulers constant
+\newcommand{\diag}{\mathop{\mathrm{diag}}}%     diagonal elements of matrix/diagonal matrix from vector
+
 
 \newcommand{\vectorfont}[1]{\boldsymbol{#1}}%
 \newcommand{\greekvectorfont}[1]{\boldsymbol{#1}}%
@@ -47,6 +50,7 @@
 \newcommand{\gvec}{\vectorfont{g}}
 \newcommand{\hvec}{\vectorfont{h}}
 \newcommand{\kvec}{\vectorfont{k}}
+\newcommand{\tvec}{\vectorfont{t}}
 \newcommand{\uvec}{\vectorfont{u}}
 \newcommand{\yvec}{\vectorfont{y}}
 
@@ -76,6 +80,7 @@
 \newcommand{\Hmat}{\matrixfont{H}}
 \newcommand{\Imat}{\matrixfont{I}}%       identity matrix
 \newcommand{\Smat}{\matrixfont{S}}
+\newcommand{\Tmat}{\matrixfont{T}}
 
 \newcommand{\Afrakmat}{\matrixfont{\mathfrak{A}}}
 
@@ -203,12 +208,12 @@ such that the (dynamic part of the) objective vector of the resulting LP is give
 For the dynamics, we use the midpoint rule:
 \[
 \dyvec(t) = \fvec(t, \yvec(t), \uvec(t))\qquad\Rightarrow\qquad
-\yvec_{m+1} = \yvec_{m} + \Delta_t \cdot \fvec(t_{m+1/2}^s, \tildeyvec_{m+1}^{(1)}, \uvec_{m+1/2})\,\quad (m=0,1,\ldots,N-1)\,,
+\yvec_{m+1} = \yvec_{m} + \Delta_t \cdot \fvec(t_{m+1/2}^{\mathrm{s}}, \tildeyvec_{m+1}^{(1)}, \uvec_{m+1/2})\,\quad (m=0,1,\ldots,N-1)\,,
 \]
 where 
 \[%begin{align*}
 \tildeyvec_{m+1}^{(1)} %&
-= \yvec_m + \frac{\Delta_t}{2} \cdot \fvec (t_{m+1/2}^s , \tildeyvec_{m+1}^{(1)}, u_{m+1/2})
+= \yvec_m + \frac{\Delta_t}{2} \cdot \fvec (t_{m+1/2}^{\mathrm{s}} , \tildeyvec_{m+1}^{(1)}, u_{m+1/2})
 %\\
 %&
 = \yvec_m + \frac{\Delta_t}{2} \cdot \Smat_2 \cdot \uvec_{m+1/2} + \frac{\Delta_t}{2} \cdot \Smat_4 \cdot \tildeyvec_{m+1}^{(1)}
@@ -611,6 +616,8 @@ That means: We are given a set of parameters (Butcher-tableau) $\begin{array}{r|
 \label{eq:RK_scheme}
 \end{equation}
 where $t_{m+1}^{(j)} \defeq t_m + c_j \cdot \Delta_t$.
+Note that be define $b$ to be a row-vector.
+Although they are technically matrices, vectors resp., we don't denote the Runge-Kutta parameters with boldface letters. 
 There is some degree of freedom on how to choose the variables here.
 The first two equations can be used to eliminate either the stage values $\tildeyvec_{m+1}^{(i)}$ or the slope values $\kvec_{m+1}^{(i)}$.
 If the first approach is chosen, we end up with
@@ -621,7 +628,7 @@ If the first approach is chosen, we end up with
 \\
 \Rightarrow~~
 -\fvec_2 &= \Smat_2 \cdot \uvec_{m+1}^{(i)} + \Smat_4 \cdot \yvec_m + \Delta_t \cdot \left(\sum_{j=1}^s a_{ij} \cdot \Smat_4 \cdot \kvec_{m+1}^{(j)}\right) - \kvec_{m+1}^{(i)}\,,\quad
-(m=0,1,\ldots, N-1)
+(m=0,1,\ldots, N-1,\,i=1,\ldots,s)
 \end{align*}
 Using the Kronecker product, these $s$ sets of equations can be assembled as
 \[
@@ -683,11 +690,11 @@ for $m = 0,1,\ldots, N-1$ and collectively, one obtains
 \]
 To implement the state vector updates we use
 \[
-\yvec_{m+1} = \yvec_{m} + \Delta_t \cdot \sum_{i=1}^s b_i \left(\fvec_2 + \Smat_4 \cdot \tildeyvec_{m+1}^{(i)} ¨+ \Smat_2 \cdot \uvec_{m+1}^{(i)}  \right)
+\yvec_{m+1} = \yvec_{m} + \Delta_t \cdot \sum_{i=1}^s b_i \cdot \left(\fvec_2 + \Smat_4 \cdot \tildeyvec_{m+1}^{(i)} ¨+ \Smat_2 \cdot \uvec_{m+1}^{(i)}  \right)
 \]
 which inflates (using the consistency condition $\sum_{i=1}^s b_i = 1$) to
 \[
--\einsvec_N \kron \fvec_2 
+-\Delta_t \cdot \einsvec_N \kron \fvec_2 
  = \left(\left((\Imat_N ,\nullvec_N) - (\nullvec_N, \Imat_N)\right)\kron \Imat_{n_{\yvec}} \right) \cdot \yfrakvec
   + \Delta_t \cdot (\Imat_N \kron b \kron \Smat_4)\cdot \tildeyfrakvec 
   + \Delta_t \cdot (\Imat_N \kron b \kron \Smat_2) \cdot \ufrakvec \,.
@@ -766,7 +773,7 @@ for stage variables.
 %
 Again, directly implemented: $\lbvec \leq \uvec_{m+1}^{(i)} \leq \ubvec$ for all $m,i$:
 \[
-\lbfrakvec_{\uvec} = \einsvec_{N\cdot s} \kron \lbvec\,\quad
+\lbfrakvec_{\uvec} = \einsvec_{N\cdot s} \kron \lbvec\,,\quad
 \ubfrakvec_{\uvec} = \einsvec_{N\cdot s} \kron \ubvec\,.
 \]
 
@@ -816,6 +823,197 @@ B \dkron{T} C \defeq \begin{pmatrix}
 \end{pmatrix}
 \]
 
+The next extension concerns the input matrices of the problem: They might as well be time-dependent:
+\begin{subequations}
+	\begin{align}
+	\min_{\uvec(\cdot), \yvec (\cdot)} &\int_{t_0}^{t_{\mathrm{end}}} \expe^{-\varphi \cdot t}\cdot \left(\Phivec_1^{\tp}(t)\cdot \yvec(t) + \Phivec_{1,\uvec}^{\tp}(t)\cdot\uvec(t)\right) \intd t + \Phivec_2^{\tp}\cdot \yvec(t_0) + \Phivec_3^{\tp} \cdot \yvec(t_{\mathrm{end}})
+	\label{eq:d_ex_OC_problem:obj}
+	\\
+	\text{s.\,t.} \quad
+	\dyvec(t) &= \Smat_2(t) \cdot \uvec(t) + \Smat_4(t) \cdot \yvec(t) + \fvec_2(t)
+	\label{eq:d_ex_OC_problem:dyn}
+	\\
+	\nullvec &= \Smat_1(t) \cdot \uvec(t) + \Smat_3(t) \cdot \yvec(t) + \fvec_1(t)
+	\label{eq:d_ex_OC_problem:qssa}
+	\\
+	\lbvec(t) &\leq \uvec (t)\leq \ubvec(t)
+	\label{eq:d_ex_OC_problem:flux_bounds}
+	\\
+	\Hmat_{\yvec}(t) \cdot \yvec(t)  + \Hmat_{\uvec}(t)\cdot \uvec(t)&\leq \hvec(t)
+	\label{eq:d_ex_OC_problem:mixed}
+	\\
+	\nullvec &\leq \yvec(t)
+	\label{eq:d_ex_OC_problem:pos}
+	\\
+	\bvec_{\mathrm{bndry}} &=
+	\Bmat_{\yvec_0} \cdot \yvec(t_0) + \Bmat_{\yvec_{\mathrm{end}}} \cdot \yvec(t_{\mathrm{end}}) + \Bmat_{\uvec_0} \cdot \uvec(t_0) + \Bmat_{\uvec_{\mathrm{end}}} \cdot \uvec(t_{\mathrm{end}}) 
+	\label{eq:d_ex_OC_problem:bndry}
+	\end{align}
+\end{subequations}
+For the concise definition of the constraints of the LP problems, we furthermore introduce the following matrices/vectors
+\begin{align*}
+\tvec &\defeq (t_0, t_1, \ldots, t_{N})^{\tp} \in \setR^{N+1}\,,\quad \tvec_{\setminus} \defeq \tvec_{1:N} \in \setR^N\,,
+\\
+\tvec_{m+1}^{\mathrm{s}} &\defeq (t_{m+1}^{(1)}, t_{m+1}^{(2)}, \ldots, t_{m+1}^{(s)})^{\tp} \in \setR^{s}\,,
+\\
+\tvec^{\mathrm{s}} &\defeq (t_1^{(1)}, t_1^{(2)}, \ldots, t_1^{(s)}, t_2^{(1)}, t_2^{(2)}, \ldots, t_N^{(s)})^{\tp} \in \setR^{N \cdot s}\,,
+\\
+\Tmat^{\mathrm{s}} &\defeq \begin{pmatrix}t_1^{(1)} & t_1^{(2)}& \cdots & t_1^{(s)}\\
+t_2^{(1)} & t_2^{(2)}& \cdots & t_2^{(s)}\\
+\vdots & \vdots&  & \vdots\\
+t_N^{(1)} & t_N^{(2)}& \cdots & t_N^{(s)}
+             \end{pmatrix} \in \setR^{N \times s}\,,
+\\
+\Tmat^{\mathrm{d,s}} &\defeq \begin{pmatrix}
+{t_1^{\mathrm{s}}}^{\tp} & \Nullmat  & \cdots & \Nullmat\\
+\Nullmat               & {t_2^{\mathrm{s}}}^{\tp} & \cdots & \Nullmat \\
+\vdots                 &                          & \ddots & \vdots  \\
+\Nullmat               & \cdots                   & \cdots & {t_N^{\mathrm{s}}}^{\tp} 
+\end{pmatrix} \in \setR^{N \times N \cdot s}
+\end{align*}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Dynamics}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Slope Variables}
+At each time step the $\kvec$ updates read
+\[
+-\einsvec_s \dkron{\tvec_{m+1}^{\mathrm{s}}} \fvec_2
+ = \left(\einsvec_s \dkron{\tvec_{m+1}^{\mathrm{s}}} \Smat_4 \right)\cdot \yvec_m +
+ \left( \Delta_t \cdot A \dkron{\einsvec_s \kron (\tvec_{m+1}^{\mathrm{s}})^{\tp}} \Smat_4  - \Imat_{s \cdot n_{\yvec}}\right)\cdot \kfrakvec^{(m+1)} + \left( \Imat_s \dkron{\diag (\tvec_{m+1}^{\mathrm{s}})} \Smat_2 \right)\cdot \ufrakvec^{(m+1)}
+\]
+In total, they can be assembled as
+\begin{multline*}
+-\einsvec_{N\cdot s} \dkron{\tvec^{\mathrm{s}}} \fvec_2 
+=
+\left( \left( (\Imat_N, \nullvec_N) \kron \einsvec_s \right) \dkron{(\diag (\tvec^{\mathrm{s}}), \Nullmat_{N \cdot s,s})} \Smat_4 \right) \cdot \yfrakvec 
+\\
++ \left(\Delta_t \cdot  ((\Imat_N \kron A) \dkron{\Tmat^{\mathrm{d}, \mathrm{s}} \kron \einsvec_s} \Smat_4)   - \Imat_{N\cdot s \cdot n_{\yvec}}\right) \cdot \kfrakvec
++ \left( \Imat_{N \cdot s} \dkron{\diag(\tvec^{\mathrm{s}})}  \Smat_2\right) \cdot \ufrakvec 
+\end{multline*}
+For the state approximation updates, one gets
+\[
+\nullvec 
+=
+\left(
+((\Imat_N, \nullvec_N) - (\nullvec_N, \Imat_N)) \kron \Imat_{n_{\yvec}}
+\right) \cdot \yfrakvec 
++ \Delta_t \cdot  (\Imat_N \kron b \kron \Imat_{n_{\yvec}}) \cdot \kfrakvec\,,
+\]
+which does not comprise any time dependent inputs.
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Stage Variables}
+\begin{multline*}
+-\Delta_t \cdot \left(\einsvec \kron (A \cdot \einsvec_s) \right) \dkron{\tvec^{\mathrm{s}}} \fvec_2
+= \left((\Imat_N,\nullvec_N) \kron \einsvec_s \kron \Imat_{n_{\yvec}}  \right) \cdot \yfrakvec
+\\
++ \left(\Delta_t \cdot \left((\Imat_{N} \kron A) \dkron{\Tmat^{\mathrm{d},\mathrm{s}} \kron \einsvec_s} \Smat_4  \right)  -\Imat_{N \cdot s \cdot n_{\yvec}}\right) \cdot \tildeyfrakvec
++\left( (\Imat_N \kron A) \dkron{\Tmat^{\mathrm{d},\mathrm{s}} \kron \einsvec_s} \Smat_2 \right)\cdot \ufrakvec
+\end{multline*}
+Updates:
+\begin{multline*}
+- \left( (\einsvec_N \kron  b) \dkron{\Tmat^{\mathrm{d}}} \fvec_2 \right) \cdot \einsvec_s
+=
+\left((\Imat_N,\nullvec_N)-(\nullvec_N,\Imat_N)\kron \Imat_{n_{\yvec}} \right)\cdot \yfrakvec
+\\
++ \Delta_t \cdot \left((\Imat_{N} \kron b)\dkron{\Tmat^{\mathrm{d},\mathrm{s}}}\Smat_4   \right)\cdot \tildeyfrakvec
++ \Delta_t \cdot \left((\Imat_{N} \kron b)\dkron{\Tmat^{\mathrm{d},\mathrm{s}}}\Smat_2 \right) \cdot \ufrakvec
+\end{multline*}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Objective}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Slope Variables}
+\begin{align*}
+L &= \Delta_t \cdot \sum_{m=0}^{N-1} \left(\sum_{i=1}^s b_i \cdot \expe^{-\varphi \cdot t_{m+1}^{(i)}} \cdot \Phivec_1 (t_{m+1}^{(i)}) \right) \cdot \yvec_{m} \\
+ &+ \sum_{m=0}^{N-1} \sum_{j=1}^s \Delta_t \cdot \left(\sum_{i=1}^s b_i \cdot a_{ij} \cdot \expe^{-\varphi \cdot t_{m+1}^{(i)}} \cdot \Phivec_1 (t_{m+1}^{(i)}) \right) \cdot \kvec_{m+1}^{(j)} \\
+ &+ \sum_{m=0}^{N-1} \sum_{i=1}^s \Delta_t \cdot b_i \cdot \expe^{-\varphi \cdot t_{m+1}^{(i)}} \cdot \Phivec_{1,\uvec}(t_{m+1}^{(i)}) \cdot \uvec_{m+1}^{(i)}
+\end{align*}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Stage Variables}
+\[
+L = \Delta_t \cdot \sum_{m=0}^{N-1} \sum_{j=1}^s b_i \cdot \expe^{-\varphi \cdot t_{m+1}^{(j)}} \cdot \left(\Phivec_1(t_{m+1}^{(j)})\cdot \tildeyvec_{m+1}^{(j)} + \Phivec_{1,\uvec}(t_{m+1}^{(j)}) \cdot \uvec_{m+1}^{(j)}\right) 
+\]
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Control Constraints}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Slope Variables}
+\[
+-\einsvec_{N\cdot s} \dkron{\tvec^{\mathrm{s}}} \fvec_1
+ = \left( \left( (\Imat_{N}, \nullvec_N) \kron \einsvec_s\right) \dkron{({\Tmat^{\mathrm{d},\mathrm{s}}}^{\tp},\nullvec_{N \cdot s})} \Smat_3 \right) \cdot \yfrakvec
+ + \Delta_t \cdot \left(  (\Imat_{N} \kron A) \dkron{(\Tmat^{\mathrm{d},\mathrm{s}} \kron \einsvec_s^{\tp})} \Smat_3 \right)\cdot \kfrakvec
+ + \left(\Imat_{N \cdot s} \dkron{\diag \tvec^{\mathrm{s}}} \Smat_3  \right) \cdot \ufrakvec
+\]
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Stage Variables}
+\[
+-\einsvec_{N \cdot s} \dkron{\tvec^{\mathrm{s}}} \fvec_1 =
+%\left(\right)\cdot \yfrakvec
+%+ 
+\left(\Imat_{N \cdot s} \dkron{\diag (\tvec^{\mathrm{s}})} \Smat_3 \right) \cdot \tildeyfrakvec
++ \left(\Imat_{N \cdot s} \dkron{\diag (\tvec^{\mathrm{s}})} \Smat_1 \right) \cdot \ufrakvec
+\]
+
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Mixed Constraints}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Slope Variables}
+\[
+\left( \left( (\Imat_{N}, \nullvec_N) \kron \einsvec_s\right) \dkron{({\Tmat^{\mathrm{d},\mathrm{s}}}^{\tp},\nullvec_{N \cdot s})} \Hmat_{\yvec} \right) \cdot \yfrakvec
++ \Delta_t \cdot \left(  (\Imat_{N} \kron A) \dkron{(\Tmat^{\mathrm{d},\mathrm{s}} \kron \einsvec_s^{\tp})} \Hmat_{\yvec} \right)\cdot \kfrakvec
++ \left(\Imat_{N \cdot s} \dkron{\diag \tvec^{\mathrm{s}}} \Hmat_{\uvec}  \right) \cdot \ufrakvec
+\leq \einsvec_{N\cdot s} \dkron{\tvec^{\mathrm{s}}} \hvec
+\]
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Stage Variables}
+\[
+\left(\Imat_{N \cdot s} \dkron{\diag (\tvec^{\mathrm{s}})} \Hmat_{\yvec} \right) \cdot \tildeyfrakvec
++ \left(\Imat_{N \cdot s} \dkron{\diag (\tvec^{\mathrm{s}})} \Hmat_{\uvec} \right) \cdot \ufrakvec
+\leq \einsvec_{N \cdot s} \dkron{\tvec^{\mathrm{s}}} \hvec 
+\]
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Control Bounds}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Slope and Stage Variables}
+\[
+\lbfrakvec_{\uvec} = \einsvec_{N\cdot s} \dkron{\tvec^{\mathrm{s}}} \lbvec \,,\quad
+\ubfrakvec_{\uvec} = \einsvec_{N\cdot s} \dkron{\tvec^{\mathrm{s}}} \ubvec
+\]
+% % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\subsubsection*{Stage Variables}
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Positivity}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Slope Variables}
+\[
+- \left((\Imat_N, \nullvec_N)  \kron \einsvec_s  \kron \Imat_{n_{\yvec}}   \right)\cdot \yfrakvec
+- \Delta_t \cdot \left( \Imat_N \kron A \kron \Imat_{n_{\yvec}}  \right) \cdot \kfrakvec
+\leq \nullvec_{N \cdot s \cdot n_{\yvec}}
+\]
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Stage Variables}
+\[
+\lbfrakvec_{\tildeyvec} = \nullvec_{N \cdot s \cdot n_{\yvec}}
+\]
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Boundary Values}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+All as before.
+
+
+
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -834,16 +1032,17 @@ B \dkron[h]{T} C(t) \defeq ...
 
 \begin{itemize}
   \item time-dependent matrices on almost all levels
+  \item time point objectives?
 	%\item additional constant terms in the dynamics and the control constraints
 	\item non-equidistant time grid
-	\item Add absolute-value constraints/objective terms (e.g. total variation)
+	\item Add absolute-value constraints/objective terms (e.g.\ total variation)
 	\item It is possible to fully eliminate the state approximations $\yvec_{m}$ from the LP and instead calculate them in a post-processing step.
 	But then, (at least) the boundary values and objective are more complicated.
 	\item Formulation with stage values instead of slope values
-	\item Add terms depending on controls in the objective and the boundary conditions
+	%\item Add terms depending on controls in the objective and the boundary conditions
 	\item add quadratic terms in the objective
 	\item inequality boundary constraints
-	\item inequality mixed constraints/bounds on dynamic variables(?)
+	%\item inequality mixed constraints/bounds on dynamic variables(?????)
 	\item Matrix $\Smat_3$ might actually destroy the problem structure if we want to use other algorithms than complete parameterization or eliminate the dependent flux variables later on. So: Is it really worth all this?
 	\item more general time integration schemes (multi-step methods)
 	\item Using/exploiting FSAL/ $c_i \in \lbrace 0,1\rbrace$?
