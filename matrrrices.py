@@ -1,29 +1,18 @@
 """
-Wrapper to interface PyrrrateFBa models and the underlying optimal control
+Wrapper to interface PyrrrateFBA models and the underlying optimal control
 framework
-"""
-import sys
-import numpy as np
-import scipy.sparse as sp
-from .optimization.lp import INFINITY, EPSILON, BIGM, MINUSBIGM
-from .util.linalg import solve_if_unique
-
-class Matrrrices:
-    """
-    Class that contains the matrices and vectors of the MILP:
-    min int_{t_0}^{t_end} phi1^T y dt + phi2^T y_0 + phi3^T y_end
-     s.t.                             y' == smat2*u + smat4*y
+    min int_{t_0}^{t_end} e^(-varphi *t) (phi1^T y + phi1u^T u) dt + phi2^T y_0 + phi3^T y_end
+     s.t.                             y' == smat2*u + smat4*y + f_2
                                        0 == smat1*u + smat3*y + f_1
                                    lbvec <= u <= ubvec
                        hmaty*y + hmatu*u <= hvec
                                        0 <= y
           hbmaty*y + hbmatu*u + hbmatx*x <= hbvec
-             bmaty0*y_0 + bmatyend*y_end == b_bndry
+              bmaty0*y_0 + bmatyend*y_end
+            + bmatu0*u_0 + bmatuend*u_end == b_bndry
                                        y in R^{n_y}, u in R^{n_u},
                                        x in B^{n_x}
-    TODO: Create names for the constraints such that is becomes easier to "play
-          with them" (meaning: to relax some or see which make the problem infeasible)
-    Class Matrrrices has fields:
+
         - y_vec : IDs
         - u_vec : of the
         - x_vec : respective entries in the model
@@ -34,7 +23,7 @@ class Matrrrices:
         - smat2 : smat2
         - smat3 : smat3
         - smat4: smat4
-        - <so-far-no-existent> : f_1
+
         - lbvec        : lbvec
         - ubvec        : ubvec
         - matrix_u : hmaty
@@ -47,30 +36,67 @@ class Matrrrices:
         - matrix_start : bmaty0
         - matrix_end: bmatyend
         - vec_bndry : b_bndry
+"""
+import sys
+import numpy as np
+import scipy.sparse as sp
+from .optimization.lp import INFINITY, EPSILON, BIGM, MINUSBIGM
+from .util.linalg import solve_if_unique, shape_of_callable
 
-    TODO: setter for some parts (e.g. initial/boundary values)
+
+# The order is important
+MAT_FIELDS = ['y_vec', 'u_vec', 'x_vec',
+              'phi1', 'phi1u', 'phi2', 'phi3',
+              'smat1', 'smat2', 'smat3', 'smat4', 'f_1', 'f_2',
+              'lbvec', 'ubvec',
+              'matrix_u', 'matrix_y', 'vec_h',
+              'matrix_B_u', 'matrix_B_y', 'matrix_B_x', 'vec_B',
+              'matrix_start', 'matrix_end', 'vec_bndry', 'matrix_u_start', 'matrix_u_end']
+
+
+
+class Matrrrices:
+    """
+    Class that contains the matrices and vectors of the Linear OC problem:
+        Class Matrrrices has fields according to MAT_FIELDS
+
+    TODO: - Create names for the constraints such that is becomes easier to "play
+          with them" (meaning: to relax some or see which make the problem infeasible)
+    TODO: - setter for some parts (e.g. initial/boundary values)
     """
 
-    def __init__(self, model, run_rdeFBA=True):
-        if run_rdeFBA and not model.is_rdeFBA:
-            sys.exit('Cannot perform r-deFBA on a deFBA model!')
-
-        self.construct_vectors(model)   # TODO: Where is f_1?
-        self.construct_objective(model) # TODO: It would be great to be more flexible here
-        self.construct_boundary(model)
-        self.construct_reactions(model)
-        self.construct_flux_bounds(model)
-        self.construct_mixed(model)
-        if run_rdeFBA:
-            self.construct_fullmixed(model)
-        # corresponding deFBA model is obtained by omitting the regulatory constraints
+    def __init__(self, model, run_rdeFBA=True, **kwargs):
+        #
+        if model is None:
+            # We just initialize an empty model. This is just quick and dirty at the moment...
+            for kw_name, kw_val in kwargs.items():
+                if kw_name in MAT_FIELDS:
+                    self.__dict__[kw_name] = kw_val
+                else:
+                    print('Could not set input ', kw_name, ' in Matrrrices construction.')
+        #
         else:
-            # matrices must have (at least) one row to keep linprog working
-            # TODO: Change this behavior in lp
-            self.matrix_B_y = np.zeros((0, len(self.y_vec)), dtype=float)
-            self.matrix_B_u = np.zeros((0, len(self.u_vec)), dtype=float)
-            self.matrix_B_x = np.zeros((0, 0), dtype=float)
-            self.vec_B = np.zeros((0, 1))
+            if run_rdeFBA and not model.is_rdeFBA:
+                sys.exit('Cannot perform r-deFBA on a deFBA model!')
+
+            self.construct_vectors(model)
+            self.construct_objective(model)
+            self.construct_boundary(model)
+            self.construct_reactions(model)
+            self.construct_flux_bounds(model)
+            self.construct_mixed(model)
+            if run_rdeFBA:
+                self.construct_fullmixed(model)
+            # corresponding deFBA model is obtained by omitting the regulatory constraints
+            else:
+                self.matrix_B_y = np.zeros((0, len(self.y_vec)), dtype=float)
+                self.matrix_B_u = np.zeros((0, len(self.u_vec)), dtype=float)
+                self.matrix_B_x = np.zeros((0, 0), dtype=float)
+                self.vec_B = np.zeros((0, 1))
+        #
+        # set so-far unset fields
+        self._set_unset_fields()
+        self.check_dimensions()
 
 
     def extract_initial_values(self):
@@ -92,6 +118,173 @@ class Matrrrices:
                   'System appears to be not uniquely solvable.')
             return None
         return np.expand_dims(y0, axis=1).transpose() # MAYBE: Transpose is :-(, change structure
+
+
+    def check_dimensions(self):
+        """
+        Provide warnings/errors if dimensions are inconsistent
+        Quick-and-dirty code ...
+        """
+        n_y = len(self.y_vec)
+        n_u = len(self.u_vec)
+        n_x = len(self.x_vec)
+        #
+        n_qssa = shape_of_callable(self.smat1)[0]
+        n_dyn = shape_of_callable(self.smat2)[0]
+        n_mix = shape_of_callable(self.matrix_u)[0]
+        n_bmix = shape_of_callable(self.matrix_B_u)[0]
+        n_bndry = shape_of_callable(self.matrix_start)[0]
+        #
+        if shape_of_callable(self.smat1) != (n_qssa, n_u):
+            raise ValueError('smat1 has wrong dimension ({}, {}) should be ({}, {})'.format(
+                self.smat1.shape[0], self.smat1.shape[1], n_qssa, n_u))
+        if shape_of_callable(self.smat3) != (n_qssa, n_y):
+            raise ValueError('smat3 has wrong dimension')
+        if shape_of_callable(self.f_1) != (n_qssa, 1):
+            raise ValueError('f_1 has wrong dimension')
+        #
+        if shape_of_callable(self.smat2) != (n_dyn, n_u):
+            raise ValueError('smat2 has wrong dimension')
+        if shape_of_callable(self.smat4) != (n_dyn, n_y):
+            raise ValueError('smat4 has wrong dimension')
+        if shape_of_callable(self.f_2) != (n_dyn, 1):
+            raise ValueError('f_2 has wrong dimension')
+        #
+        if shape_of_callable(self.matrix_u) != (n_mix, n_u):
+            raise ValueError('matrix_u has wrong dimension')
+        if shape_of_callable(self.matrix_y) != (n_mix, n_y):
+            raise ValueError('matrix_y has wrong dimension')
+        if shape_of_callable(self.vec_h) != (n_mix, 1):
+            raise ValueError('vec_h has wrong dimension')
+        #
+        if shape_of_callable(self.matrix_B_u) != (n_bmix, n_u):
+            raise ValueError('matrix_B_u has wrong dimension')
+        if shape_of_callable(self.matrix_B_y) != (n_bmix, n_y):
+            raise ValueError('matrix_B_y has wrong dimension')
+        if shape_of_callable(self.matrix_B_x) != (n_bmix, n_x):
+            raise ValueError('matrix_B_x has wrong dimension')
+        if shape_of_callable(self.vec_B) != (n_bmix, 1):
+            raise ValueError('vec_B has wrong dimension')
+        #
+        if shape_of_callable(self.matrix_start) != (n_bndry, n_y):
+            raise ValueError('matrix_start has wrong dimension')
+        if shape_of_callable(self.matrix_end) != (n_bndry, n_y):
+            raise ValueError('matrix_end has wrong dimension')
+        if shape_of_callable(self.vec_bndry) != (n_bndry, 1):
+            raise ValueError('vec_bndry has wrong dimension')
+        if shape_of_callable(self.matrix_u_start) != (n_bndry, n_u):
+            raise ValueError('matrix_u_start has wrong dimension')
+        if shape_of_callable(self.matrix_u_end) != (n_bndry, n_u):
+            raise ValueError('marix_u_end has wrong dimension')
+
+
+    def _set_unset_fields(self):
+        """
+        Try to complete a poorly described Matrrrices instance
+        """
+        set_fields = self.__dict__.keys()
+        #print('set fields:', set_fields)
+        to_be_set_fields = list(set(MAT_FIELDS).difference(set_fields))
+        # sort according to MAT_FIELDS
+        to_be_set_fields = sorted(to_be_set_fields, key=lambda x: MAT_FIELDS.index(x))
+        #print('to be set:', to_be_set_fields)
+        QSSA_ELEM = ['smat1', 'smat3', 'f_1']
+        DYN_ELEM = ['smat2', 'smat4', 'f_2']
+        BND_ELEM = ['lbvec', 'ubvec']
+        MIX_ELEM = ['matrix_u', 'matrix_y', 'vec_h']
+        BMIX_ELEM = ['matrix_B_u', 'matrix_B_y', 'matrix_B_x', 'vec_B']
+        BNDRY_ELEM = ['matrix_start', 'matrix_end', 'vec_bndry', 'matrix_u_start', 'matrix_u_end']
+        for kw_name in to_be_set_fields:
+            #print(30*'-')
+            #print('Trying to set field: ', kw_name)
+            #self.__dict__[kw_name] = _create_default_value(self, kw_name)
+            #
+            if kw_name in ['y_vec', 'u_vec', 'x_vec']:
+                raise ValueError(''.join(['In the construction of a Matrrrices object',
+                                          ' at least the fields y_vec, x_vec and u_vec need to',
+                                          ' be set, cannot set ', kw_name]))
+            n_y = len(self.y_vec)
+            n_u = len(self.u_vec)
+            n_x = len(self.x_vec)
+            if kw_name in ['phi1', 'phi2', 'phi3']:
+                self.__dict__[kw_name] = np.zeros((n_y, 1), dtype=float)
+            elif kw_name == 'phi1u':
+                self.__dict__[kw_name] = np.zeros((n_u, 1), dtype=float)
+            # MAYBE: What follows can be abstracted to much simpler code...
+            # "QSSA rows" ----------------------------------------------------
+            elif kw_name in QSSA_ELEM:
+                given_fields = [f for f in set_fields if f in QSSA_ELEM]
+                if len(given_fields) == 0:
+                    n_qssa = 0
+                else:
+                    n_qssa = shape_of_callable(self.__dict__[given_fields[0]])[0]
+                if kw_name == 'smat1':
+                    n_cols = n_u
+                elif kw_name == 'smat3':
+                    n_cols = n_y
+                else:
+                    n_cols = 1
+                self.__dict__[kw_name] = sp.csr_matrix((n_qssa, n_cols))
+            # rows of dynamic eqs. -------------------------------------------
+            elif kw_name in DYN_ELEM:
+                n_dyn = n_y
+                if kw_name == 'smat2':
+                    n_cols = n_u
+                elif kw_name == 'smat4':
+                    n_cols = n_y
+                else:
+                    n_cols = 1
+                self.__dict__[kw_name] = sp.csr_matrix((n_dyn, n_cols))
+            # flux bounds ----------------------------------------------------
+            elif kw_name in BND_ELEM: # This outer loop is just to "improve" readability
+                if kw_name == 'lbvec':
+                    self.lbvec = -INFINITY*np.ones((n_u, 1))
+                else:
+                    self.ubvec = INFINITY*np.ones((n_u, 1))
+            # rows of mixed ineqs. -------------------------------------------
+            elif kw_name in MIX_ELEM:
+                given_fields = [f for f in set_fields if f in MIX_ELEM]
+                if len(given_fields) == 0:
+                    n_mix = 0
+                else:
+                    n_mix = shape_of_callable(self.__dict__[given_fields[0]])[0]
+                if kw_name == 'matrix_u':
+                    n_cols = n_u
+                elif kw_name == 'matrix_y':
+                    n_cols = n_y
+                else:
+                    n_cols = 1
+                self.__dict__[kw_name] = sp.csr_matrix((n_mix, n_cols))
+            # rows of mixed inqs. with Boolean elements ----------------------
+            elif kw_name in BMIX_ELEM:
+                given_fields = [f for f in set_fields if f in BMIX_ELEM]
+                if len(given_fields) == 0:
+                    n_bmix = 0
+                else:
+                    n_bmix = shape_of_callable(self.__dict__[given_fields[0]])[0]
+                if kw_name == 'matrix_B_u':
+                    n_cols = n_u
+                elif kw_name == 'matrix_B_y':
+                    n_cols = n_y
+                elif kw_name == 'matrix_B_x':
+                    n_cols = n_x
+                else:
+                    n_cols = 1
+                self.__dict__[kw_name] = sp.csr_matrix((n_bmix, n_cols))
+            # rows of boundary conditions ------------------------------------
+            elif kw_name in BNDRY_ELEM:
+                given_fields = [f for f in set_fields if f in BNDRY_ELEM]
+                if len(given_fields) == 0:
+                    n_bndry = 0
+                else:
+                    n_bndry = shape_of_callable(self.__dict__[given_fields[0]])[0]
+                if kw_name in ['matrix_start', 'matrix_end']:
+                    n_cols = n_y
+                elif kw_name == 'vec_bndry':
+                    n_cols = 1
+                else:
+                    n_cols = n_u
+                self.__dict__[kw_name] = sp.csr_matrix((n_bndry, n_cols))
 
 
     def construct_vectors(self, model):
@@ -228,7 +421,7 @@ class Matrrrices:
         # select columns of degradation reactions
         cols_deg = []
         for col_index, rxn in enumerate(model.reactions_dict):
-            if np.isnan(model.reactions_dict[rxn]['kcatForward']):
+            if np.isnan(model.reactions_dict[rxn]['kcatForward']): # This is (so far) a convention.
                 cols_deg.append(col_index)
 
         # S1: QSSA species
@@ -256,7 +449,7 @@ class Matrrrices:
         """
         construct vectors lb, ub
         """
-        lbvec = np.zeros((len(self.u_vec), 1))
+        lbvec = np.zeros((len(self.u_vec), 1)) # QUESTION: What is the default for reversible reactions?
         ubvec = INFINITY*np.ones((len(self.u_vec), 1))
 
         # flux bounds determined by regulation are not considered here
@@ -591,3 +784,13 @@ class Matrrrices:
             matrix_HM_y[self.y_vec.index(macrom)] = main_scaling * model.macromolecules_dict[macrom]['molecularWeight']
 
         return matrix_HM_y, matrix_HM_u
+
+
+#def _create_default_value(mat, kw_name):
+#    """
+#    """
+
+
+
+
+
