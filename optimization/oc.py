@@ -2,11 +2,13 @@
 Optimal Control stuff
 """
 import numpy as np
-import scipy.sparse as sp
+import scipy.sparse as sp # TODO: All bmat, hstack, vstack, kron in sp is slow (scipy 1.5.0)
 from . import lp as lp_wrapper
+from ..util.linalg import dkron, shape_of_callable
 
 
-def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0):
+def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0,
+                  model_name="MIOC Model - Full par., midpoint rule"):
     """
     Approximate the solution of the mixed integer optimal control problem
      min int_{t_0}^{t_end} exp(-varphi*t) phi1^T y dt + phi2^T y_0 + phi3^T y_end
@@ -35,9 +37,9 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0):
     """
 
 
-    n_y, n_u = matrices.smat2.shape
-    n_x = matrices.matrix_B_x.shape[1]
-    n_qssa = matrices.smat1.shape[0]
+    n_y, n_u = shape_of_callable(matrices.smat2, default_t=t_0)
+    n_x = shape_of_callable(matrices.matrix_B_x, default_t=t_0)[1]
+    n_qssa = shape_of_callable(matrices.smat1, default_t=t_0)[0]
     n_ally = (n_steps + 1) * n_y
     n_allu = n_steps * n_u
     n_allx = n_steps * n_x
@@ -97,7 +99,7 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0):
 
     # Discretization of equality boundary constraints
     aeqmat3_y = sp.hstack([matrices.matrix_start,
-                               sp.csr_matrix((n_bndry, (n_steps-1)*n_y)), matrices.matrix_end])
+                           sp.csr_matrix((n_bndry, (n_steps-1)*n_y)), matrices.matrix_end])
     aeqmat3_u = sp.csr_matrix((n_bndry, n_allu))
     beq3 = matrices.vec_bndry
 
@@ -123,8 +125,7 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0):
     variable_names += ["u_"+str(j+1)+"_"+str(i) for i in range(n_steps) for j in range(n_u)]
     variable_names += ["x_"+str(j+1)+"_"+str(i) for i in range(n_steps) for j in range(n_x)]
 
-    model = lp_wrapper.MILPModel(name="MIOC Model - Full par., midpoint rule")
-    # TODO: Name should be derived from biological model/it should be possible to provide it from outside.
+    model = lp_wrapper.MILPModel(name=model_name)
     model.sparse_mip_model_setup(f_all, fbar_all, amat, abarmat, bineq, aeqmat,
                                  beq, lb_all, ub_all, variable_names)
 
@@ -136,8 +137,8 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0):
         u_data = np.reshape(model.get_solution()[n_ally:n_ally+n_allu], (n_steps, n_u))
         x_data = np.reshape(model.get_solution()[n_ally+n_allu:], (n_steps, n_x))
         return tgrid, tt_s, y_data, u_data, x_data
-    # TODO: use cleverer output here, control verbosity level (if called from another algorithm), create output
-    # flags depending on why the solution failed
+    # TODO: use cleverer output here, control verbosity level (if called from another algorithm),
+    # create output flags depending on why the solution failed
     print("No solution found")
 
     return None
@@ -167,7 +168,7 @@ def _inflate_constraints_new(amat, ttvec, bmat=None):
        / amat(tt[0]), bmat(tt[1])                                          \
        |             amat(tt[1]), bmat(tt[2])                              |
        |                ...          ...                                   |
-       \                                         amat(tt[-2]) bmat(tt[-1]) /
+       |                                         amat(tt[-2]) bmat(tt[-1]) /
     where tt and N correspond to ttvec and n_tt, resp.
 
     TODO: Still no irregular grid possible -> replace by generalized Kronecker?
@@ -215,7 +216,7 @@ def _inflate_callable(amat, ttvec, **kwargs):
         / amat(ttvec[0])                                      \
        |                  amat(ttvec[1])                      |
        |                      ...                             |
-       \                                      amat(ttvec[-1]) /
+       |                                      amat(ttvec[-1]) /
     Parameters
     ----------
     amat : callable: real -> scipy.sparse.csr_matrix
@@ -300,84 +301,85 @@ def _inflate_vec(fvec, ttvec):
 #    return (amat_y, amat_u, amat_x, fvec_all)
 
 
-def cp_rk_linprog(matrices, rkm, t_0, t_end, n_steps=101, varphi=0.0):
+def cp_rk_linprog(matrices, rkm, t_0, t_end, n_steps=101, varphi=0.0,
+                  model_name="OC Model - Full par., Runge-Kutta scheme"):
     """
     Runge Kutta based on slope variables k_{m+1}^i
-    
+
     TODO
      - more security checks
      - allow irregular time grid
      - add the Boolean part
+     - extend for stage variables and FSAL
     """
-    s_rk = rkm.get_stage_number() 
-    n_y, n_u = matrices.smat2.shape
-    n_qssa = matrices.smat1.shape[0]
+    s_rk = rkm.get_stage_number()
+    n_y, n_u = shape_of_callable(matrices.smat2, default_t=t_0)
     n_ally = (n_steps + 1) * n_y
     n_allu = n_steps* s_rk * n_u
     n_allk = n_steps*s_rk*n_y
-    n_bndry = len(matrices.vec_bndry)
+    n_bndry = shape_of_callable(matrices.vec_bndry, default_t=t_0)[0]
 
     tgrid = np.linspace(t_0, t_end, n_steps + 1)
     del_t = tgrid[1] - tgrid[0]
-    tt_s = np.array([t+ del_t*c for t in tgrid[:-1] for c in rkm.c]).flatten() # time grid for controls
-    TT_s = np.reshape(tt_s, (n_steps, s_rk))
-    #TT_s = np.reshape(tt_s, (s_rk, n_steps))
-    
+    tt_s = np.array([t+ del_t*c for t in tgrid[:-1] for c in rkm.c]) # time grid for controls
+    tmat_ds = sp.csr_matrix((tt_s.flatten(), range(s_rk*n_steps), range(0, s_rk*n_steps+1, s_rk)))
     # Discretization of objective ============================================
     # TODO: outsource this code part to test for numerical order
+    # FIXME: Include time dependent objective parts
     # Lagrange part __________________________________________________________
-    expmt = np.exp(-varphi*TT_s)
+    expmt = np.exp(-varphi*np.reshape(tt_s, (n_steps, s_rk)))
     f_y = np.vstack([np.kron(del_t*np.dot(expmt, rkm.b.T), matrices.phi1), np.zeros((n_y, 1))])
     #
     f_k = del_t**2*np.kron(np.reshape(np.dot(expmt, rkm.A*np.kron(rkm.b.T, np.ones((1, s_rk)))),
                                       (s_rk*n_steps, 1), 'F'), matrices.phi1)
     #
     f_u = np.zeros((n_steps*s_rk*n_u, 1))
-    #f_u = del_t*np.kron(np.kron(np.ones((n_steps, 1)), rkm.b.T), matrices.phi1u) # TODO: Test this!!
+    #f_u = del_t*np.kron(np.kron(np.ones((n_steps, 1)), rkm.b.T), matrices.phi1u) # Test this!!
     # Mayer part _____________________________________________________________
     f_y[0:n_y] += matrices.phi2
     f_y[n_steps * n_y:n_ally] += matrices.phi3
 
     # Dynamics ===============================================================
     # (a) stage equations
-    aeq1_y = sp.kron(sp.kron(sp.eye(n_steps, n_steps+1, format='csr'), np.ones((s_rk, 1)),
-                             format='csr'), matrices.smat4, format='csr')
-    aeq1_k = del_t*sp.kron(sp.kron(sp.eye(n_steps, format='csr'), rkm.A, format='csr'),
-                           matrices.smat4, format='csr')
+    aeq1_y = dkron(sp.kron(sp.eye(n_steps, n_steps+1, format='csr'), np.ones((s_rk, 1)),
+                           format='csr'), matrices.smat4, tt_s, along_rows=True)
+    aeq1_k = del_t*dkron(sp.kron(sp.eye(n_steps, format='csr'), rkm.A, format='csr'),
+                         matrices.smat4, sp.kron(tmat_ds, np.ones((s_rk, 1))).asformat('csr'),
+                         out_type='csr')
     aeq1_k += -sp.eye(n_steps*s_rk*n_y, format='csr')
-    aeq1_u = sp.kron(sp.eye(n_steps*s_rk, format='csr'), matrices.smat2, format='csr')
-    #beq1 = -np.kron(np.ones((n_steps*s_rk, 1)), matrices.f2)
-    beq1 = np.zeros((n_steps*s_rk*n_y, 1))
+    aeq1_u = dkron(sp.eye(n_steps*s_rk, format='csr'), matrices.smat2, tt_s, along_rows=True)
+    beq1 = -dkron(np.ones((n_steps*s_rk, 1)), matrices.f_2, tt_s, out_type='np')
     # (b) state vector updates
-    aeq2_y = sp.kron(sp.eye(n_steps, n_steps+1, format='csr')-
+    aeq2_y = sp.kron(sp.eye(n_steps, n_steps+1, format='csr')- # Is this simpler with sp.diags?
                      sp.eye(n_steps, n_steps+1, k=1, format='csr'),
                      sp.eye(n_y, format='csr'), format='csr')
     aeq2_k = del_t*sp.kron(sp.eye(n_steps, format='csr'), sp.kron(rkm.b, sp.eye(n_y, format='csr'),
-                                                            format='csr'), format='csr')
+                                                                  format='csr'), format='csr')
     aeq2_u = sp.csr_matrix((n_steps*n_y, n_allu))
     beq2 = np.zeros((n_steps*n_y, 1))
-    
+
     # Control Constraints ====================================================
-    aeq3_y = sp.kron(sp.kron(sp.eye(n_steps, n_steps+1, format='csr'), np.ones((s_rk, 1)),
-                             format='csr'), matrices.smat3)
-    aeq3_k = del_t*sp.kron(sp.kron(sp.eye(n_steps, format='csr'), rkm.A, format='csr'),
-                           matrices.smat3, format='csr')
-    aeq3_u = sp.kron(sp.eye(n_steps*s_rk, format='csr'), matrices.smat1, format='csr')
-    #beq3 = -np.kron(np.ones((n_steps*s_rk)), matrices.f1)
-    beq3 = np.zeros((n_steps*s_rk*n_qssa, 1))
-    
+    aeq3_y = dkron(sp.kron(sp.eye(n_steps, n_steps+1, format='csr'), np.ones((s_rk, 1)),
+                           format='csr'), matrices.smat3, tt_s, along_rows=True)
+    aeq3_k = del_t*dkron(sp.kron(sp.eye(n_steps, format='csr'), rkm.A, format='csr'),
+                         matrices.smat3, sp.kron(tmat_ds, np.ones((s_rk, 1))).asformat('csr'),
+                         out_type='csr')
+    aeq3_u = dkron(sp.eye(n_steps*s_rk, format='csr'), matrices.smat1, tt_s, along_rows=True)
+    beq3 = -dkron(np.ones((n_steps*s_rk, 1)), matrices.f_1, tt_s, out_type='np')
+
     # Mixed Constraints ======================================================
-    aineq1_y = sp.kron(sp.kron(sp.eye(n_steps, n_steps+1, format='csr'), np.ones((s_rk, 1)),
-                             format='csr'), matrices.matrix_y)
-    aineq1_k = del_t*sp.kron(sp.kron(sp.eye(n_steps, format='csr'), rkm.A, format='csr'),
-                           matrices.matrix_y, format='csr')
-    aineq1_u = sp.kron(sp.eye(n_steps*s_rk, format='csr'), matrices.matrix_u, format='csr')
-    bineq1 = np.kron(np.ones((n_steps*s_rk, 1)), matrices.vec_h)
+    aineq1_y = dkron(sp.kron(sp.eye(n_steps, n_steps+1, format='csr'), np.ones((s_rk, 1)),
+                             format='csr'), matrices.matrix_y, tt_s, along_rows=True)
+    aineq1_k = del_t*dkron(sp.kron(sp.eye(n_steps, format='csr'), rkm.A, format='csr'),
+                           matrices.matrix_y, sp.kron(tmat_ds, np.ones((s_rk, 1))).asformat('csr'),
+                           out_type='csr')
+    aineq1_u = dkron(sp.eye(n_steps*s_rk, format='csr'), matrices.matrix_u, tt_s, along_rows=True)
+    bineq1 = dkron(np.ones((n_steps*s_rk, 1)), matrices.vec_h, tt_s, out_type='np')
 
     # Control Bounds =========================================================
-    lb_u = np.kron(np.ones((n_steps*s_rk, 1)), matrices.lbvec)
-    ub_u = np.kron(np.ones((n_steps*s_rk, 1)), matrices.ubvec)
-    
+    lb_u = dkron(np.ones((n_steps*s_rk, 1)), matrices.lbvec, tt_s, out_type='np')
+    ub_u = dkron(np.ones((n_steps*s_rk, 1)), matrices.ubvec, tt_s, out_type='np')
+
     # Positivity of y ========================================================
     aineq2_y = -sp.kron(sp.kron(sp.eye(n_steps, n_steps+1, format='csr'),
                                 np.ones((s_rk, 1)), format='csr'),
@@ -387,7 +389,7 @@ def cp_rk_linprog(matrices, rkm, t_0, t_end, n_steps=101, varphi=0.0):
                               sp.eye(n_y, format='csr'), format='csr')
     aineq2_u = sp.csr_matrix((n_steps*s_rk*n_y, n_allu))
     bineq2 = np.zeros((n_steps*s_rk*n_y, 1))
-    
+
     # Boundary Values ========================================================
     aeq4_y = sp.hstack([matrices.matrix_start, sp.csr_matrix((n_bndry, (n_steps-1)*n_y)),
                         matrices.matrix_end])
@@ -396,14 +398,14 @@ def cp_rk_linprog(matrices, rkm, t_0, t_end, n_steps=101, varphi=0.0):
     beq4 = matrices.vec_bndry
 
     # So far unset elements of the LP
-    lb_y = -lp_wrapper.INFINITY*np.ones((n_ally, 1)) # Here, it would be easy to additionally enforce positivity
+    lb_y = -lp_wrapper.INFINITY*np.ones((n_ally, 1))
+    # Here, it would be easy to additionally enforce positivity
     ub_y = lp_wrapper.INFINITY*np.ones((n_ally, 1))
     lb_k = -lp_wrapper.INFINITY*np.ones((n_allk, 1))
     ub_k = lp_wrapper.INFINITY*np.ones((n_allk, 1))
-    
+
     # Assembly of LP =========================================================
     f_all = np.vstack([f_y, f_k, f_u])
-
     aeq = sp.bmat([[aeq1_y, aeq1_k, aeq1_u],
                    [aeq2_y, aeq2_k, aeq2_u],
                    [aeq3_y, aeq3_k, aeq3_u],
@@ -411,19 +413,18 @@ def cp_rk_linprog(matrices, rkm, t_0, t_end, n_steps=101, varphi=0.0):
     beq = np.vstack([beq1, beq2, beq3, beq4])
     lb_all = np.vstack([lb_y, lb_k, lb_u])
     ub_all = np.vstack([ub_y, ub_k, ub_u])
-
     aineq = sp.bmat([[aineq1_y, aineq1_k, aineq1_u],
                      [aineq2_y, aineq2_k, aineq2_u]], format='csr')
-
     bineq = np.vstack([bineq1, bineq2])
 
-    # TODO: Create variable name creator function
+    # TODO: Create variable name creator function or get the names from somewhere else
     variable_names = ["y_"+str(j+1)+"_"+str(i) for i in range(n_steps+1) for j in range(n_y)]
-    variable_names += ["k_"+str(j+1)+"_"+str(i)+"^"+str(s+1) for i in range(n_steps) for s in range(s_rk) for j in range(n_y)]
-    variable_names += ["u_"+str(j+1)+"_"+str(i)+"^"+str(s+1) for i in range(n_steps) for s in range(s_rk) for j in range(n_u)]
+    variable_names += ["k_"+str(j+1)+"_"+str(i)+"^"+str(s+1) for i in range(n_steps)
+                       for s in range(s_rk) for j in range(n_y)]
+    variable_names += ["u_"+str(j+1)+"_"+str(i)+"^"+str(s+1) for i in range(n_steps)
+                       for s in range(s_rk) for j in range(n_u)]
 
-    model = lp_wrapper.LPModel(name="OC Model - Full par., Runge-Kutta scheme")
-    # TODO: Name should be derived from biological model/it should be possible to provide it from outside.
+    model = lp_wrapper.LPModel(name=model_name)
     model.sparse_model_setup(f_all, aineq, bineq, aeq, beq, lb_all, ub_all, variable_names)
 
     model.optimize()
@@ -433,10 +434,10 @@ def cp_rk_linprog(matrices, rkm, t_0, t_end, n_steps=101, varphi=0.0):
         y_data = np.reshape(model.get_solution()[:n_ally], (n_steps+1, n_y))
         u_data = np.reshape(model.get_solution()[n_ally+n_allk:n_ally+n_allk++n_allu],
                             (n_steps*s_rk, n_u))
-        return tgrid, tt_s, y_data, u_data
-    # TODO: use cleverer output here, control verbosity level (if called from another algorithm), create output
-    # flags depending on why the solution failed
+        return tgrid, tt_s.flatten(), y_data, u_data
+    # TODO: - use cleverer output here
+    #  - control verbosity level (if called from another algorithm)
+    #  - create output flags depending on why the solution failed
     print("No solution found")
 
     return None
-

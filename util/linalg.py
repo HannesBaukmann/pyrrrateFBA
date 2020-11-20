@@ -108,12 +108,22 @@ def dkron(A, B, T, along_rows=False, out_type='csr'):
     else:
         #print('B is NOT callable')
         if out_type in sparse_out_types:
-            C = sp.kron(A, B, format=out_type)
+            C = sp.kron(A, B, format=out_type).asformat(out_type) # There is a bug in scipy if the matrices have only zeros
             # This is actually slow in scipy 1.5.0 because matrices are converted internally
         else: # default to np
-            C = np.kron(A, B)
+            C = np.kron(_ensure_np(A), _ensure_np(B))
     #
     return C
+
+
+def shape_of_callable(in_mat, default_t=0.0):
+    """
+    Extract the shape of an array regardless of whether that array formally is a callable
+    """
+    if callable(in_mat):
+        return in_mat(default_t).shape
+    else:
+        return in_mat.shape
 
 
 def _dkron_csr(A, B, T, along_rows):
@@ -185,15 +195,24 @@ def _ensure_csr(mat_in):
     return mat_in.tocsr()
 
 
+def _ensure_np(mat_in):
+    """
+    Ifthe matrix is sparse: todense() it
+    """
+    if isinstance(mat_in, sp.base.spmatrix):
+        return mat_in.todense()
+    return mat_in
+
+
 def _dkron_np(A, B, T, along_rows):
     """
     Dynamic Kronecker for numpy arrays
     """
     m_A, n_A = A.shape
     if min([m_A, n_A]) == 0:
-        B0 = B(0.0)
+        B0 = _ensure_np(B(0.0))
     else:
-        B0 = B(T[0, 0])
+        B0 = _ensure_np(B(T[0, 0]))
     m_B, n_B = B0.shape
     C = np.zeros((m_A*m_B, n_A*n_B))
     if min([m_A, m_B, n_A, n_B]) == 0:
@@ -203,9 +222,9 @@ def _dkron_np(A, B, T, along_rows):
         in_inner_loop = True
         for a_col in range(n_A):
             if not along_rows and in_loop:
-                B0 = B(T[a_row, a_col])
+                B0 = _ensure_np(B(T[a_row, a_col]))
             if along_rows and in_inner_loop and in_loop:
-                B0 = B(T[a_row, 0])
+                B0 = _ensure_np(B(T[a_row, 0]))
                 in_inner_loop = False
             in_loop = True
             C[m_B*a_row:m_B*a_row+m_B, n_B*a_col:n_B*a_col+n_B] = A[a_row, a_col]*B0
