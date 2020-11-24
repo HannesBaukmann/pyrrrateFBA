@@ -1,3 +1,4 @@
+# pylint: disable=E1136 # pylint/issues/3139
 """
 Optimal Control stuff
 """
@@ -27,15 +28,7 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0,
     DEBUG
      - This is supposed to be temporary and replaced by a more general oc
        routine
-    TODO
-     - more security checks
-     - add additional terms in objective and dynamics
-     - allow irregular time grid
-     - ...
-    MAYBE
-     - create/use a class for the time series data in the output
     """
-
 
     n_y, n_u = shape_of_callable(matrices.smat2, default_t=t_0)
     n_x = shape_of_callable(matrices.matrix_B_x, default_t=t_0)[1]
@@ -120,7 +113,6 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0,
 
     bineq = np.vstack([bineq1, bineq2])
 
-    # TODO: Create variable name creator function
     variable_names = ["y_"+str(j+1)+"_"+str(i) for i in range(n_steps+1) for j in range(n_y)]
     variable_names += ["u_"+str(j+1)+"_"+str(i) for i in range(n_steps) for j in range(n_u)]
     variable_names += ["x_"+str(j+1)+"_"+str(i) for i in range(n_steps) for j in range(n_x)]
@@ -132,13 +124,10 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0,
     model.optimize()
 
     if model.status == lp_wrapper.OPTIMAL:
-        # TODO Outsource this deslicing
         y_data = np.reshape(model.get_solution()[:n_ally], (n_steps+1, n_y))
         u_data = np.reshape(model.get_solution()[n_ally:n_ally+n_allu], (n_steps, n_u))
         x_data = np.reshape(model.get_solution()[n_ally+n_allu:], (n_steps, n_x))
         return tgrid, tt_s, y_data, u_data, x_data
-    # TODO: use cleverer output here, control verbosity level (if called from another algorithm),
-    # create output flags depending on why the solution failed
     print("No solution found")
 
     return None
@@ -170,8 +159,6 @@ def _inflate_constraints_new(amat, ttvec, bmat=None):
        |                ...          ...                                   |
        |                                         amat(tt[-2]) bmat(tt[-1]) /
     where tt and N correspond to ttvec and n_tt, resp.
-
-    TODO: Still no irregular grid possible -> replace by generalized Kronecker?
     """
     skip_bmat = True
     n_tt = len(ttvec)
@@ -305,12 +292,9 @@ def cp_rk_linprog(matrices, rkm, t_0, t_end, n_steps=101, varphi=0.0,
                   model_name="OC Model - Full par., Runge-Kutta scheme"):
     """
     Runge Kutta based on slope variables k_{m+1}^i
-
-    TODO
-     - more security checks
-     - allow irregular time grid
-     - add the Boolean part
-     - extend for stage variables and FSAL
+    DEBUG
+    - This is supposed to be temporary and replaced by a more general oc
+      routine
     """
     s_rk = rkm.get_stage_number()
     n_y, n_u = shape_of_callable(matrices.smat2, default_t=t_0)
@@ -325,7 +309,6 @@ def cp_rk_linprog(matrices, rkm, t_0, t_end, n_steps=101, varphi=0.0,
     tmat_s = np.reshape(tt_s, (n_steps, s_rk))
     tmat_ds = sp.csr_matrix((tt_s.flatten(), range(s_rk*n_steps), range(0, s_rk*n_steps+1, s_rk)))
     # Discretization of objective ============================================
-    # TODO: outsource this code part to test for numerical order
     # Lagrange part __________________________________________________________
     expmt = np.exp(-varphi*tmat_s)
     expvt = np.exp(-varphi*tt_s) # can be obtained by reshaping...
@@ -390,6 +373,142 @@ def cp_rk_linprog(matrices, rkm, t_0, t_end, n_steps=101, varphi=0.0,
     aineq2_k = -del_t*sp.kron(sp.kron(sp.eye(n_steps, format='csr'), rkm.A,
                                       format='csr'),
                               sp.eye(n_y, format='csr'), format='csr')
+    aineq2_u = sp.csr_matrix((n_steps*s_rk*n_y, n_allu))
+    bineq2 = np.zeros((n_steps*s_rk*n_y, 1))
+
+    # Boundary Values ========================================================
+    aeq4_y = sp.hstack([matrices.matrix_start, sp.csr_matrix((n_bndry, (n_steps-1)*n_y)),
+                        matrices.matrix_end])
+    aeq4_k = sp.csr_matrix((n_bndry, n_allk))
+    aeq4_u = sp.csr_matrix((n_bndry, n_allu))
+    beq4 = matrices.vec_bndry
+
+    # So far unset elements of the LP
+    lb_y = -lp_wrapper.INFINITY*np.ones((n_ally, 1))
+    # Here, it would be easy to additionally enforce positivity
+    ub_y = lp_wrapper.INFINITY*np.ones((n_ally, 1))
+    lb_k = -lp_wrapper.INFINITY*np.ones((n_allk, 1))
+    ub_k = lp_wrapper.INFINITY*np.ones((n_allk, 1))
+
+    # Assembly of LP =========================================================
+    f_all = np.vstack([f_y, f_k, f_u])
+    aeq = sp.bmat([[aeq1_y, aeq1_k, aeq1_u],
+                   [aeq2_y, aeq2_k, aeq2_u],
+                   [aeq3_y, aeq3_k, aeq3_u],
+                   [aeq4_y, aeq4_k, aeq4_u]], format='csr')
+    beq = np.vstack([beq1, beq2, beq3, beq4])
+    lb_all = np.vstack([lb_y, lb_k, lb_u])
+    ub_all = np.vstack([ub_y, ub_k, ub_u])
+    aineq = sp.bmat([[aineq1_y, aineq1_k, aineq1_u],
+                     [aineq2_y, aineq2_k, aineq2_u]], format='csr')
+    bineq = np.vstack([bineq1, bineq2])
+
+    variable_names = ["y_"+str(j+1)+"_"+str(i) for i in range(n_steps+1) for j in range(n_y)]
+    variable_names += ["k_"+str(j+1)+"_"+str(i)+"^"+str(s+1) for i in range(n_steps)
+                       for s in range(s_rk) for j in range(n_y)]
+    variable_names += ["u_"+str(j+1)+"_"+str(i)+"^"+str(s+1) for i in range(n_steps)
+                       for s in range(s_rk) for j in range(n_u)]
+
+    model = lp_wrapper.LPModel(name=model_name)
+    model.sparse_model_setup(f_all, aineq, bineq, aeq, beq, lb_all, ub_all, variable_names)
+
+    model.optimize()
+
+    if model.status == lp_wrapper.OPTIMAL:
+        y_data = np.reshape(model.get_solution()[:n_ally], (n_steps+1, n_y))
+        u_data = np.reshape(model.get_solution()[n_ally+n_allk:n_ally+n_allk++n_allu],
+                            (n_steps*s_rk, n_u))
+        return tgrid, tt_s.flatten(), y_data, u_data
+    print("No solution found")
+
+    return None
+
+
+def cp_rk_linprog_v(matrices, rkm, tgrid, varphi=0.0,
+                    model_name="OC Model - Full par., Runge-Kutta scheme"):
+    """
+    Runge Kutta based on slope variables k_{m+1}^i on time grid tgrid
+
+    TODO
+     - more security checks
+     - add the Boolean part
+     - extend for stage variables and FSAL
+    """
+    t_0 = tgrid[0]  #; t_end = tgrid[-1]
+    n_steps = tgrid.size - 1
+    s_rk = rkm.get_stage_number()
+    n_y, n_u = shape_of_callable(matrices.smat2, default_t=t_0)
+    n_ally = (n_steps + 1) * n_y
+    n_allu = n_steps* s_rk * n_u
+    n_allk = n_steps*s_rk*n_y
+    n_bndry = shape_of_callable(matrices.vec_bndry, default_t=t_0)[0]
+    #
+    del_tt = np.array([np.diff(tgrid).flatten()]).T
+    diagdelt = sp.diags(np.array(del_tt).flatten(), format='csr')
+    tt_s = np.array([tgrid[i]+ del_tt[i]*c for i in range(n_steps) for c in rkm.c])
+    tmat_s = np.reshape(tt_s, (n_steps, s_rk))
+    tmat_ds = sp.csr_matrix((tt_s.flatten(), range(s_rk*n_steps), range(0, s_rk*n_steps+1, s_rk)))
+    # Discretization of objective ============================================
+    # TODO: outsource this code part to test for numerical order
+    # Lagrange part __________________________________________________________
+    expmt = np.exp(-varphi*tmat_s)
+    expvt = np.exp(-varphi*tt_s) # can be obtained by reshaping...
+    f_y = np.vstack([np.dot(dkron(expmt*(del_tt.repeat(s_rk, 1)), matrices.phi1, tmat_s,
+                                  out_type='np'), rkm.b.T), np.zeros((n_y, 1))])
+    #
+    mat1 = np.kron(del_tt**2, np.kron(rkm.A.T, np.ones((n_y, 1))))
+    mat2 = np.repeat(dkron(expvt, matrices.phi1, tt_s, out_type='np'), s_rk, 1)
+    f_k = np.dot(mat1*mat2, rkm.b.T)
+    #
+    f_u = dkron(np.kron(del_tt, rkm.b.T)*expvt, matrices.phi1u, tt_s, out_type='np')
+    # Mayer part _____________________________________________________________
+    f_y[0:n_y] += matrices.phi2
+    f_y[n_steps * n_y:n_ally] += matrices.phi3
+
+    # Dynamics ===============================================================
+    # (a) stage equations
+    aeq1_y = dkron(sp.kron(sp.eye(n_steps, n_steps+1, format='csr'), np.ones((s_rk, 1)),
+                           format='csr'), matrices.smat4, tt_s, along_rows=True)
+    aeq1_k = dkron(sp.kron(diagdelt, rkm.A, format='csr'), matrices.smat4,
+                   sp.kron(tmat_ds, np.ones((s_rk, 1))).asformat('csr'), out_type='csr')
+    aeq1_k += -sp.eye(n_steps*s_rk*n_y, format='csr')
+    aeq1_u = dkron(sp.eye(n_steps*s_rk, format='csr'), matrices.smat2, tt_s, along_rows=True)
+    beq1 = -dkron(np.ones((n_steps*s_rk, 1)), matrices.f_2, tt_s, out_type='np')
+    # (b) state vector updates
+    aeq2_y = sp.kron(sp.eye(n_steps, n_steps+1, format='csr')- # Is this simpler with sp.diags
+                     sp.eye(n_steps, n_steps+1, k=1, format='csr'), # or directly with indices?
+                     sp.eye(n_y, format='csr'), format='csr')
+    aeq2_k = sp.kron(diagdelt, sp.kron(rkm.b, sp.eye(n_y, format='csr'),
+                                       format='csr'), format='csr')
+    aeq2_u = sp.csr_matrix((n_steps*n_y, n_allu))
+    beq2 = np.zeros((n_steps*n_y, 1))
+
+    # Control Constraints ====================================================
+    aeq3_y = dkron(sp.kron(sp.eye(n_steps, n_steps+1, format='csr'), np.ones((s_rk, 1)),
+                           format='csr'), matrices.smat3, tt_s, along_rows=True)
+    aeq3_k = dkron(sp.kron(diagdelt, rkm.A, format='csr'), matrices.smat3,
+                   sp.kron(tmat_ds, np.ones((s_rk, 1))).asformat('csr'), out_type='csr')
+    aeq3_u = dkron(sp.eye(n_steps*s_rk, format='csr'), matrices.smat1, tt_s, along_rows=True)
+    beq3 = -dkron(np.ones((n_steps*s_rk, 1)), matrices.f_1, tt_s, out_type='np')
+
+    # Mixed Constraints ======================================================
+    aineq1_y = dkron(sp.kron(sp.eye(n_steps, n_steps+1, format='csr'), np.ones((s_rk, 1)),
+                             format='csr'), matrices.matrix_y, tt_s, along_rows=True)
+    aineq1_k = dkron(sp.kron(diagdelt, rkm.A, format='csr'), matrices.matrix_y,
+                     sp.kron(tmat_ds, np.ones((s_rk, 1))).asformat('csr'), out_type='csr')
+    aineq1_u = dkron(sp.eye(n_steps*s_rk, format='csr'), matrices.matrix_u, tt_s, along_rows=True)
+    bineq1 = dkron(np.ones((n_steps*s_rk, 1)), matrices.vec_h, tt_s, out_type='np')
+
+    # Control Bounds =========================================================
+    lb_u = dkron(np.ones((n_steps*s_rk, 1)), matrices.lbvec, tt_s, out_type='np')
+    ub_u = dkron(np.ones((n_steps*s_rk, 1)), matrices.ubvec, tt_s, out_type='np')
+
+    # Positivity of y ========================================================
+    aineq2_y = -sp.kron(sp.kron(sp.eye(n_steps, n_steps+1, format='csr'),
+                                np.ones((s_rk, 1)), format='csr'),
+                        sp.eye(n_y, format='csr'), format='csr')
+    aineq2_k = -sp.kron(sp.kron(diagdelt, rkm.A, format='csr'), sp.eye(n_y, format='csr'),
+                        format='csr')
     aineq2_u = sp.csr_matrix((n_steps*s_rk*n_y, n_allu))
     bineq2 = np.zeros((n_steps*s_rk*n_y, 1))
 
