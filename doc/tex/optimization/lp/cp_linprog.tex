@@ -927,7 +927,7 @@ Updates:
 \subsubsection*{Slope Variables}
 \begin{align*}
 L &= \Delta_t \cdot \sum_{m=0}^{N-1} \left(\sum_{i=1}^s b_i \cdot \expe^{-\varphi \cdot t_{m+1}^{(i)}} \cdot \Phivec_1 (t_{m+1}^{(i)}) \right) \cdot \yvec_{m} \\
- &+ \sum_{m=0}^{N-1} \sum_{j=1}^s \Delta_t \cdot \left(\sum_{i=1}^s b_i \cdot a_{ij} \cdot \expe^{-\varphi \cdot t_{m+1}^{(i)}} \cdot \Phivec_1 (t_{m+1}^{(i)}) \right) \cdot \kvec_{m+1}^{(j)} \\
+ &+ \sum_{m=0}^{N-1} \sum_{j=1}^s \Delta_t^2 \cdot \left(\sum_{i=1}^s b_i \cdot a_{ij} \cdot \expe^{-\varphi \cdot t_{m+1}^{(i)}} \cdot \Phivec_1 (t_{m+1}^{(i)}) \right) \cdot \kvec_{m+1}^{(j)} \\
  &+ \sum_{m=0}^{N-1} \sum_{i=1}^s \Delta_t \cdot b_i \cdot \expe^{-\varphi \cdot t_{m+1}^{(i)}} \cdot \Phivec_{1,\uvec}(t_{m+1}^{(i)}) \cdot \uvec_{m+1}^{(i)}
 \end{align*}
 

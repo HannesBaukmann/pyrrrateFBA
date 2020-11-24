@@ -2,7 +2,7 @@
 Optimal Control stuff
 """
 import numpy as np
-import scipy.sparse as sp # TODO: All bmat, hstack, vstack, kron in sp is slow (scipy 1.5.0)
+import scipy.sparse as sp
 from . import lp as lp_wrapper
 from ..util.linalg import dkron, shape_of_callable
 
@@ -322,19 +322,22 @@ def cp_rk_linprog(matrices, rkm, t_0, t_end, n_steps=101, varphi=0.0,
     tgrid = np.linspace(t_0, t_end, n_steps + 1)
     del_t = tgrid[1] - tgrid[0]
     tt_s = np.array([t+ del_t*c for t in tgrid[:-1] for c in rkm.c]) # time grid for controls
+    tmat_s = np.reshape(tt_s, (n_steps, s_rk))
     tmat_ds = sp.csr_matrix((tt_s.flatten(), range(s_rk*n_steps), range(0, s_rk*n_steps+1, s_rk)))
     # Discretization of objective ============================================
     # TODO: outsource this code part to test for numerical order
-    # FIXME: Include time dependent objective parts
     # Lagrange part __________________________________________________________
-    expmt = np.exp(-varphi*np.reshape(tt_s, (n_steps, s_rk)))
-    f_y = np.vstack([np.kron(del_t*np.dot(expmt, rkm.b.T), matrices.phi1), np.zeros((n_y, 1))])
+    expmt = np.exp(-varphi*tmat_s)
+    expvt = np.exp(-varphi*tt_s) # can be obtained by reshaping...
+    f_y = np.vstack([np.dot(dkron(del_t*expmt, matrices.phi1, tmat_s, out_type='np'), rkm.b.T),
+                     np.zeros((n_y, 1))])
     #
-    f_k = del_t**2*np.kron(np.reshape(np.dot(expmt, rkm.A*np.kron(rkm.b.T, np.ones((1, s_rk)))),
-                                      (s_rk*n_steps, 1), 'F'), matrices.phi1)
+    mat1 = np.kron(np.ones((n_steps, 1)), np.kron(rkm.A.T, np.ones((n_y, 1))))
+    mat2 = np.repeat(dkron(expvt, matrices.phi1, tt_s, out_type='np'), s_rk, 1)
+    f_k = del_t**2*np.dot(mat1*mat2, rkm.b.T)
     #
-    f_u = np.zeros((n_steps*s_rk*n_u, 1))
-    #f_u = del_t*np.kron(np.kron(np.ones((n_steps, 1)), rkm.b.T), matrices.phi1u) # Test this!!
+    f_u = del_t*dkron(np.kron(np.ones((n_steps, 1)), rkm.b.T)*expvt,
+                      matrices.phi1u, tt_s, out_type='np')
     # Mayer part _____________________________________________________________
     f_y[0:n_y] += matrices.phi2
     f_y[n_steps * n_y:n_ally] += matrices.phi3
@@ -350,8 +353,8 @@ def cp_rk_linprog(matrices, rkm, t_0, t_end, n_steps=101, varphi=0.0,
     aeq1_u = dkron(sp.eye(n_steps*s_rk, format='csr'), matrices.smat2, tt_s, along_rows=True)
     beq1 = -dkron(np.ones((n_steps*s_rk, 1)), matrices.f_2, tt_s, out_type='np')
     # (b) state vector updates
-    aeq2_y = sp.kron(sp.eye(n_steps, n_steps+1, format='csr')- # Is this simpler with sp.diags?
-                     sp.eye(n_steps, n_steps+1, k=1, format='csr'),
+    aeq2_y = sp.kron(sp.eye(n_steps, n_steps+1, format='csr')- # Is this simpler with sp.diags
+                     sp.eye(n_steps, n_steps+1, k=1, format='csr'), # or directly with indices?
                      sp.eye(n_y, format='csr'), format='csr')
     aeq2_k = del_t*sp.kron(sp.eye(n_steps, format='csr'), sp.kron(rkm.b, sp.eye(n_y, format='csr'),
                                                                   format='csr'), format='csr')
