@@ -1,0 +1,302 @@
+\documentclass{article}
+
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[USenglish]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{fullpage}
+\usepackage{xcolor}
+\usepackage{nicematrix}
+%\usepackage{todonotes}
+
+
+\makeatletter
+\providecommand*{\diff}%
+   {\@ifnextchar^{\DIfF}{\DIfF^{}}}
+\def\DIfF^#1{%
+   \mathop{\text{\mathstrut d}}%
+      \nolimits^{#1}\gobblespace}
+\def\gobblespace{%
+      \futurelet\diffarg\opspace}
+\def\opspace{%
+   \let\DiffSpace\!%
+   \ifx\diffarg(%
+      \let\DiffSpace\relax
+   \else
+      \ifx\diffarg[%
+         \let\DiffSpace\relax
+      \else
+         \ifx\diffarg\{%
+            \let\DiffSpace\relax
+         \fi\fi\fi\DiffSpace}
+\makeatother
+\newcommand{\intd}{\diff}%             differential "d"
+\newcommand{\defeq}{\mathrel{:=}}%     is per definition equal to
+\newcommand{\tp}{\top}%                transpose
+\newcommand{\kron}{\otimes}%           Kronecker product
+%\newcommand{\dkron}[2][]{\mathbin{{}_{#1}\negthinspace\kron_{#2}}}% generalized Kronecker product
+\newcommand{\dkron}[2][]{\mathbin{\kron_{#2}^{#1}}}% generalized Kronecker product
+\newcommand{\setR}{\mathbb{R}}%        real numbers
+\newcommand{\expe}{\mathrm{e}}%        Eulers constant
+\newcommand{\diag}{\mathop{\mathrm{diag}}}%     diagonal elements of matrix/diagonal matrix from vector
+
+
+\newcommand{\vectorfont}[1]{\boldsymbol{#1}}%
+\newcommand{\greekvectorfont}[1]{\boldsymbol{#1}}%
+\newcommand{\matrixfont}[1]{\mathbf{#1}}%
+
+
+\newcommand{\bvec}{\vectorfont{b}}
+\newcommand{\fvec}{\vectorfont{f}}
+\newcommand{\gvec}{\vectorfont{g}}
+\newcommand{\hvec}{\vectorfont{h}}
+\newcommand{\kvec}{\vectorfont{k}}
+\newcommand{\nvec}{\vectorfont{n}}
+\newcommand{\tvec}{\vectorfont{t}}
+\newcommand{\uvec}{\vectorfont{u}}
+\newcommand{\xvec}{\vectorfont{x}}
+\newcommand{\yvec}{\vectorfont{y}}
+
+\newcommand{\tildeyvec}{\vectorfont{\tilde{y}}}
+
+\newcommand{\dyvec}{\vectorfont{\dot{y}}}
+%
+\newcommand{\Deltavec}{\greekvectorfont{\Delta}}
+\newcommand{\Phivec}{\greekvectorfont{\Phi}}
+\newcommand{\Psivec}{\greekvectorfont{\Psi}}
+%
+\newcommand{\bfrakvec}{\vectorfont{\mathfrak{b}}}
+\newcommand{\ffrakvec}{\vectorfont{\mathfrak{f}}}
+\newcommand{\kfrakvec}{\vectorfont{\mathfrak{k}}}
+\newcommand{\ufrakvec}{\vectorfont{\mathfrak{u}}}
+\newcommand{\xfrakvec}{\vectorfont{\mathfrak{x}}}
+\newcommand{\yfrakvec}{\vectorfont{\mathfrak{y}}}
+%
+\newcommand{\tildeyfrakvec}{\vectorfont{\tilde{\mathfrak{y}}}}
+\newcommand{\nullvec}{\greekvectorfont{0}}
+\newcommand{\lbvec}{\vectorfont{l\negthinspace b}}
+\newcommand{\ubvec}{\vectorfont{u\negthinspace b}}
+\newcommand{\lbfrakvec}{\vectorfont{\mathfrak{l\negthinspace b}}}
+\newcommand{\ubfrakvec}{\vectorfont{\mathfrak{u\negthinspace b}}}
+\newcommand{\einsvec}{\vectorfont{1}\negthinspace\negthinspace\vectorfont{1}} % vector of only ones (1,1,...,1)^T
+%
+\newcommand{\Amat}{\matrixfont{A}}
+\newcommand{\Bmat}{\matrixfont{B}}
+\newcommand{\Hmat}{\matrixfont{H}}
+\newcommand{\Imat}{\matrixfont{I}}%       identity matrix
+\newcommand{\Mmat}{\matrixfont{M}}
+\newcommand{\Smat}{\matrixfont{S}}
+\newcommand{\Tmat}{\matrixfont{T}}
+
+\newcommand{\Afrakmat}{\matrixfont{\mathfrak{A}}}
+
+\newcommand{\Nullmat}{\matrixfont{0}}
+
+% https://tex.stackexchange.com/questions/121955/help-on-dealing-with-items-divided-with-slash
+% latex.ltx, line 467:
+%\def\slash{/\penalty\exhyphenpenalty} % a `/' that acts like a `-'
+\renewcommand{\slash}{/\penalty\exhyphenpenalty\hspace{0pt}}
+%\makeatletter
+%\def\slash{/\penalty\z@\hskip\z@skip }
+%\makeataother
+
+
+
+% http://lpsolve.sourceforge.net/5.1/absolute.htm for a more detailed explanation of most steps
+
+\begin{document}
+
+\begin{center}
+	{\Large\textbf{Implementation Details for the \texttt{MinabsLPModel} class}}
+\end{center}
+
+Starting with an absolute value linear problem of the form
+\begin{subequations}
+\begin{align}
+\min_{\xvec} \;& \;\fvec_1^{\tp} \cdot \lvert \Mmat_f \cdot \xvec - \nvec_f \rvert + \fvec_2^{\tp} \cdot \xvec
+\label{eq:minabs:obj}
+\\
+\text{s.\,t.} \quad
+\Amat_{=}\cdot \xvec &= \bvec_{=}
+\label{eq:minabs:eq1}
+\\
+\Amat_{\leq} \cdot \xvec &\leq \bvec_{\leq}
+\label{eq:minabs:ineq1}
+\\
+\lbvec &\leq \xvec \leq \ubvec
+\label{eq:minabs:bounds}
+\\
+\Mmat_{c,1} \cdot \lvert \Mmat_{c,2} \cdot \xvec -\nvec_c \rvert + \Mmat_{c,3}\cdot \xvec &\leq \bvec_c
+\label{eq:minabs:absineq}
+%\\
+\end{align}
+\end{subequations}
+with
+\[
+\begin{split}
+\fvec_1 &\in \setR^{m_f}_{\geq 0},~
+\Mmat_f \in \setR^{m_f \times n_{\xvec}},~
+\nvec_f \in \setR^{m_f},~
+\fvec_2 \in \setR^{n_{\xvec}},
+\\
+\Amat_{=} &\in \setR^{m_= \times n_{\xvec}},~
+\bvec_{=} \in \setR^{m_=},~
+\Amat_{\leq} \in \setR^{m_{\leq}\times n_{\xvec}},~~
+\bvec_{\leq} \in \setR^{m_\leq},~
+\lbvec \in \setR^{n_{\xvec}},~
+\ubvec \in \setR^{n_{\xvec}},
+\\
+\Mmat_{c,1} &\in \setR^{m_c \times m_1}_{\geq 0},~
+\Mmat_{c,2} \in \setR^{m_1 \times n_{\xvec}},~
+\nvec_c \in \setR^{m_1},~
+\Mmat_{c,3} \in \setR^{m_c \times n_{\xvec}},~
+\bvec_c \in \setR^{m_c}\,.
+%\label{eq:minabs:dimen} 
+\end{split}
+\]
+and where the absolute value is to be understood component-wise.
+
+The idea is fairly standard:
+\begin{enumerate}
+  \item{\color{gray}Sort out those rows $(\Mmat_f \cdot \xvec)_i$ with $(\fvec)_i = 0$ as this does nothing to the objective.
+  Sort also the zeros rows of $(\Mmat_{c,2},-\nvec_c)$ and the zero columns of $\Mmat_{c,1}$ out.
+  If one $(\bvec_c)_i < 0$, the problem is infeasible and there is nothing to be done.
+  Zero rows in $\Mmat_{c,0}$ lead to regular inequality constraints
+  }
+  \item{All the rows $(\Mmat_c \cdot \xvec - \nvec_c)_i$ with $(\bvec_c)_i = 0$ can simply be replaced by an equality constraint, all those with $(\bvec)_i > 0$ by two inequalities.
+  }
+  \item{Introduce new variables $\xvec_{\mathrm{new},f} \in \setR^{m_f^\ast}$ to treat the remaining rows of $\Mmat_{f} \cdot \xvec - \nvec_{f}$.
+  Equivalently, introduce new variables $\xvec_{\mathrm{new},c} \in \setR^{m_1^\ast}$ to treat the abs-parts in the constraints.
+  }
+  \item{Bound the new variables appropriately.
+  }
+  % DISUSED BUT MAYBE RE-USABLE LATER
+  %\item{Use the positive and negative parts of the new variables to handle the absolute values: For a real-valued variable $x$, this reads like:
+  %	$\lvert x \rvert = x_+ + x_-$, $x_+,\, x_- \geq 0$, $x = x_+ - x_-$.
+  %}
+\end{enumerate}
+
+%\paragraph{Variable Names}
+
+\paragraph{LP Model Setup}
+
+The entire LP can be formulated as
+\begin{align*}
+\min_{\xfrakvec}\, &\,\ffrakvec^{\tp} \cdot \xfrakvec 
+\\
+\text{s.\,t. }
+\Afrakmat_{\leq} \cdot \xfrakvec &\leq \bfrakvec_{\leq}
+\\
+\Afrakmat_{=} \cdot \xfrakvec &= \bfrakvec_{=}
+\\
+\lbfrakvec &\leq \xfrakvec \leq \ubfrakvec
+\end{align*}
+with
+\NiceMatrixOptions{code-for-first-row = \color{gray}}
+\begin{align*}
+\xfrakvec &\defeq (\xvec^{\tp}, \xvec_{\mathrm{new},f}^{\tp}, \xvec_{\mathrm{new},c}^{\tp})^{\tp}
+&
+\ffrakvec &\defeq (\fvec_2^{\tp}, \fvec_1^{\tp}, \nullvec_{m_c^\ast}^{\tp})^{\tp}
+\\
+\Afrakmat_{\leq} &\defeq 
+\begin{pNiceMatrix}[first-row]%[first-row,last-row,first-col,last-col]
+\xvec   & \xvec_{\mathrm{new},f} & \xvec_{\mathrm{new},c} \\
+\Amat_{\leq} & \Nullmat          & \Nullmat \\
+\Mmat_f      & -\Imat_{m_f^\ast} & \Nullmat \\
+-\Mmat_f     & -\Imat_{m_f^\ast} & \Nullmat \\
+\Mmat_{c,2}  & \Nullmat          & -\Imat_{m_1^\ast} \\
+-\Mmat_{c,2} & \Nullmat          & -\Imat_{m_1^\ast} \\
+\Mmat_{c,3}  & \Nullmat          & \Mmat_{c,1}
+\end{pNiceMatrix}\,,
+&
+\bfrakvec_{\leq} &\defeq 
+\begin{pmatrix} \bvec_{\leq} \\ \nvec_f \\ - \nvec_f \\ \nvec_c \\ -\nvec_c \\ \bvec_c
+\end{pmatrix}
+\\
+\Afrakmat_{=} &\defeq 
+\begin{pNiceMatrix}[first-row]%[first-row,last-row,first-col,last-col]
+\xvec   & \xvec_{\mathrm{new},f} & \xvec_{\mathrm{new},c} \\
+\Amat_= & \Nullmat & \Nullmat
+\end{pNiceMatrix}\,,
+&
+\bfrakvec_{=} &\defeq \bvec_=
+\\
+\lbfrakvec &\defeq \begin{pmatrix}\lbvec \\ \nullvec \end{pmatrix}\,,&
+\ubfrakvec &\defeq \begin{pmatrix} \ubvec \\ \infty \cdot \einsvec\end{pmatrix}
+\end{align*}
+
+\appendix
+
+\subsection*{ToDos\slash Questions and Maybe's}
+
+\begin{itemize}
+	\item uniquify the rows before the introduction of $\xvec_{\mathrm{new}}$? How can we uniquely translate back?
+	\item What about ILP\slash MILP and\slash or indicator variables?
+	\item Is there any special treatment of the \texttt{variable\_names} necessary?
+	\item Any special considerations when extending to a min\slash max problem?
+	\item Equality constraints with absolute values?
+	\item The upper bounds in the big model can be set lower if the according upper bounds on $\xvec$ are known. Whether this makes a difference, is debatable...
+	\item Benchmarks, tests and\slash or Documentation
+	%\item We should for more flexibility replace \eqref{eq:minabs:absineq} by
+	%\[
+	%\Mmat_{c,0} \cdot \lvert \Mmat_{c,1} \cdot \xvec - \nvec_{c,1} \rvert - \Mmat_{c,2}\cdot \lvert \Mmat_{c,3}\cdot \xvec - \nvec_{c,2} \rvert + %\Mmat_{c,4} \cdot \xvec \leq \bvec_c.
+	%\]
+	\item Why do all $(\fvec_1)_i$, $(\Mmat_{c,0})_{i,j}$ have to be positive? ($\to$ binary variables\slash special variables ) 
+	\item\texttt{None}-handler: If the according variable is \lq uninteresting\rq, we can replace it in the input with \texttt{None}.
+\end{itemize}
+
+
+\end{document}
+
+
+
+
+
+
+
+The entire LP with $x_+$, $x_-$ can be formulated as
+\begin{align*}
+\min_{\xfrakvec}\, &\,\ffrakvec^{\tp} \cdot \xfrakvec 
+\\
+\text{s.\,t. }
+\Afrakmat_{\leq} \cdot \xfrakvec &\leq \bfrakvec_{\leq}
+\\
+\Afrakmat_{=} \cdot \xfrakvec &= \bfrakvec_{=}
+\\
+\lbfrakvec &\leq \xfrakvec \leq \ubfrakvec
+\end{align*}
+with
+\NiceMatrixOptions{code-for-first-row = \color{gray}}
+\begin{align*}
+\xfrakvec &\defeq (\xvec^{\tp}, \xvec_{\mathrm{new}}^{\tp}, \xvec_{\mathrm{new},+}^{\tp}, \xvec_{\mathrm{new},-}^{\tp})^{\tp}
+&
+\ffrakvec &\defeq (\fvec_2^{\tp}, \fvec_1^{\tp}, \nullvec_{m_c + 2 \cdot (m_f+m_c)}^{\tp})^{\tp}
+\\
+\Afrakmat_{\leq} &\defeq
+\begin{pmatrix} 
+\Amat_{\leq} &                     &            & \\
+& \Nullmat_{m_c, m_f} &\Imat_{m_c} & \Nullmat_{m_c, 2\cdot (m_c+m_f)}
+\end{pmatrix}\,,
+&
+\bfrakvec_{\leq} &\defeq \begin{pmatrix} \bvec_{\leq}\\ \bvec_c \end{pmatrix}\,,
+\\
+\Afrakmat_{=} &\defeq 
+\begin{pNiceMatrix}[first-row]%[first-row,last-row,first-col,last-col]
+\xvec   & \xvec_{\mathrm{new}} & \xvec_{\mathrm{new},+} & \xvec_{\mathrm{new},-} \\
+\Amat_= &                      &                        &                        \\
+\begin{array}{c}\ensuremath \Mmat_f \\ \ensuremath \Mmat_c\end{array}
+& \begin{array}{cc}-\Imat_{m_f} & \\ &-\Imat_{m_c}\end{array}      
+&                        &                        \\
+& \Imat_{m_f+m_c}      & -\Imat_{m_f+m_c}       & \Imat_{m_f+m_c}   
+\end{pNiceMatrix}\,,
+&
+\bfrakvec_{=} &\defeq
+\begin{pmatrix}
+\bvec_{=} \\ \begin{array}{c} \ensuremath \nvec_f \\\ensuremath \nvec_c\end{array} \\ \nullvec_{m_f+m_c}
+\end{pmatrix}
+\\
+\lbfrakvec &\defeq (\lbvec^{\tp}, -\infty \cdot \einsvec_{m_f+m_c}^{\tp}, \nullvec_{2 \cdot (m_f+m_c)}^{\tp})^{\tp} 
+&
+\ubfrakvec &\defeq (\ubvec^{\tp}, \infty\cdot \einsvec_{3 \cdot (m_f+m_c)}^{\tp})^{\tp}\,.
+\end{align*}
