@@ -88,11 +88,11 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0,
                                                       0.5*matrices.matrix_B_y,
                                                       matrices.matrix_B_u,
                                                       matrices.vec_B, n_steps=n_steps)
-    amat2_x = sp.kron(sp.eye(n_steps), matrices.matrix_B_x)
+    amat2_x = sp.kron(sp.eye(n_steps), matrices.matrix_B_x, format='csr')
 
     # Discretization of equality boundary constraints
     aeqmat3_y = sp.hstack([matrices.matrix_start,
-                           sp.csr_matrix((n_bndry, (n_steps-1)*n_y)), matrices.matrix_end])
+                           sp.csr_matrix((n_bndry, (n_steps-1)*n_y)), matrices.matrix_end], format='csr')
     aeqmat3_u = sp.csr_matrix((n_bndry, n_allu))
     beq3 = matrices.vec_bndry
 
@@ -109,7 +109,7 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0,
     ub_all = np.vstack([ub_y, ub_u])
 
     amat = sp.bmat([[amat1_y, amat1_u], [amat2_y, amat2_u]], format='csr')
-    abarmat = sp.bmat([[sp.csr_matrix((bineq1.shape[0], n_allx))], [amat2_x]])
+    abarmat = sp.bmat([[sp.csr_matrix((bineq1.shape[0], n_allx))], [amat2_x]], format='csr')
 
     bineq = np.vstack([bineq1, bineq2])
 
@@ -378,7 +378,7 @@ def cp_rk_linprog(matrices, rkm, t_0, t_end, n_steps=101, varphi=0.0,
 
     # Boundary Values ========================================================
     aeq4_y = sp.hstack([matrices.matrix_start, sp.csr_matrix((n_bndry, (n_steps-1)*n_y)),
-                        matrices.matrix_end])
+                        matrices.matrix_end], format='csr')
     aeq4_k = sp.csr_matrix((n_bndry, n_allk))
     aeq4_u = sp.csr_matrix((n_bndry, n_allu))
     beq4 = matrices.vec_bndry
