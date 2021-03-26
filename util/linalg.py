@@ -121,9 +121,12 @@ def shape_of_callable(in_mat, default_t=0.0):
     Extract the shape of an array regardless of whether that array formally is a callable
     """
     if callable(in_mat):
-        return in_mat(default_t).shape
+        in_mat_val = in_mat(default_t)
     else:
-        return in_mat.shape
+        in_mat_val = in_mat
+    if isinstance(in_mat_val, (np.ndarray, sp.base.spmatrix)):
+        return in_mat_val.shape
+    return (len(in_mat_val),)
 
 
 def _dkron_csr(A, B, T, along_rows):
