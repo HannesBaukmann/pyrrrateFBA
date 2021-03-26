@@ -73,6 +73,8 @@ class Parrrser:
                 'The SBML file contains no model. Maybe the filename is wrong or the file does not follow SBML standards. Please run the SBML validator at http://sbml.org/Facilities/Validator/index.jsp to find the problem.')
 
         self.name = sbmlmodel.getId()
+        #
+        self.sbml_model = sbmlmodel
 
         # SPECIES
         for s in sbmlmodel.species:
@@ -411,7 +413,7 @@ class Parrrser:
                                 # kcat=0 is only allowed for spontaneous reactions
                                 if k_bwd == 0.0:
                                     raise RAMError('Reaction ' + r_id + ' has a zero kcatBackward, but is reversible and not spontaneous.')
-                                self.reactions_dict[r_id]['kcatBackward'] = k_bwd
+                            self.reactions_dict[r_id]['kcatBackward'] = k_bwd
                     # if reaction is irreversible, kcat is zero
                     else:
                         self.reactions_dict[r_id]['kcatBackward'] = 0.0
@@ -436,7 +438,7 @@ class Parrrser:
                 elif educt.getSpecies() in self.macromolecules_dict.keys():
                     i = len(self.extracellular_dict) + len(self.metabolites_dict) + list(
                         self.macromolecules_dict).index(educt.getSpecies())
-                    # degradation reactions are stored in stoich_degradation
+                    # degradation reactions are stored in stoich_degradation HERE, THE CONVENTION (NaN-> degradation) IS HARDCODED
                     if np.isnan(self.reactions_dict[r.getId()]['kcatForward']):
                         self.stoich_degradation[i, i] -= educt.getStoichiometry()
                     else:
