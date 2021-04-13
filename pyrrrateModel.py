@@ -1,52 +1,32 @@
 """
-Main class for PyrrrateFBA models
+Main module for PyrrrateFBA models
 """
 
 import numpy as np
+from . imporrrt import Parrrser, readSBML
 from .simulation import fba
-#from .simulation.fba import perform_fba
 
-class Model():
+
+class Model(Parrrser):
     """
     PyrrrateFBA Models
     """
-    def __init__(self, ram_model):
-        self.name = ram_model.name
-        self.is_rdeFBA = ram_model.is_rdeFBA
-        self.extracellular_dict = ram_model.extracellular_dict
-        self.metabolites_dict = ram_model.metabolites_dict
-        self.macromolecules_dict = ram_model.macromolecules_dict
-        self.reactions_dict = ram_model.reactions_dict
-        self.qualitative_species_dict = ram_model.qualitative_species_dict
-        self.events_dict = ram_model.events_dict
-        self.rules_dict = ram_model.rules_dict
-        self.stoich = ram_model.stoich
-        self.stoich_degradation = ram_model.stoich_degradation
-        # MAYBE: Add other fields/put the direct SBML-relations into a sub-structure
+    def __init__(self, filename, is_rdefba=False):
+        #
+        sbmlmodel = readSBML(filename)
+        super().__init__(sbmlmodel)
+        self.is_rdefba = is_rdefba
 
 
     def print_numbers(self):
         """
         display relevant integer values of a pyrrrateFBA model
         """
-        quota = 0
-        stor = 0
-
-        spon = 0
-        main = 0
-
-        for mm in self.macromolecules_dict.keys():
-            if self.macromolecules_dict[mm]['speciesType'] == 'quota':
-                quota += 1
-            elif self.macromolecules_dict[mm]['speciesType'] == 'storage':
-                stor += 1
-
-        for rxn in self.reactions_dict.keys():
-            if self.reactions_dict[rxn]['maintenanceScaling'] > 0.0:
-                main += 1
-            if not self.reactions_dict[rxn]['geneProduct']:
-                spon += 1
-
+        quota = sum(1 for m in self.macromolecules_dict.values() if m['speciesType'] == 'quota')
+        stor = sum(1 for m in self.macromolecules_dict.values() if m['speciesType'] == 'storage')
+        spon = sum(1 for r in self.reactions_dict.values() if not r['geneProduct'])
+        main = sum(1 for r in self.reactions_dict.values() if r['maintenanceScaling'] > 0.0)
+        #
         print('species\t\t\t\t' + str(len(self.extracellular_dict) + len(self.metabolites_dict) \
               + len(self.macromolecules_dict)) \
               + '\n\t metabolites\t\t' + str(len(self.extracellular_dict) \
@@ -63,11 +43,26 @@ class Model():
               + '\n\t translation\t\t' \
               + '\n\t degradation\t\t' + str(np.count_nonzero(self.stoich_degradation)) \
               + '\n\t spontaneous\t\t' + str(spon) \
-              + '\n\t maintenance\t\t' + str(main) \
-              + '\n regulation\t\t\t\t' \
+              + '\n\t maintenance\t\t' + str(main))
+        if self.can_rdeFBA:
+            print('\n regulation\t\t\t\t' \
               + '\n\t rules\t\t' + str(len(self.events_dict)/2) \
               + '\n\t regulatory proteins\t\t' + str(len(self.qualitative_species_dict)) \
-              + '\n\t regulated reactions\t\t')
+              + '\n\t regulated reactions\t\t ??????????????????')# TODO
+
+
+    def remove_quota(self):
+        """
+        This is just quick-and-dirty. A much cleaner way were to characterize what constitutes
+        'quota' elsewhere
+        """
+        # Idea: set biomass percentage to zero -> NO, divide by zero
+        # Idea: make quota enzymes(?)
+        for macro in self.macromolecules_dict.values():
+            if macro['speciesType'] == 'quota':
+                macro['speciesType'] = 'enzyme'
+
+
 
     def fba(self, objective=None, maximize=True):
         """
@@ -77,7 +72,7 @@ class Model():
         return sol
 
 
-    def rdeFBA(self, tspan, varphi, do_soa=False, **kwargs):
+    def rdeFBA(self, tspan, varphi, do_soa=False, **kwargs):  # pylint: disable=C0103
         """
         Perform (r)deFBA
         """
@@ -90,5 +85,6 @@ class Model():
             sol = fba.perform_rdefba(self, **kwargs)
 
         return sol
+
 
     # TODO output functions, especially solutions and constraint fulfillment, objective

@@ -3,29 +3,28 @@ SBML import: mainly wrapper to libsbml and some additional features to allow
 RAM and rdeFBa event handling
 """
 import re
-from collections import OrderedDict
+from collections import OrderedDict # actually not necessary here for version >≈ 3.5
 import numpy as np
-from . import pyrrrateModel
 
 try:
     import libsbml as sbml
 except ImportError as err:
-    raise ImportError("SBML support requires the libsbml module, but importing this module failed with message: " + err)
+    raise ImportError('SBML support requires libsbml, but importing failed with message: ' + err)
 
 
 class SBMLError(Exception):
     """
-    empty error class to state that something with the import of the SBML file gone wrong
+    empty error class to state that something with the import of the SBML file went wrong
     """
 
 
 class RAMError(Exception):
     """
-    empty error class to state that something with the import of the RAM annotations gone wrong
+    empty error class to state that something with the import of the RAM annotations went wrong
     """
 
 
-def readSBML(filename, is_rdeFBA=True): # TODO: Why can't the Parrrser find out on its own whether the model is rdeFBA and why is that so important in the first place? If information on that (qual, events etc. is present, we parse them otherwise not)
+def readSBML(filename):
     """
     Convert SBML file to an (r-)deFBA model object.
     Required argument:
@@ -33,31 +32,38 @@ def readSBML(filename, is_rdeFBA=True): # TODO: Why can't the Parrrser find out 
     """
     reader = sbml.SBMLReader()
     document = reader.readSBML(filename)
-    if document.isSetModel():  # Returns True if the Model object has been set.
-        # Initialize Parrrser object
-        parsed = Parrrser(document, is_rdeFBA)
-        # return the model object
-        model = pyrrrateModel.Model(parsed)
-        return model
-    raise SBMLError(
-        'The SBML file contains no model. Maybe the filename is wrong or the file does not follow SBML standards. Please run the SBML validator at http://sbml.org/Facilities/Validator/index.jsp to find the problem.')
+    if not document.isSetModel():  # Returns True if the Model object has been set.
+        raise SBMLError(
+            'The SBML file contains no model.'
+            'Maybe the filename is wrong or the file does not follow SBML standards.'
+            'Please run the SBML validator at http://sbml.org/Facilities/Validator/index.jsp'
+            'to find the problem.')
+
+    # MODEL
+    sbmlmodel = document.getModel()  # Returns the Model contained in this SBMLDocument,
+                                     # or None if no such model exists.
+    if not sbmlmodel:
+        raise SBMLError('The SBML file contains no model.'
+                        'Maybe the filename is wrong or the file does not follow SBML standards.'
+                        'Please run the SBML validator at '
+                        'http://sbml.org/Facilities/Validator/index.jsp to find the problem.')
+    return sbmlmodel
 
 
 class Parrrser:
     """
-    read all necessary information from a SBML file supporting the Resource Allocation Modelling (RAM) annotation standard and convert them
-    to the matrix representation of a (r-)deFBA model. Minimimal informationen content is the stoichiometric matrix and the molecular weights of
+    read all necessary information from a SBML file supporting the Resource Allocation Modelling
+    (RAM) annotation standard and convert them to the matrix representation of a (r-)deFBA model.
+    Minimimal informationen content is the stoichiometric matrix and the molecular weights of
     objective species (macromolecules)
     """
 
-    def __init__(self, document, is_rdeFBA):
+    def __init__(self, sbmlmodel):
         """
         Required arguments:
-        - document      libsbml.reader object containing the SBML data
+        - sbmlmodel      libsbml.Model object containing the SBML data
         """
-
-        self.name = None
-        self.is_rdeFBA = is_rdeFBA
+        #
         self.extracellular_dict = OrderedDict()
         self.metabolites_dict = OrderedDict()
         self.macromolecules_dict = OrderedDict()
@@ -65,17 +71,12 @@ class Parrrser:
         self.qualitative_species_dict = OrderedDict()
         self.events_dict = OrderedDict()
         self.rules_dict = OrderedDict()
-
-        # MODEL
-        sbmlmodel = document.getModel()  # Returns the Model contained in this SBMLDocument, or None if no such model exists.
-        if not sbmlmodel:
-            raise SBMLError(
-                'The SBML file contains no model. Maybe the filename is wrong or the file does not follow SBML standards. Please run the SBML validator at http://sbml.org/Facilities/Validator/index.jsp to find the problem.')
-
         self.name = sbmlmodel.getId()
         #
         self.sbml_model = sbmlmodel
-
+        #
+        rdeFBA_possible = self.can_rdeFBA
+        #
         # SPECIES
         for s in sbmlmodel.species:
             s_id = s.getId()
@@ -105,7 +106,8 @@ class Parrrser:
                         self.macromolecules_dict[s_id] = {}
                         self.macromolecules_dict[s_id]['speciesType'] = s_type
                     else:
-                        raise RAMError('unknown species type ' + s_type + ' found in the RAM annotation ' + s_id)
+                        raise RAMError(f'unknown species type {s_type} found in the'
+                                       'RAM annotation {s_id}')
                     # or check consistency later when the species dictionary has been completed?
 
                     # try to import the molecular weight (can be a string pointing to a parameter, int, or double)
@@ -122,8 +124,9 @@ class Parrrser:
                             if s_type in ('extracellular', 'metabolite'):
                                 weight = 0.0  # default for metabolites
                             else:
-                                raise RAMError(
-                                    'The molecular weight of species ' + s_id + ' is not set althought it is supposed to be a biomass species. Please correct the error in the SBML file')
+                                raise RAMError(f'The molecular weight of species {s_id} is not set'
+                                               ' althought it is supposed to be a biomass species.'
+                                               'Please correct the error in the SBML file')
 
                     # try to import the objective weight (can be a string pointing to a paramter, int, or double)
                     try:
@@ -139,8 +142,9 @@ class Parrrser:
                             if s_type in ('extracellular', 'metabolite'):
                                 oweight = 0.0  # default for metabolites
                             else:
-                                raise RAMError(
-                                    'The objective weight of species ' + s_id + ' is not set althought it is supposed to be a biomass species. Please correct the error in the SBML file')
+                                raise RAMError(f'The objective weight of species {s_id} is not set'
+                                               ' althought it is supposed to be a biomass species.'
+                                               'Please correct the error in the SBML file')
                     if s_type == 'extracellular':
                         self.extracellular_dict[s_id]['molecularWeight'] = weight
                         self.extracellular_dict[s_id]['objectiveWeight'] = oweight
@@ -163,13 +167,14 @@ class Parrrser:
                                 except AttributeError:
                                     print('The parameter ' + biomass_string + ' has no value.')
                         if biomass < 0 or biomass > 1:
-                            raise RAMError('The parameter ' + biomass_string + ' does not have a value between 0 and 1.')
+                            raise RAMError('The parameter for biomass does not have a value'
+                                           ' between 0 and 1.')
                         self.macromolecules_dict[s_id]['biomassPercentage'] = biomass
                         # Hinweis, dass man nicht kontrolliert, ob im Modell eine biomassP für eine nicht-quota species steht?
 
                 else:  # no RAM elements
-                    raise SBMLError(
-                        'Species ' + s_id + ' has a RAM annotation, but no RAM elements. Aborting import.')
+                    raise SBMLError(f'Species {s_id} has a RAM annotation, but no RAM elements.'
+                                    'Aborting import.')
             # no annotation -> no deFBA
             else:
                 raise RAMError('Species ' + s_id + ' has no RAM annotation. Aborting import.')
@@ -198,7 +203,7 @@ class Parrrser:
                 self.macromolecules_dict[s_id]['hasOnlySubstanceUnits'] = s.getHasOnlySubstanceUnits()
 
         # QUALITATIVE SPECIES
-        if is_rdeFBA:
+        if rdeFBA_possible:
             qual_model = sbmlmodel.getPlugin('qual')
 
             for q in qual_model.getListOfQualitativeSpecies():
@@ -206,13 +211,13 @@ class Parrrser:
                 self.qualitative_species_dict[q_id] = {}
                 self.qualitative_species_dict[q_id]['constant'] = q.getConstant()
                 if q.getConstant():
-                    print(
-                        "Warning: Qualitative Species " + q_id + " is constant. This will lead to errors when the level of " + q_id + " is changed.")
+                    print(f'Warning: Qualitative Species {q_id} is constant.'
+                          'This will lead to errors when the level of {q_id} is changed.')
                 self.qualitative_species_dict[q_id]['initialLevel'] = q.getInitialLevel()
                 self.qualitative_species_dict[q_id]['maxLevel'] = q.getMaxLevel()
 
         # RULES
-        if is_rdeFBA:
+        if rdeFBA_possible:
             for rule in sbmlmodel.getListOfRules():
                 # import variable on the left-hand side
                 v = rule.getVariable()
@@ -222,8 +227,8 @@ class Parrrser:
                         if par_id == v:
                             # variables that are changed by Rule should not be constant
                             if sbmlmodel.getParameter(v).getConstant():
-                                print(
-                                    "Warning: Parameter " + v + " is constant. This will lead to errors when the value of " + v + " is changed.")
+                                print(f'Warning: Parameter {v} is constant. '
+                                      'This will lead to errors when the value of {v} is changed.')
                     except AttributeError:
                         print("Error: Variable " + v + " not defined!")
                 self.rules_dict[v] = {}
@@ -265,7 +270,7 @@ class Parrrser:
 
         # REACTIONS
         n_spec = len(self.extracellular_dict) + len(self.metabolites_dict) + len(self.macromolecules_dict)
-        # TODO: make this sparse (for large models)
+        # MAYBE: make this sparse (for large models)
         self.stoich = np.zeros((n_spec, sbmlmodel.getNumReactions()))
         # degradation is allowed for deFBA models
         self.stoich_degradation = np.zeros((n_spec, n_spec))
@@ -294,13 +299,13 @@ class Parrrser:
                             if gene_product_id in self.macromolecules_dict.keys():
                                 self.reactions_dict[r_id]['geneProduct'] = gene_product_id
                             else:
-                                raise RAMError('The reaction ' + r_id + ' has an empty fbc:geneProductRef()')
+                                raise RAMError(f'The reaction {r_id} has an empty fbc:geneProductRef()')
                         else:
                             if enzyme in self.macromolecules_dict.keys():
                                 self.reactions_dict[r_id]['geneProduct'] = enzyme
                             else:
-                                raise RAMError(
-                                    'fbc:geneAssociation for geneProduct ' + gene_product_id + ' is pointing to an unknown species')
+                                raise RAMError(f'fbc:geneAssociation for geneProduct'
+                                               f' {gene_product_id} is pointing to an unknown species')
                     except ValueError:
                         print('No gene product association given for reaction ' + r_id)
                 else:
@@ -314,7 +319,7 @@ class Parrrser:
                         lb = float(lb_par)
                         self.reactions_dict[r_id]['lowerFluxBound'] = lb
                     except ValueError:
-                        if is_rdeFBA:
+                        if rdeFBA_possible:
                             # finalize import of rules to regulate reactions
                             self.rules_dict[lb_par]['reactionID'] = r_id
                             self.rules_dict[lb_par]['direction'] = 'lower'
@@ -326,7 +331,7 @@ class Parrrser:
                         ub = float(ub_par)
                         self.reactions_dict[r_id]['upperFluxBound'] = ub
                     except ValueError:
-                        if is_rdeFBA:
+                        if rdeFBA_possible:
                             # finalize import of rules to regulate reactions
                             self.rules_dict[ub_par]['reactionID'] = r_id
                             self.rules_dict[ub_par]['direction'] = 'upper'
@@ -369,7 +374,8 @@ class Parrrser:
                     else:
                         # kcatForward not given (i.e., "") is only allowed for spontaneous reactions
                         if ram_element.getAttrValue('kcatForward', url) == '':
-                            raise RAMError('Reaction ' + r_id + ' has no kcatForward, but is not spontaneous.')
+                            raise RAMError(f'Reaction {r_id} has no kcatForward, '
+                                           'but is not spontaneous.')
                         try:
                             # import value
                             k_fwd = float(ram_element.getAttrValue('kcatForward', url))
@@ -381,10 +387,11 @@ class Parrrser:
                                 try:
                                     k_fwd = float(sbmlmodel.getParameter(k_fwd_str).getValue())
                                 except AttributeError:
-                                    raise RAMError('The parameter ' + k_fwd_str + ' is not defined!')
+                                    raise RAMError(f'The parameter {k_fwd_str} is not defined!')
                         # kcat=0 is only allowed for spontaneous reactions
                         if k_fwd == 0.0:
-                            raise RAMError('Reaction ' + r_id + ' has a zero kcatForward, but is not spontaneous.')
+                            raise RAMError(f'Reaction {r_id} has a zero kcatForward, but is not'
+                                           'spontaneous.')
                         self.reactions_dict[r_id]['kcatForward'] = k_fwd
 
                     # Import backward kcat values
@@ -455,9 +462,9 @@ class Parrrser:
                     i = len(self.extracellular_dict) + len(self.metabolites_dict) + list(
                         self.macromolecules_dict).index(product.getSpecies())
                     self.stoich[i, j] += product.getStoichiometry()
-
+        #
         # EVENTS
-        if is_rdeFBA:
+        if rdeFBA_possible:
             for e in sbmlmodel.getListOfEvents():
                 e_id = e.getId()
                 self.events_dict[e_id] = {}
@@ -488,3 +495,13 @@ class Parrrser:
                 for ass in e.getListOfEventAssignments():
                     self.events_dict[e_id]['listOfAssignments'].append(ass.getVariable())
                     self.events_dict[e_id]['listOfEffects'].append(int(sbml.formulaToString(ass.getMath())))
+
+    @property
+    def can_rdeFBA(self):
+        """
+        Find out whether it is possible to do r-deFBA with the model (quick'n'dirty: We just check
+                                                                      if events are present)
+        """
+        if self.sbml_model.getListOfEvents():
+            return True
+        return False
