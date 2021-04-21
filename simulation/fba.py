@@ -84,6 +84,8 @@ def perform_rdefba(model, **kwargs):
     TODO : More options to "play around"
     """
     run_rdeFBA = kwargs.get('run_rdeFBA', True)
+    if run_rdeFBA and not model.can_rdeFBA:
+        raise ValueError('Cannot run an r-deFBA on this model.')
     t_0 = kwargs.get('t_0', 0.0)
     t_end = kwargs.get('t_end', 1.0)
     n_steps = kwargs.get('n_steps', 51)
@@ -102,6 +104,8 @@ def perform_rdefba(model, **kwargs):
         tgrid, tt_shift, sol_y, sol_u, sol_x = mi_cp_linprog(mtx, t_0, t_end, n_steps=n_steps,
                                                              varphi=varphi)
     else:
+        if run_rdeFBA:
+            print('Cannot (yet) run r-deFBA with arbitrary Runge-Kutta scheme. Fallback to deFBA')
         tgrid, tt_shift, sol_y, sol_u = cp_rk_linprog(mtx, rkm, t_0, t_end, n_steps=n_steps,
                                                       varphi=varphi)
         #sol_x = np.zeros((0, sol_u.shape[1]))
