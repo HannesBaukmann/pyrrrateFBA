@@ -5,11 +5,11 @@ Optimal Control stuff
 import numpy as np
 import scipy.sparse as sp
 from . import lp as lp_wrapper
+from ..util.runge_kutta import RungeKuttaPars
 from ..util.linalg import dkron, shape_of_callable
 
 
-def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0,
-                  model_name="MIOC Model - Full par., midpoint rule"):
+def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0):
     """
     Approximate the solution of the mixed integer optimal control problem
      min int_{t_0}^{t_end} exp(-varphi*t) phi1^T y dt + phi2^T y_0 + phi3^T y_end
@@ -92,7 +92,8 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0,
 
     # Discretization of equality boundary constraints
     aeqmat3_y = sp.hstack([matrices.matrix_start,
-                           sp.csr_matrix((n_bndry, (n_steps-1)*n_y)), matrices.matrix_end], format='csr')
+                           sp.csr_matrix((n_bndry, (n_steps-1)*n_y)), matrices.matrix_end],
+                          format='csr')
     aeqmat3_u = sp.csr_matrix((n_bndry, n_allu))
     beq3 = matrices.vec_bndry
 
@@ -117,6 +118,7 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0,
     variable_names += ["u_"+str(j+1)+"_"+str(i) for i in range(n_steps) for j in range(n_u)]
     variable_names += ["x_"+str(j+1)+"_"+str(i) for i in range(n_steps) for j in range(n_x)]
 
+    model_name = "MIOC Model - Full par., midpoint rule"
     model = lp_wrapper.MILPModel(name=model_name)
     model.sparse_mip_model_setup(f_all, fbar_all, amat, abarmat, bineq, aeqmat,
                                  beq, lb_all, ub_all, variable_names)
@@ -163,32 +165,28 @@ def _inflate_constraints_new(amat, ttvec, bmat=None):
     skip_bmat = True
     n_tt = len(ttvec)
     if callable(amat):
-        amat_is_fun = True
         amat0 = amat(ttvec[0])
     else:
-        amat_is_fun = False
         amat0 = amat
     n_1, n_2 = amat0.shape
     if not bmat is None:
         skip_bmat = False
         if callable(bmat):
-            bmat_is_fun = True
             bmat0 = bmat(ttvec[1])
         else:
-            bmat_is_fun = False
             bmat0 = bmat
         n_3, n_4 = bmat0.shape
         if n_1 != n_3 or n_2 != n_4:
             raise Warning("Matrix dimensions are not correct for inflating constraint")
     # build matrices
-    if amat_is_fun:
+    if callable(amat):
         data, indices, indptr = _inflate_callable(amat, ttvec[:-1], amat0=amat0)
         out_mat = sp.csr_matrix((data, indices, indptr), shape=(n_1*(n_tt-1), n_2*n_tt))
     else:
         out_mat = sp.kron(sp.eye(n_tt-1, n_tt), amat)
     # add bmat-part
     if not skip_bmat:
-        if bmat_is_fun:
+        if callable(bmat):
             data, indices, indptr = _inflate_callable(bmat, ttvec[1:], amat0=bmat0)
             indices = [k+n_2 for k in indices]
             out_mat += sp.csr_matrix((data, indices, indptr), shape=(n_1*(n_tt-1), n_2*n_tt))
@@ -430,18 +428,19 @@ def cp_rk_linprog_v(matrices, rkm, tgrid, varphi=0.0,
     Runge Kutta based on slope variables k_{m+1}^i on time grid tgrid
 
     TODO
+     - don't allocate matrices all here: use add_constraints(?)
      - more security checks
      - add the Boolean part
      - extend for stage variables and FSAL
     """
-    t_0 = tgrid[0]  #; t_end = tgrid[-1]
+    #t_0 = tgrid[0]  #; t_end = tgrid[-1]
     n_steps = tgrid.size - 1
     s_rk = rkm.get_stage_number()
-    n_y, n_u = shape_of_callable(matrices.smat2, default_t=t_0)
+    n_y, n_u = matrices.n_y, matrices.n_u #shape_of_callable(matrices.smat2, default_t=t_0)
     n_ally = (n_steps + 1) * n_y
     n_allu = n_steps* s_rk * n_u
     n_allk = n_steps*s_rk*n_y
-    n_bndry = shape_of_callable(matrices.vec_bndry, default_t=t_0)[0]
+    n_bndry = matrices.n_bndry #shape_of_callable(matrices.vec_bndry, default_t=t_0)[0]
     #
     del_tt = np.array([np.diff(tgrid).flatten()]).T
     diagdelt = sp.diags(np.array(del_tt).flatten(), format='csr')
@@ -520,7 +519,8 @@ def cp_rk_linprog_v(matrices, rkm, tgrid, varphi=0.0,
     beq4 = matrices.vec_bndry
 
     # So far unset elements of the LP
-    lb_y = -lp_wrapper.INFINITY*np.ones((n_ally, 1))
+    #lb_y = -lp_wrapper.INFINITY*np.ones((n_ally, 1))
+    lb_y = np.zeros((n_ally, 1))
     # Here, it would be easy to additionally enforce positivity
     ub_y = lp_wrapper.INFINITY*np.ones((n_ally, 1))
     lb_k = -lp_wrapper.INFINITY*np.ones((n_allk, 1))
@@ -554,12 +554,24 @@ def cp_rk_linprog_v(matrices, rkm, tgrid, varphi=0.0,
     if model.status == lp_wrapper.OPTIMAL:
         # TODO Outsource this deslicing
         y_data = np.reshape(model.get_solution()[:n_ally], (n_steps+1, n_y))
+        # DEBUG:
+        #y_int_data =
+        #
         u_data = np.reshape(model.get_solution()[n_ally+n_allk:n_ally+n_allk++n_allu],
                             (n_steps*s_rk, n_u))
-        return tgrid, tt_s.flatten(), y_data, u_data
-    # TODO: - use cleverer output here
+        return {'tgrid': tgrid,
+                'tgrid_u': tt_s.flatten(),
+                'y_data': y_data,
+                'u_data': u_data,
+                'model': model} #tgrid, tt_s.flatten(), y_data, u_data, model
+    # TODO: - use cleverer/more structured output here
     #  - control verbosity level (if called from another algorithm)
     #  - create output flags depending on why the solution failed
-    print("No solution found")
+    #print("No solution found") # DEBUG
 
-    return None
+    return {'tgrid': None,
+            'tgrid_u': None,
+            'y_data': None,
+            'u_data': None,
+            'model': model}
+
