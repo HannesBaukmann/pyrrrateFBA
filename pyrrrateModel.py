@@ -18,6 +18,16 @@ class Model(Parrrser):
         self.is_rdefba = is_rdefba
 
 
+    def iter_species_names(self):
+        """
+        Generate the names of the involved species 
+        """
+        for y_name in self.extracellular_dict.keys():
+            yield y_name
+        for y_name in self.macromolecules_dict.keys():
+            yield y_name
+
+
     def print_numbers(self):
         """
         display relevant integer values of a pyrrrateFBA model

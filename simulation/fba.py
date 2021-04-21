@@ -146,12 +146,6 @@ def perform_soa_rdeFBA(model, **kwargs):
     for k in range(1, n_steps-1):
         kwargs['set_y0'] = y_new # row
         tslice = tgrid[k:k+2]
-        sol_tmp = model.rdeFBA(tslice, varphi, do_soa=False, **kwargs)
-        # QUESTION: What if internal error occurs here?
-        new_t_shift = sol_tmp.condata.index[-1]
-        ux_new = np.array(sol_tmp.condata.tail(n=1))
-        y_new = np.array(sol_tmp.dyndata.tail(n=1))
-        sols.extend_y([tslice[-1]], y_new)
         #print(tslice)# DEBUG
         try:
             sol_tmp = model.rdeFBA(tslice, varphi, do_soa=False, **kwargs)
