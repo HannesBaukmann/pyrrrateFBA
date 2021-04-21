@@ -26,7 +26,7 @@ def solve_if_unique(amat, bvec):
             return None
         if amat.shape[0] == amat.shape[1]: # case 2: square system
             try:
-                return np.solve(amat, bvec)
+                return np.linalg.solve(amat, bvec)
             except:
                 return None
         # case 3: potentially over- or underdetermined
@@ -38,7 +38,7 @@ def solve_if_unique(amat, bvec):
             return None
         return lsqout[0]
     # SPARSE _________________________________________________________________
-    if isinstance(amat, sp.csr.csr_matrix):
+    if isinstance(amat, sp.csr_matrix):
         if amat.shape[0] < amat.shape[1]: # underdetermined
             return None
         if amat.shape[0] == amat.shape[1]: # square
@@ -116,9 +116,28 @@ def dkron(A, B, T, along_rows=False, out_type='csr'):
     return C
 
 
+def is_instance_callable(inmat, class_tuple, default_t=0.0):
+    """
+    check whether inmat (or the images thereof) is an instance of any of the functions in
+    class_tuple, no check whether it takes exactly one real argument in case that inmat is
+    callable. We also assume that calling inmat has no side-effects
+    
+    "callable" is harder than one might expect:
+    https://stackoverflow.com/questions/624926/how-do-i-detect-whether-a-python-variable-is-a-function
+    
+    - QUESTION: technically, this has nothing to do with linear algebra...
+    """
+    if callable(inmat):
+        checkmat = inmat(default_t)
+    else:
+        checkmat = inmat
+    return isinstance(checkmat, class_tuple)
+
 def shape_of_callable(in_mat, default_t=0.0):
     """
-    Extract the shape of an array regardless of whether that array formally is a callable
+    Extract the shape of an array regardless of whether that array formally is a callable:
+    QUESTION: Apart from potentially being expensivc, calling a function can have side effects but
+    I expect that there is not much one can do about this...
     """
     if callable(in_mat):
         in_mat_val = in_mat(default_t)
@@ -200,7 +219,7 @@ def _ensure_csr(mat_in):
 
 def _ensure_np(mat_in):
     """
-    Ifthe matrix is sparse: todense() it
+    If the matrix is sparse: todense() it
     """
     if isinstance(mat_in, sp.base.spmatrix):
         return mat_in.todense()
