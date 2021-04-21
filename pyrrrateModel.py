@@ -27,6 +27,9 @@ class Model(Parrrser):
         spon = sum(1 for r in self.reactions_dict.values() if not r['geneProduct'])
         main = sum(1 for r in self.reactions_dict.values() if r['maintenanceScaling'] > 0.0)
         #
+        reg_reac = sum(1 for r in self.reactions_dict.values() \
+                       if r.get('lowerFluxBound_rule', None) or r.get('lowerFluxBound_rule', None))
+        #
         print('species\t\t\t\t' + str(len(self.extracellular_dict) + len(self.metabolites_dict) \
               + len(self.macromolecules_dict)) \
               + '\n\t metabolites\t\t' + str(len(self.extracellular_dict) \
@@ -48,7 +51,7 @@ class Model(Parrrser):
             print('\n regulation\t\t\t\t' \
               + '\n\t rules\t\t' + str(len(self.events_dict)/2) \
               + '\n\t regulatory proteins\t\t' + str(len(self.qualitative_species_dict)) \
-              + '\n\t regulated reactions\t\t ??????????????????')# TODO
+              + '\n\t regulated reactions\t\t' + str(reg_reac))
 
 
     def remove_quota(self):
