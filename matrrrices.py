@@ -17,7 +17,7 @@ framework
 import numpy as np
 import scipy.sparse as sp
 from .optimization.lp import INFINITY, EPSILON, BIGM, MINUSBIGM
-from .util.linalg import solve_if_unique, shape_of_callable
+from .util.linalg import solve_if_unique, shape_of_callable, is_instance_callable
 
 
 # The order is important, types need to be checked later, maybe also more general checker/create
@@ -26,31 +26,31 @@ MAT_DICT = {
     'y_vec': (('n_y',), (list,)),
     'u_vec': (('n_u',), (list,)),
     'x_vec': (('n_x,'), (list,)),
-    'phi1': (('n_y', 1), (np.ndarray,)),
-    'phi1u': (('n_u', 1), (np.ndarray,)),
-    'phi2':  (('n_y', 1), (np.ndarray,)),
-    'phi3': (('n_y', 1), (np.ndarray,)),
+    'phi1': (('n_y', 1), (np.ndarray, sp.csr_matrix)),
+    'phi1u': (('n_u', 1), (np.ndarray, sp.csr_matrix)),
+    'phi2':  (('n_y', 1), (np.ndarray, sp.csr_matrix)),
+    'phi3': (('n_y', 1), (np.ndarray, sp.csr_matrix)),
     'smat1': (('n_qssa', 'n_u'), (np.ndarray, sp.csr_matrix)),
     'smat2': (('n_dyn', 'n_u'), (np.ndarray, sp.csr_matrix)),
     'smat3': (('n_qssa', 'n_y'), (np.ndarray, sp.csr_matrix)),
     'smat4': (('n_dyn', 'n_y'), (np.ndarray, sp.csr_matrix)),
-    'f_1': (('n_qssa', 1), (np.ndarray,)),
-    'f_2': (('n_dyn', 1), (np.ndarray,)),
+    'f_1': (('n_qssa', 1), (np.ndarray, sp.csr_matrix)),
+    'f_2': (('n_dyn', 1), (np.ndarray, sp.csr_matrix)),
     'qssa_names': (('n_qssa',), (list,)),
-    'lbvec': (('n_u', 1), (np.ndarray,)),
-    'ubvec': (('n_u', 1), (np.ndarray,)),
+    'lbvec': (('n_u', 1), (np.ndarray, sp.csr_matrix)),
+    'ubvec': (('n_u', 1), (np.ndarray, sp.csr_matrix)),
     'matrix_u': (('n_mix', 'n_u'), (np.ndarray, sp.csr_matrix)),
     'matrix_y': (('n_mix', 'n_y'), (np.ndarray, sp.csr_matrix)),
-    'vec_h': (('n_mix', 1), (np.ndarray,)),
+    'vec_h': (('n_mix', 1), (np.ndarray, sp.csr_matrix)),
     'mixed_names': (('n_mix',), (list,)),
     'matrix_B_u': (('n_bmix', 'n_u'), (np.ndarray, sp.csr_matrix)),
     'matrix_B_y': (('n_bmix', 'n_y'), (np.ndarray, sp.csr_matrix)),
     'matrix_B_x': (('n_bmix', 'n_x'), (np.ndarray, sp.csr_matrix)),
-    'vec_B': (('n_bmix', 1), (np.ndarray,)),
+    'vec_B': (('n_bmix', 1), (np.ndarray, sp.csr_matrix)),
     'bool_mixed_names': (('n_bmix',), (list,)),
     'matrix_start': (('n_bndry', 'n_y'), (np.ndarray, sp.csr_matrix)),
     'matrix_end': (('n_bndry', 'n_y'), (np.ndarray, sp.csr_matrix)),
-    'vec_bndry': (('n_bndry', 1), (np.ndarray,)),
+    'vec_bndry': (('n_bndry', 1), (np.ndarray, sp.csr_matrix)),
     'matrix_u_start': (('n_bndry', 'n_u'), (np.ndarray, sp.csr_matrix)),
     'matrix_u_end': (('n_bndry', 'n_u'), (np.ndarray, sp.csr_matrix))
 }
@@ -145,6 +145,18 @@ class Matrrrices:
             self._dimen_asserttest(m_name, shape_names)
         #
 
+    def check_types(self, default_t=0.0, check_only=None):
+        """
+        check whether fields have defined types
+        """
+        if check_only is None:
+            check_only = set(MAT_FIELDS).copy()
+        for m_name, spec in {m: s for m, s in MAT_DICT.items() if m in check_only}.items():
+            type_tuple = spec[1]
+            mat = self.__getattribute__(m_name)
+            if not is_instance_callable(mat, type_tuple, default_t=default_t):
+                raise TypeError(f'Field "{m_name}" has the wrong type {mat.__class__}, one of '
+                                f'{type_tuple} expected.')
 
     def _set_unset_fields(self):
         """
@@ -184,7 +196,7 @@ class Matrrrices:
                 elif kw_name == 'smat3':
                     self.smat3 = sp.csr_matrix((n_rows, self.n_y))
                 elif kw_name == 'f_1':
-                    self.f_1 = np.array((n_rows, 1))
+                    self.f_1 = np.zeros((n_rows, 1))
                 else:
                     self.qssa_names = ['qssa_constraint_'+str(i) for i in range(n_rows)]
             # rows of dynamic eqs. -------------------------------------------
@@ -232,7 +244,7 @@ class Matrrrices:
                 elif kw_name == 'matrix_B_x':
                     self.__dict__[kw_name] = sp.csr_matrix((n_rows, self.n_x))
                 elif kw_name == 'vec_B':
-                    self.__dict__[kw_name] = np.array((n_rows, 1))
+                    self.__dict__[kw_name] = np.zeros((n_rows, 1))
                 else:
                     self.bool_mixed_names = ['b_mixed_constraint_'+str(i) for i in range(n_rows)]
             # rows of boundary conditions ------------------------------------
