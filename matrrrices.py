@@ -92,8 +92,10 @@ class Matrrrices:
                 self.matrix_B_u = np.zeros((0, len(self.u_vec)), dtype=float) # pylint: disable=C0103
                 self.matrix_B_x = np.zeros((0, 0), dtype=float) # pylint: disable=C0103
                 self.vec_B = np.zeros((0, 1)) # pylint: disable=C0103
+                self.x_vec = []
         #
         # set so-far unset fields
+        #
         self._set_unset_fields()
         self.check_dimensions()
 
