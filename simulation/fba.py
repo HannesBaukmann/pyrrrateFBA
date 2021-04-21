@@ -94,10 +94,12 @@ def perform_rdefba(model, **kwargs):
     #
     mtx = mat.Matrrrices(model, run_rdeFBA=run_rdeFBA)
     # adapt initial values if explicitly given
-    y_0 = kwargs.get('set_y0', None)
+    y_0 = kwargs.get('set_y0', None)# FIXME: So far, y0 is acceted as row vector only(!?)
     if y_0 is not None:
         mtx.matrix_end = csr_matrix((y_0.size, y_0.size))
         mtx.matrix_start = csr_matrix(np.eye(y_0.size))
+        mtx.matrix_u_start = csr_matrix((y_0.size, mtx.n_u))
+        mtx.matrix_u_end = csr_matrix((y_0.size, mtx.n_u))
         mtx.vec_bndry = y_0.transpose()
     # Call the OC routine
     if rkm is None:
@@ -150,7 +152,18 @@ def perform_soa_rdeFBA(model, **kwargs):
         ux_new = np.array(sol_tmp.condata.tail(n=1))
         y_new = np.array(sol_tmp.dyndata.tail(n=1))
         sols.extend_y([tslice[-1]], y_new)
-        sols.extend_ux([new_t_shift], ux_new)
+        #print(tslice)# DEBUG
+        try:
+            sol_tmp = model.rdeFBA(tslice, varphi, do_soa=False, **kwargs)
+        # TODO: Find a more elegant solution than try
+            new_t_shift = sol_tmp.condata.index[-1]
+            ux_new = np.array(sol_tmp.condata.tail(n=1))
+            y_new = np.array(sol_tmp.dyndata.tail(n=1))
+            sols.extend_y([tslice[-1]], y_new)
+            sols.extend_ux([new_t_shift], ux_new)
+        except:
+            print(f'Could not extend SOA solution beyond t = {tslice[0]}')
+            return sols
     #print(sols)
     return sols
 
