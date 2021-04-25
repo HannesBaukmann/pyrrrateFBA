@@ -8,45 +8,32 @@ Created on Fri Jul 24 12:21:02 2020
 import scipy.sparse as sp
 import numpy as np
 import matplotlib.pyplot as plt
-from ..optimization.oc import cp_linprog
+from ..matrrrices import Matrrrices
+from ..util.runge_kutta import RungeKuttaPars
+from ..optimization.oc import cp_rk_linprog
 
 
-def exp_example():
+def run_example():
     """
     Simple test to see whether
     (a) the oc routines work if we insert arguments with length zero
     (b) whether a simple time integration task works
-    We solve the ODE y' = - phi1*y, y(0) == 1
+    We solve the ODE y' = -phi1*y, y(0) == 1
     with the solution y(t)= exp(-phi1*t)
     """
-    S1 = sp.csr_matrix(np.array((1,0)))
-    S2 = sp.csr_matrix(np.array((0,0)))
     phi1 = 2.0
-    S4 = sp.csr_matrix(np.array([[-phi1]]))
-    S3 = sp.csr_matrix((1,1))
-
-    Phi1 = np.array([1.0])
-    Phi2 = np.array([0.0])
-    Phi3 = np.array([0.0])
-
-    lb = np.array((0,0))
-    ub = np.array((0,0))
-
-    h = np.array([])
-    Hy = sp.csr_matrix(np.array((0,1)))
-    Hu = sp.csr_matrix(np.array((0,0)))
-
-    By0 = sp.csr_matrix(np.array([[1.0]]))
-    Byend = sp.csr_matrix((1,1))
-    b_bndry = np.array([1.0])
-    N = 201
-    t_0 = 0.0
-    t_end = 1.0
-
-    tt, tt_shift, sol_y, sol_u = cp_linprog(t_0, t_end, Phi1, Phi2, Phi3, S1, S2, S3, S4, lb, ub,
-                                                          h, Hy, Hu, By0, Byend, b_bndry,
-                                                          n_steps=N, varphi=0.0001)
-    print(np.abs(sol_y[N] - np.exp(-phi1*t_end)))
-    plt.plot(tt, sol_y)
-    plt.plot(tt, np.exp(-phi1*tt))
+    smat4 = sp.csr_matrix(np.array([[-phi1]]))
+    matrix_start = sp.csr_matrix(np.array([[1.0]]))
+    vec_bndry = np.array([[1.0]])
+    mats = Matrrrices(None, **{'y_vec': ['y'], 'u_vec': [], 'x_vec': [],
+                               'smat4': smat4,
+                               'matrix_start': matrix_start,
+                               'vec_bndry': vec_bndry})
+    n_steps = 15
+    t_0, t_end = 0.0, 1.0
+    rkm = RungeKuttaPars(s=2, family='Explicit1')
+    tgrid, _, sol_y, _ = cp_rk_linprog(mats, rkm, t_0, t_end, n_steps=n_steps, varphi=0.0001)
+    print(np.abs(sol_y[n_steps] - np.exp(-phi1*t_end)))
+    plt.plot(tgrid, sol_y)
+    plt.plot(tgrid, np.exp(-phi1*tgrid))
     plt.show()

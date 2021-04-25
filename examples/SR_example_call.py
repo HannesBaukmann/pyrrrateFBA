@@ -1,237 +1,164 @@
 """
-Test the OC function milp_cp_linprog using the SR model from Lin's paper
+Test the OC function milp_cp_linprog using the self replicator model from the rdeFBA
+paper
 """
 
-import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.sparse as sp
+from ..matrrrices import Matrrrices
 from ..optimization.oc import mi_cp_linprog
-from ..optimization.lp import INFINITY
-#from ..optimization import lp as lp_wrapper
+from ..optimization.lp import EPSILON, BIGM, MINUSBIGM
+from ..simulation.results import Solutions
 
-# Molecular / Objective Weights
-nQ = 300.0
-nR = 7459.0
-nT1 = 400.0
-nT2 = 1500.0
-nRP = 300.0
-w = 100.0 # weight of "amino acid" M
 
-# Quota 
-PhiQ = 0.35
+def create_model_constants():
+    """
+    All necessary constants for the model, collected in a dictionary
+    """
+    # Molecular / Objective Weights
+    constants = {
+        'nQ': 300.0,
+        'nR':7459.0,
+        'nT1': 400.0,
+        'nT2': 1500.0,
+        'nRP': 300.0,
+        'w': 100.0, # weight of "amino acid" M
+        # Quota
+        'phiQ': 0.35,
+        # Turnover rates
+        'kC1': 3000,
+        'kC2': 2000,
+        'kQ': 4.2,
+        'kR': 0.1689,
+        'kT1': 3.15,
+        'kT2': 0.81,
+        'kRP': 4.2,
+        # Degradation rates
+        'kdQ': 0.01,
+        'kdR': 0.01,
+        'kdT1': 0.01,
+        'kdT2': 0.01,
+        'kdRP': 0.2,
+        # Regulation Parameters
+        'epsRP': 0.01,
+        #'epsT2': 0.01,
+        'epsT2': 0.001, # NEEDED TO BE ADAPTED
+        'alpha': 0.03,
+        'gamma': 20}
+    return constants
 
-# Turnover rates
-kC1 = 3000
-kC2 = 2000
-kQ = 4.2
-kR = 0.1689
-kT1 = 3.15
-kT2 = 0.81
-kRP = 4.2
 
-# Degradation rates
-kdQ = 0.01
-kdR = 0.01
-kdT1 = 0.01
-kdT2 = 0.01
-# kdRP = 0.2
-kdRP = 0.1
+def model_decription():
+    """
+    Collect model informationm
+    """
+    con = create_model_constants()
+    # Objective parameters
+    phi1 = np.array([[0.0, 0.0, -con['nQ'], -con['nR'], -con['nT1'], -con['nT2'], -con['nRP']]]).T
+    # QSSA matrix (only involving metabolite M)
+    smat1 = sp.csr_matrix(np.array([[1.0, 1.0, -con['nQ'], -con['nR'], -con['nT1'], -con['nT2'],
+                                     -con['nRP']]]))
+    # stoichiometric matrix
+    smat2 = sp.csr_matrix(([-1.0, -1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+                           ([0, 1, 2, 3, 4, 5, 6],
+                            [0, 1, 2, 3, 4, 5, 6])))
+    print()
+    # damping (degradation) matrix
+    smat4 = sp.csr_matrix(-np.diag([0.0, 0.0, con['kdQ'], con['kdR'], con['kdT1'], con['kdT2'],
+                                    con['kdRP']]))
+    # lower flux bounds
+    lbvec = np.array(7 * [[0.0]])
+    # mixed constraints
+    matrix_y = sp.csr_matrix(np.array([[0.0, 0.0, (con['phiQ']-1)*con['nQ'], con['phiQ']*con['nR'],
+                                        con['phiQ']*con['nT1'], con['phiQ']*con['nT2'],
+                                        con['phiQ']*con['nRP']],
+                                       [0.0, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0],
+                                       [0.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0],
+                                       [0.0, 0.0, 0.0, -1.0, 0.0, 0.0, 0.0]]))
+    matrix_u = sp.csr_matrix(np.array([[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                                       [1.0/con['kC1'], 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                                       [0.0, 1.0/con['kC2'], 0.0, 0.0, 0.0, 0.0, 0.0],
+                                       [0.0, 0.0, 1.0/con['kQ'], 1.0/con['kR'], 1.0/con['kT1'],
+                                        1.0/con['kT2'], 1.0/con['kRP']]]))
+    # Boolean mixed constraints
+    matrix_bool_y = sp.csr_matrix(np.array([[-1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],     # 0
+                                            [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],      # 1
+                                            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0],     # 2
+                                            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0],      # 3
+                                            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],      # 4
+                                            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],      # 5
+                                            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],      # 6
+                                            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]))    # 7
+    matrix_bool_u = sp.csr_matrix(np.array([[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],      # 0
+                                            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],      # 1
+                                            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],      # 2
+                                            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],      # 3
+                                            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0],     # 4
+                                            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0],      # 5
+                                            [0.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0],     # 6
+                                            [0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0]]))    # 7
+    matrix_bool_x = sp.csr_matrix(np.array([[-MINUSBIGM, 0.0],                        # 0
+                                            [-(EPSILON + BIGM), 0.0],                 # 1
+                                            [0.0, MINUSBIGM],                         # 2
+                                            [0.0, EPSILON + BIGM],                    # 3
+                                            [con['epsRP'], 0.0],                      # 4
+                                            [-BIGM, 0.0],                             # 5
+                                            [0.0, con['epsT2']],                      # 6
+                                            [0.0, -BIGM]]))                           # 7
+    vec_bool = np.array([[-con['gamma'] - MINUSBIGM],                             # 0
+                         [con['gamma'] - EPSILON],                                # 1
+                         [-con['alpha']],                                         # 2
+                         [con['alpha'] + BIGM],                                   # 3
+                         [0.0],                                                   # 4
+                         [0.0],                                                   # 5
+                         [0.0],                                                   # 6
+                         [0.0]])                                                  # 7
+    # boundary (initial) values
+    matrix_start = sp.csr_matrix(np.eye(7, dtype=float))
+    #                      C1       C2        Q       R       T1       T2       RP
+    #                      0        1         2       3       4        5        6
+    vec_bndry = np.array([[500.0], [1000.0], [0.15], [0.01], [0.001], [0.001], [0.0]])
+    return {'y_vec': ['C1', 'C2', 'Q', 'R', 'T1', 'T2', 'RP'],
+            'u_vec': ['vC1', 'vC2', 'vQ', 'vR', 'vT1', 'vT2', 'vRP'],
+            'x_vec': ['RPbar', 'T2bar'],
+            'phi1': phi1,
+            'smat1': smat1,
+            'smat2': smat2,
+            'smat4': smat4,
+            'lbvec': lbvec,
+            'matrix_y': matrix_y,#[1:,:],
+            'matrix_u': matrix_u,#[1:,:],
+            'matrix_B_y': matrix_bool_y,
+            'matrix_B_u': matrix_bool_u,
+            'matrix_B_x': matrix_bool_x,
+            'vec_B': vec_bool,
+            'matrix_start': matrix_start,
+            'vec_bndry': vec_bndry}, con
 
-# Regulation Parameters
-epsilon_RP = 0.01
-epsilon_T2 = 0.01
-epsilon_T2 = 0.001 # WHY ????????????????????????????????
-epsilon_jump = 10.0**-8.0 # small positive number
-alpha = 0.03
-gamma = 20
 
-class Solutions:
-    def __init__(self, tt, tt_shift, sol_y, sol_u, sol_x): 
-        self.tt = tt
-        self.tt_shift = tt_shift 
-        self.sol_y = sol_y
-        self.sol_u = sol_u
-        self.sol_x = sol_x
+def run_example():
+    """
+    Guess what this function does...
+    """
+    model_dict, constants = model_decription()
+    y_vec = model_dict['y_vec']
+    sr_mtx = Matrrrices(None, **model_dict)
 
-class SR_Matrices:
-    def __init__(self):    
-        # Objective parameters
-        new_small_eps = 0.0
-        self.phi1 = np.array([new_small_eps, new_small_eps, -nQ, -nR, -nT1, -nT2, -nRP])
-        self.phi2 = np.zeros(7, dtype=float)
-        self.phi3 = np.zeros(7, dtype=float)
-    
-        l = -10.0 ** 8
-        u = 10.0 ** 8
-    
-        # QSSA matrix (only involving metabolite M)
-        self.smat1 = sp.csr_matrix(np.array([[1.0, 1.0, -nQ, -nR, -nT1, -nT2, -nRP]]))
-    
-        # probably obsolete matrix coupling y's in the algebraic constraints
-        self.smat3 = sp.csr_matrix(np.zeros(7, dtype=float))
-        # stoichiometric matrix (I don't like a np.diag here...)
-        self.smat2 = sp.csr_matrix(np.array([[-1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                                     [0.0, -1.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                                     [0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0],
-                                     [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
-                                     [0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0],
-                                     [0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0],
-                                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]]))
-        # damping (degradation) matrix
-        self.smat4 = sp.csr_matrix(-np.diag([0.0, 0.0, kdQ, kdR, kdT1, kdT2, kdRP]))
-    
-        self.lbvec = np.array(7 * [[0.0]])
-        self.ubvec = np.array(7 * [[INFINITY]])
-    
-        self.matrix_y = sp.csr_matrix(np.array([[0.0, 0.0, (PhiQ - 1) * nQ, PhiQ * nR, PhiQ * nT1, PhiQ * nT2, PhiQ * nRP],
-                                     [0.0, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0],
-                                     [0.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0],
-                                     [0.0, 0.0, 0.0, -1.0, 0.0, 0.0, 0.0]]))
-    
-        self.matrix_u = sp.csr_matrix(np.array([[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                                     [1.0 / kC1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                                     [0.0, 1.0 / kC2, 0.0, 0.0, 0.0, 0.0, 0.0],
-                                     [0.0, 0.0, 1.0 / kQ, 1.0 / kR, 1.0 / kT1, 1.0 / kT2, 1.0 / kRP]]))
-    
-        self.vec_h = np.array(4 * [[0.0]])
-    
-        self.matrix_B_y = sp.csr_matrix(np.array([[-1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],  # 0
-                                      [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],   # 1
-                                      [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0],  # 2
-                                      [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0],   # 3
-                                      [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],   # 4
-                                      [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],   # 5
-                                      [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],   # 6
-                                      [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]])) # 7
-    
-        self.matrix_B_u = sp.csr_matrix(np.array([[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                                      [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                                      [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                                      [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                                      [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0],
-                                      [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0],
-                                      [0.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0],
-                                      [0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0]]))
-    
-        self.matrix_B_x = sp.csr_matrix(np.array([[-l, 0.0],
-                                      [-(epsilon_jump + u), 0.0],
-                                      [0.0, l],
-                                      [0.0, epsilon_jump + u],
-                                      [epsilon_RP, 0.0],
-                                      [-u, 0.0],
-                                      [0.0, epsilon_T2],
-                                      [0.0, -u]]))
-    
-        self.vec_B = np.array([[-gamma - l],
-                       [gamma - epsilon_jump],
-                       [-alpha],
-                       [alpha + u],
-                       [0.0], [0.0], [0.0], [0.0]])
-#        bool_con_ind = [0,1,2,3,4,5,6,7]
-        #bool_con_ind = [0,1,2,3,4,5,7] # remove v_T2 >= eps_T2*(1-T2bar)
-        #bool_con_ind = []
-#        self.matrix_B_y = self.matrix_B_y[bool_con_ind,:]
-#        self.matrix_B_u = self.matrix_B_u[bool_con_ind,:]
-#        self.matrix_B_x = self.matrix_B_x[bool_con_ind,:]
-#        self.vec_B = self.vec_B[bool_con_ind]
-    
-#        con_ind = [0,1,2,3]
-        #con_ind = [1,2,3] # remove quota constraint
-        #Hu[3,5] = 0.0 # remove enzyme capacity constraint on vT2 only
-        #con_ind = []
-#        self.matrix_u = self.matrix_u[con_ind,:]
-#        self.matrix_y = self.matrix_y[con_ind,:]
-#        self.vec_h = self.vec_h[con_ind]
-        
-        self.matrix_start = sp.csr_matrix(np.eye(7, dtype=float))
-        self.matrix_end = sp.csr_matrix(np.zeros((7, 7), dtype=float))
-        #                   C1     C2     Q      R     T1     T2     RP
-        #                   0      1      2      3     4      5      6
-        self.vec_bndry = np.array([[500.0], [1000.0], [0.15], [0.01], [0.001], [0.001], [0.0]])
-        #b_bndry[6] = alpha   # RP = alpha -> T2bar = 0
-        #b_bndry[2] = 100.0#*b_bndry[2] # ensure quota the hard way
-        #b_bndry[3] = 5.0*b_bndry[3] # more R
-        #b_bndry[4] = 10.0*b_bndry[4] # more T1 to ensure inflow of carbon source
-        #b_bndry[5] = 100.0*b_bndry[5]
-
-def run_SR_example():
-    sr_mtx = SR_Matrices()
-    
     t_0 = 0.0
     t_end = 55.0 #0.000001
-    N = 101
-        
-    tt, tt_shift, sol_y, sol_u, sol_x = mi_cp_linprog(sr_mtx, t_0, t_end, n_steps=N, varphi=0.001)
-        
-    sols = Solutions(tt, tt_shift, sol_y, sol_u, sol_x)
-    
-    # extracellular Carbon species
-    ext = pd.DataFrame()
-    ext['time'] = sols.tt
-    ext['C1'] = sols.sol_y[:,0]
-    ext['C2'] = sols.sol_y[:,1]
-        
-    ext.plot(x='time')
-    plt.xlim(0,55)
-    plt.xlabel('Time / min')    
-    plt.show()
-    
-    # macromolecules
-    mac = pd.DataFrame()
-    mac['time'] = sols.tt
-    mac['Q'] = sols.sol_y[:,2]
-    mac['R'] = sols.sol_y[:,3]
-    mac['T1'] = sols.sol_y[:,4]
-    mac['T2'] = sols.sol_y[:,5]
-    mac['RP'] = sols.sol_y[:,6]
-    
-    mac.plot(x='time')
-    plt.xlim(0,55)
-    plt.xlabel('Time / min')    
-    plt.show()
+    n_steps = 51
 
-    # qualitative species    
-    qual = pd.DataFrame()
-    qual['time'] = sols.tt_shift
-    qual['RPbar'] = sols.sol_x[:,0]
-    qual['T2bar'] = sols.sol_x[:,1]
-    
-    qual.plot(x='time')
-    plt.xlim(0,55)
-    plt.xlabel('Time / min')    
-    plt.show()
-    
-    # translation reactions
-    translation = pd.DataFrame()
-    translation['time'] = sols.tt_shift
-    translation['v_Q'] = sols.sol_u[:,2]
-    translation['v_R'] = sols.sol_u[:,3]
-    translation['v_T1'] = sols.sol_u[:,4]
-    translation['v_T2'] = sols.sol_u[:,5]
-    translation['v_RP'] = sols.sol_u[:,6]
-    
-    translation.plot(x='time')
-    plt.xlim(0,55)
-    plt.xlabel('Time / min')    
-    plt.show()
-    
-    # BIOMASS
-    biomass = pd.DataFrame()
-    biomass['time'] = sols.tt_shift
-    biomass['T1_weighted'] = mac['T1'] * nT1
-    biomass['T2_weighted'] = mac['T2'] * nT2
-    biomass['R_weighted'] = mac['R'] * nR
-    biomass['RP_weighted'] = mac['RP'] * nRP
-    biomass['Q_weighted'] = mac['Q'] * nQ
-    biomass['biomass'] = biomass.sum(axis=1)
-
-    biomass_result = str(int(pd.Series(biomass['biomass'].sum()))) + ' mmol'
-    
-    biomass.plot(x='time')
-    plt.xlim(0,55)
-    plt.xlabel('Time / min')
-    plt.savefig('Masterarbeit/Figures/sim_self_replicator_biomass.png')    
-    plt.text(1, 550, biomass_result)
-
-    plt.show()
+    tgrid, tgrid_u, sol_y, sol_u, sol_x = mi_cp_linprog(sr_mtx, t_0, t_end, n_steps=n_steps,
+                                                        varphi=0.001)
+    sols = Solutions(tgrid, tgrid_u, sol_y, sol_u, sol_x)
+    sols.plot_all(subplots=True)
+    # compute biomass also
+    biomass = constants['nT1']*sol_y[:, y_vec.index('T1')] + \
+              constants['nT2']*sol_y[:, y_vec.index('T2')] + \
+              constants['nR']*sol_y[:, y_vec.index('R')] + \
+              constants['nQ']*sol_y[:, y_vec.index('Q')] + \
+              constants['nRP']*sol_y[:, y_vec.index('RP')]
+    plt.plot(tgrid, biomass)
+    plt.xlabel('time')
+    plt.title('Biomass')
