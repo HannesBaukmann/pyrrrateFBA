@@ -40,7 +40,7 @@ if DEFAULT_SOLVER == 'scipy':
         import scipy.optimize as sciopt
         print('Cannot handle integer constraints when using scipy.optimize.linprog')
     except ImportError as err:
-        raise(err)
+        raise err
 
 
 # Constants for BigM and small M constraints
@@ -272,27 +272,27 @@ class MinabsLPModel():
         # TODO: Sort out rows/columns that are not necessary
         n_x = fv2.shape[0]
         m_eq = aeq.shape[0]
-        assert(fv1.shape == (m_f, 1))
-        assert((fv1 >= 0.0).all())
-        assert(mmf.shape == (m_f, n_x))
-        assert(nvf.shape == (m_f, 1))
-        assert(fv2.shape == (n_x, 1))
-        assert(amat.shape == (m_leq, n_x))
-        assert(bvec.shape == (m_leq, 1))
-        assert(aeq.shape == (m_eq, n_x))
-        assert(beq.shape == (m_eq, 1))
-        assert(lbv.shape == (n_x, 1))
-        assert(ubv.shape == (n_x, 1))
-        assert(mmc1.shape == (m_c, m_1))
-        assert(all(mmc1.data >= 0.0))
-        assert(mmc2.shape == (m_1, n_x))
-        assert(nvc.shape == (m_1, 1))
-        assert(mmc3.shape == (m_c, n_x))
-        assert(bvc.shape == (m_c, 1))
+        assert fv1.shape == (m_f, 1)
+        assert (fv1 >= 0.0).all()
+        assert mmf.shape == (m_f, n_x)
+        assert nvf.shape == (m_f, 1)
+        assert fv2.shape == (n_x, 1)
+        assert amat.shape == (m_leq, n_x)
+        assert bvec.shape == (m_leq, 1)
+        assert aeq.shape == (m_eq, n_x)
+        assert beq.shape == (m_eq, 1)
+        assert lbv.shape == (n_x, 1)
+        assert ubv.shape == (n_x, 1)
+        assert mmc1.shape == (m_c, m_1)
+        assert all(mmc1.data >= 0.0)
+        assert mmc2.shape == (m_1, n_x)
+        assert nvc.shape == (m_1, 1)
+        assert mmc3.shape == (m_c, n_x)
+        assert bvc.shape == (m_c, 1)
         #
         i_mf = sp.eye(m_f, format='csr')
         i_m1 = sp.eye(m_1, format='csr')
-        LARGE_NUMBER = INFINITY
+        large_number = INFINITY
         internal_v_names = variable_names + ['MinAbs__f_'+str(i) for i in range(m_f)] \
                                           + ['MinAbs__c_'+str(i) for i in range(m_1)]
         self.lp_model.sparse_model_setup(np.vstack([fv2, fv1, np.zeros((m_c, 1))]),  # fvec
