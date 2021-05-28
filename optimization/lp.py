@@ -57,38 +57,51 @@ class LPModel():
         self.name = name
         self.solver_name = DEFAULT_SOLVER
         if self.solver_name == 'gurobi':
-            self.solver_model = gurobipy.Model()
+            self.solver_model = gurobipy.Model() # pylint: disable=E1101
         if self.solver_name == 'soplex':
             self.solver_model = pyscipopt.Model()
         if self.solver_name == 'glpk':
             self.solver_model = glpk.LPX()
         if self.solver_name == 'scipy':
             self.solver_model = _Scipy_LP_model() # FIXME: Implement!
-        self.status = "Unknown"
+        self.status = 'Unknown'
+        self.variable_names = None
 
+
+    #def set_tolerances(self, ):
+    #    pass
 
     def get_solution(self):
         """
         Output the solution vector of the LP if already calculated
         """
+        if self.status != OPTIMAL:
+            #print('No solution found so far')
+            return None
         if self.solver_name == 'gurobi':
-            if self.status != OPTIMAL:
-                return None
-            return self.solver_model.x
-        elif self.solver_name == 'soplex':
-            if self.status != OPTIMAL:
-                return None
-            #return np.array([self.solver_model.getVal(x) for x in self.solver_model.getVars()]).transpose()
-            #return np.array([self.solver_model.getVal(x) for x in self.solver_model.getVars()]) scip sorts the variables: Booleans first
+            return np.array(self.solver_model.x)
+        if self.solver_name == 'soplex':
+            #return np.array([self.solver_model.getVal(x) for x in
+            #                   self.solver_model.getVars()]).transpose()
+            #return np.array([self.solver_model.getVal(x) for x in
+            #               self.solver_model.getVars()]) scip sorts the variables: Booleans first
             return np.array([self.solver_model.getVal(x) for x in self.solver_model.data])
             # MAYBE: find a more elegant and less error-prone way of extracting solutions here
-        elif self.solver_name == 'glpk':
-            if self.status != OPTIMAL:
-                return None
-            return np.array([c.primal for c in self.solver_model.cols])# FIXME: Geht das nur fuer LPs?
+            # e.g. getBestSol()
+        if self.solver_name == 'glpk':
+            return np.array([c.primal for c in self.solver_model.cols])# FIXME: Only for LPs?
         return None
 
 
+    def write_to_file(self, filename):
+        """
+        Write to *.lp/*.mps
+        """
+        if self.solver_name == 'gurobi':
+            self.solver_model.write(filename)
+        else:
+            raise NotImplementedError('Export only available for gurobi (yet)')
+        
     def sparse_model_setup(self, fvec, amat, bvec, aeqmat, beq, lbvec, ubvec, variable_names):
         """
         Fill the "solver_model" of the underlying LP solver class with the
@@ -99,6 +112,7 @@ class LPModel():
                  lbvec <= x <= ubvec
             and the variable names stored in the list "variable_names"
         """
+        self.variable_names = variable_names
         #
         # TODO: Check dimensions first
         #
@@ -130,6 +144,31 @@ class LPModel():
     #
     #def add_equality_constraint(self, aeqrow, bentry):
 
+    def set_new_objective_vector(self, new_fvec):
+        if self.solver_name == 'gurobi':
+            _set_new_objective_vector_gurobi(self.solver_model, new_fvec)
+
+    def get_objective_vector(self):
+        if self.solver_name == 'gurobi':
+            return _get_objective_vector_gurobi(self.solver_model)
+        if self.solver_name == 'soplex':
+            return _get_objective_vector_soplex(self.solver_model)
+
+
+    def get_objective_val(self):
+        if self.solver_name == 'gurobi':
+            return _get_objective_val_gurobi(self.solver_model)
+        if self.solver_name == 'soplex':
+            return _get_objective_val_soplex(self.solver_model)
+
+        
+    def add_constraints(self, amat, bvec, sense):
+        if self.solver_name == 'gurobi':
+            sense_mapping = {'<': gurobipy.GRB.LESS_EQUAL, '=': gurobipy.GRB.EQUAL} # pylint: disable=E1101
+            x_variables = self.solver_model.getVars()
+            _add_sparse_constraints_gurobi(self.solver_model, amat, bvec, x_variables,
+                                           sense_mapping[sense])
+
 
     def optimize(self):
         """
@@ -137,7 +176,8 @@ class LPModel():
         """
         if self.solver_name == 'gurobi':
             self.solver_model.optimize()
-            self.status = self.solver_model.status # MAYBE: It would probably be better to have one status meaning on the self-level
+            self.status = self.solver_model.status
+            # MAYBE: It would probably be better to have one status meaning on the self-level
         elif self.solver_name == 'soplex':
             self.solver_model.optimize()
             self.status = self.solver_model.getStatus()
@@ -301,12 +341,12 @@ class MinabsLPModel():
                               [-mmf,  -i_mf, None],
                               [mmc2,  None,  -i_m1],
                               [-mmc2, None,  -i_m1],
-                              [mmc3,  None,  mmc1]], format='csr'),                 # amat
-                     np.vstack([bvec, nvf, -nvf, nvc, -nvc, bvc]),                  # bvec
-                     sp.bmat([[aeq, sp.csr_matrix((m_eq, m_c+m_f))]],format='csr'), # aeqmat
-                     beq,                                                           # beq
-                     np.vstack([lbv, np.zeros((m_f+m_c, 1))]),                      # lbvec
-                     np.vstack([ubv, LARGE_NUMBER*np.ones((m_f+m_c, 1))]),          # ubvec
+                              [mmc3,  None,  mmc1]], format='csr'),                  # amat
+                     np.vstack([bvec, nvf, -nvf, nvc, -nvc, bvc]),                   # bvec
+                     sp.bmat([[aeq, sp.csr_matrix((m_eq, m_c+m_f))]], format='csr'), # aeqmat
+                     beq,                                                            # beq
+                     np.vstack([lbv, np.zeros((m_f+m_c, 1))]),                       # lbvec
+                     np.vstack([ubv, large_number*np.ones((m_f+m_c, 1))]),           # ubvec
                      internal_v_names)                                            # variable_names
 
     def get_solution(self):
@@ -367,10 +407,12 @@ def _sparse_model_setup_gurobi(model, fvec, amat, bvec, aeqmat, beq, lbvec,
                                  ub=ubvec[i],
                                  obj=fvec[i],
                                  name=variable_names[i],
-                                 vtype=gurobipy.GRB.BINARY) for i in range(n_x, n_x+nbooles)]
-
-    _add_sparse_constraints_gurobi(model, amat, bvec, x_variables, gurobipy.GRB.LESS_EQUAL)
-    _add_sparse_constraints_gurobi(model, aeqmat, beq, x_variables, gurobipy.GRB.EQUAL)
+                                 vtype=gurobipy.GRB.BINARY) # pylint: disable=E1101
+                    for i in range(n_x, n_x+nbooles)]
+    _add_sparse_constraints_gurobi(model, amat, bvec, x_variables,
+                                   gurobipy.GRB.LESS_EQUAL) # pylint: disable=E1101
+    _add_sparse_constraints_gurobi(model, aeqmat, beq, x_variables,
+                                   gurobipy.GRB.EQUAL) # pylint: disable=E1101
     model.update()
 
 
@@ -392,8 +434,22 @@ def _add_sparse_constraints_gurobi(model, amat, bvec, x_variables, sense):
         end = amat.indptr[i+1]
         variables = [x_variables[j] for j in amat.indices[start:end]]
         coeff = amat.data[start:end]
-        expr = gurobipy.LinExpr(coeff, variables)
+        expr = gurobipy.LinExpr(coeff, variables) # pylint: disable=E1101
         model.addConstr(lhs=expr, sense=sense, rhs=bvec[i])
+    model.update() # FIXME: This should be done somewhere else
+
+
+def _set_new_objective_vector_gurobi(model, fvec):
+    model.setObjective(gurobipy.LinExpr(fvec, model.getVars()))# QUESTION: Is the order uniquely preserved?
+    model.update() # QUESTION: Maybe outsource this updating
+
+
+def _get_objective_vector_gurobi(model):
+    return np.array( [[ variable.Obj for variable in model.getVars() ]] ).T
+
+
+def _get_objective_val_gurobi(model):
+    return model.ObjVal - model.getObjective().getConstant() # TODO: Why is the Constant sometimes not zero?
 
 
 # SOPLEX - specifics ##########################################################
@@ -452,6 +508,21 @@ def _add_sparse_constraints_soplex(model, amat, bvec, x_variables, sense):
         elif sense=='EQ':
             model.addCons(expr == bvec[i])
 
+
+def _get_objective_val_soplex(model):
+    """
+    wrap objective value getter
+    """
+    return model.getObjVal()
+
+
+def _get_objective_vector_soplex(model):
+    """
+    objective vector
+    """
+    #return None
+    return np.array( [[ variable.getObj() for variable in model.getVars() ]] ).T
+    
 
 # GLPK specifics ##############################################################
 def _sparse_model_setup_glpk(model, fvec, amat, bvec, aeqmat, beq, lbvec,
