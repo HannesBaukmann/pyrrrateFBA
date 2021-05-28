@@ -137,7 +137,7 @@ def model_decription():
             'vec_bndry': vec_bndry}, con
 
 
-def run_example():
+def run_example(actually_plot=True):
     """
     Guess what this function does...
     """
@@ -152,13 +152,15 @@ def run_example():
     tgrid, tgrid_u, sol_y, sol_u, sol_x = mi_cp_linprog(sr_mtx, t_0, t_end, n_steps=n_steps,
                                                         varphi=0.001)
     sols = Solutions(tgrid, tgrid_u, sol_y, sol_u, sol_x)
-    sols.plot_all(subplots=True)
     # compute biomass also
     biomass = constants['nT1']*sol_y[:, y_vec.index('T1')] + \
               constants['nT2']*sol_y[:, y_vec.index('T2')] + \
               constants['nR']*sol_y[:, y_vec.index('R')] + \
               constants['nQ']*sol_y[:, y_vec.index('Q')] + \
               constants['nRP']*sol_y[:, y_vec.index('RP')]
-    plt.plot(tgrid, biomass)
-    plt.xlabel('time')
-    plt.title('Biomass')
+    if actually_plot:
+        sols.plot_all(subplots=True)
+        plt.plot(tgrid, biomass)
+        plt.xlabel('time')
+        plt.title('Biomass')
+    return sols

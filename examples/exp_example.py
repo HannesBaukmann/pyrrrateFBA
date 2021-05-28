@@ -13,7 +13,7 @@ from ..util.runge_kutta import RungeKuttaPars
 from ..optimization.oc import cp_rk_linprog
 
 
-def run_example():
+def run_example(actually_plot=True):
     """
     Simple test to see whether
     (a) the oc routines work if we insert arguments with length zero
@@ -33,7 +33,10 @@ def run_example():
     t_0, t_end = 0.0, 1.0
     rkm = RungeKuttaPars(s=2, family='Explicit1')
     tgrid, _, sol_y, _ = cp_rk_linprog(mats, rkm, t_0, t_end, n_steps=n_steps, varphi=0.0001)
-    print(np.abs(sol_y[n_steps] - np.exp(-phi1*t_end)))
-    plt.plot(tgrid, sol_y)
-    plt.plot(tgrid, np.exp(-phi1*tgrid))
-    plt.show()
+    num_error = np.abs(sol_y[n_steps] - np.exp(-phi1*t_end))
+    #print(num_error)
+    if actually_plot:
+        plt.plot(tgrid, sol_y)
+        plt.plot(tgrid, np.exp(-phi1*tgrid))
+        plt.show()
+    return num_error
