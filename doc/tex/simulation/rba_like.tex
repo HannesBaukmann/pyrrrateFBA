@@ -1,0 +1,200 @@
+\documentclass{article}
+
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[USenglish]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{fullpage}
+\usepackage{enumitem}
+\usepackage{todonotes}
+
+
+\makeatletter
+\providecommand*{\diff}%
+{\@ifnextchar^{\DIfF}{\DIfF^{}}}
+\def\DIfF^#1{%
+	\mathop{\text{\mathstrut d}}%
+	\nolimits^{#1}\gobblespace}
+\def\gobblespace{%
+	\futurelet\diffarg\opspace}
+\def\opspace{%
+	\let\DiffSpace\!%
+	\ifx\diffarg(%
+	\let\DiffSpace\relax
+	\else
+	\ifx\diffarg[%
+	\let\DiffSpace\relax
+	\else
+	\ifx\diffarg\{%
+	\let\DiffSpace\relax
+	\fi\fi\fi\DiffSpace}
+\makeatother
+\newcommand{\intd}{\diff}%             differential "d"
+\newcommand{\defeq}{\mathrel{:=}}%     is per definition equal to
+\newcommand{\tp}{\top}%                transpose
+\newcommand{\kron}{\otimes}%           Kronecker product
+%\newcommand{\dkron}[2][]{\mathbin{{}_{#1}\negthinspace\kron_{#2}}}% generalized Kronecker product
+\newcommand{\dkron}[2][]{\mathbin{\kron_{#2}^{#1}}}% generalized Kronecker product
+\newcommand{\setR}{\mathbb{R}}%        real numbers
+\newcommand{\expe}{\mathrm{e}}%        Eulers constant
+\newcommand{\diag}{\mathop{\mathrm{diag}}}%     diagonal elements of matrix/diagonal matrix from vector
+
+
+\newcommand{\vectorfont}[1]{\boldsymbol{#1}}%
+\newcommand{\greekvectorfont}[1]{\boldsymbol{#1}}%
+\newcommand{\matrixfont}[1]{\mathbf{#1}}%
+\newcommand{\greekmatrixfont}[1]{\mathbf{#1}}%
+
+
+\newcommand{\bvec}{\vectorfont{b}}% boundary value vectors
+\newcommand{\fvec}{\vectorfont{f}}% right-hand-side vectors
+\newcommand{\gvec}{\vectorfont{g}}% generic convstraint function
+\newcommand{\hvec}{\vectorfont{h}}% constraint vectors
+\newcommand{\kvec}{\vectorfont{k}}% Runge-Kutta stage vectors
+\newcommand{\tvec}{\vectorfont{t}}% time instance collection vectors
+\newcommand{\uvec}{\vectorfont{u}}% control variables
+\newcommand{\yvec}{\vectorfont{y}}% dynamic variables
+\newcommand{\zvec}{\vectorfont{z}}% helper variables 
+
+\newcommand{\tildeyvec}{\vectorfont{\tilde{y}}}
+
+\newcommand{\duvec}{\vectorfont{\dot{u}}}% time derivative of flux variables
+\newcommand{\dyvec}{\vectorfont{\dot{y}}}% time derivatives of dynamic variables
+%
+\newcommand{\Deltavec}{\greekvectorfont{\Delta}}
+\newcommand{\Phivec}{\greekvectorfont{\Phi}}
+\newcommand{\Psivec}{\greekvectorfont{\Psi}}
+%
+\newcommand{\bfrakvec}{\vectorfont{\mathfrak{b}}}
+\newcommand{\ffrakvec}{\vectorfont{\mathfrak{f}}}
+\newcommand{\kfrakvec}{\vectorfont{\mathfrak{k}}}
+\newcommand{\nfrakvec}{\vectorfont{\mathfrak{n}}}
+\newcommand{\ufrakvec}{\vectorfont{\mathfrak{u}}}
+\newcommand{\xfrakvec}{\vectorfont{\mathfrak{x}}}
+\newcommand{\yfrakvec}{\vectorfont{\mathfrak{y}}}
+%
+\newcommand{\tildeyfrakvec}{\vectorfont{\tilde{\mathfrak{y}}}}
+\newcommand{\nullvec}{\greekvectorfont{0}}
+\newcommand{\lbvec}{\vectorfont{l\negthinspace b}}
+\newcommand{\ubvec}{\vectorfont{u\negthinspace b}}
+\newcommand{\lbfrakvec}{\vectorfont{\mathfrak{l\negthinspace b}}}
+\newcommand{\ubfrakvec}{\vectorfont{\mathfrak{u\negthinspace b}}}
+\newcommand{\einsvec}{\vectorfont{1}\negthinspace\negthinspace\vectorfont{1}} % vector of only ones (1,1,...,1)^T
+%
+\newcommand{\Bmat}{\matrixfont{B}}
+\newcommand{\Hmat}{\matrixfont{H}}
+\newcommand{\Imat}{\matrixfont{I}}%       identity matrix
+\newcommand{\Smat}{\matrixfont{S}}
+\newcommand{\Tmat}{\matrixfont{T}}
+
+\newcommand{\Phimat}{\greekmatrixfont{\Phi}}% 
+
+\newcommand{\Afrakmat}{\matrixfont{\mathfrak{A}}}
+
+\newcommand{\Nullmat}{\matrixfont{0}}
+
+
+\title{Theory and Implementation Details for the \texttt{rba\_like} method}
+\author{\texttt{PyrrrateFBA}}
+\date{2021-06-03}
+
+\begin{document}
+	
+%	\begin{center}
+%		{\Large\textbf{Implementation Details for the \texttt{rba\_like} method}}
+%	\end{center}
+
+\maketitle
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{deFBA, cFBA and RBA(-like)}
+
+In a nutshell, \textbf{deFBA} can mathematically be expressed as a linear optimal control problem of the form
+\begin{subequations}
+	\begin{align}
+		\min_{\uvec(\cdot), \yvec (\cdot)} &\int_{t_0}^{t_{\mathrm{end}}} \expe^{-\varphi \cdot t}\cdot 
+		\left(\Phivec_1^{\tp}(t)\cdot \yvec(t)+ \Phivec_{1,\uvec}(t)\cdot \uvec(t) \right)\intd t + \Phivec_2^{\tp} \yvec(t_0) + \Phivec_3^{\tp} \cdot \yvec(t_{\mathrm{end}})
+		\label{eq:OC_problem:obj}
+		\\
+		\text{s.\,t.} \quad
+		\dyvec(t) &= \Smat_2(t) \cdot \uvec(t) + \Smat_4(t) \cdot \yvec(t) + \fvec_2(t)
+		\label{eq:OC_problem:dyn}
+		\\
+		\nullvec_{\mathrm{QSSA}} &= \Smat_1(t) \cdot \uvec(t) + \Smat_3(t) \cdot \yvec(t) + \fvec_1(t)
+		\label{eq:OC_problem:qssa}
+		\\
+		\lbvec(t) &\leq \uvec (t)\leq \ubvec(t)
+		\label{eq:OC_problem:flux_bounds}
+		\\
+		\Hmat_{\yvec}(t) \cdot \yvec(t)  + \Hmat_{\uvec}(t)\cdot \uvec(t)&\leq \hvec(t)
+		\label{eq:OC_problem:mixed}
+		\\
+		\nullvec &\leq \yvec(t)
+		\label{eq:OC_problem:pos}
+		\\
+		\Bmat_{\yvec_0} \cdot \yvec(t_0) + \Bmat_{\yvec_{\mathrm{end}}} \cdot \yvec(t_{\mathrm{end}}) &= \bvec_{\mathrm{bndry}}\,.
+		\label{eq:OC_problem:bndry}
+	\end{align}%
+\label{eq:OC_problem}%
+\end{subequations}
+%
+In many cases, it is difficult to motivate\slash decide on a specific choice for the objective vectors $\Phivec_{\bullet}$ and the solutions $\yvec(t)$ of the deFBA problems show unnatural behavior.
+They might, for example, be optimized in such a way that necessary metabolites are totally depleted at the end of the time horizon because this allows the cell to push the dominant terms of the objective further towards an optimal value.
+To remedy this, \textbf{conditional flux balance analysis}, short: \textbf{cFBA}, introduces a growth factor $\mu \in \setR$ and disregards the objective vectors $\Phivec_{\bullet}$ completely, ending up with
+\begin{subequations}
+\begin{align}
+	\max_{\uvec(\cdot), \yvec(\cdot)}  &\,\mu
+	\label{eq:cFBA:obj}
+\\
+	\text{s.\ t.\ }&\text{\eqref{eq:OC_problem:dyn}, \eqref{eq:OC_problem:qssa}, \eqref{eq:OC_problem:flux_bounds}, \eqref{eq:OC_problem:mixed}, \eqref{eq:OC_problem:pos}}\notag
+\\
+\text{and } \mu \cdot \yvec(t_0) &= \yvec(t_{\mathrm{end}})\,.
+\label{eq:cFBA:bndry}
+\end{align}%
+\label{eq:cFBA}%
+\end{subequations}
+{\color{gray} 
+It is possible to add (some fixed) initial values and\slash or restrict \eqref{eq:cFBA:bndry} to some indices but we keep it simple for now.
+}
+%
+
+%
+Note that the initial values are now free and part of the optimization problem.
+This, together with the coupling with $\mu$ in \eqref{eq:cFBA:bndry}, implies that \eqref{eq:cFBA} is no longer a linear program.
+However, there is only one positive variable (the growth factor $\mu$) that makes it a quadratically constrained problem and therefore it is possible to efficiently solve it using a bisection method for its solution.
+That means: Given a maximal estimated value $\mu_{0,\max}$ for $\mu$ and a minimal one $\mu_{0,\min}$ (usually one), one sets up the discretizations of \eqref{eq:OC_problem} with
+\[
+\Bmat_{\yvec_0} \defeq \mu_{0,\ast} \cdot \Imat_{n_{\yvec}}\,,\quad
+\Bmat_{\yvec_{\mathrm{end}}} \defeq -\Imat_{n_{\yvec}}\,,\quad
+\bvec_{\mathrm{bndry}} \defeq \nullvec\,,\quad
+\ast \in \lbrace \min, \max \rbrace
+\]
+and checks not for optimality but only feasibility, (practically by setting all objective vectors $\Phivec_{\bullet}$ to $\nullvec$). 
+If $\mu_{0,\min}$ is sufficiently small and $\mu_{0,\max}$ sufficiently large, the LPs should be feasible in the first and infeasible in the latter case.
+The \lq bisection\rq{} part now entails that the interval $[\mu_{0,\min}, \mu_{0,\max}]$ is cut into two at its center $\mu_{1,\mathrm{new}} \defeq \tfrac{1}{2}(\mu_{0,\min}+ \mu_{0,\max})$.
+If the corresponding problem is feasible, this procedure is continued with $\mu_{1,\min} \defeq \mu_{1,\mathrm{new}}$, $\mu_{1,\max}\defeq \mu_{0,\max}$.
+If it is infeasible, one sets $\mu_{1,\max}\defeq \mu_{1,\mathrm{new}}$, $\mu_{1,\min}\defeq \mu_{0,\min}$.
+In any case, the new interval containing the optimal value for $\mu$ gets smaller and smaller until one is sufficiently close.
+
+{\color{gray}
+In the code, this bisection method uses the \texttt{scipy.optimize.bisect} function.
+}
+%
+
+%
+Finally, to approximate the optimal growth behavior of the cell at a fixed point in time, we \lq cheat\rq{} by simply solving a cFBA problem on a very small time interval $[t_0,t_{\mathrm{end}}] = [t_0, t_0 + \Delta_{\mathrm{RBA}}]$ and use just one time step of the time integration method.
+This is called \textbf{resource balance analysis} or \textbf{RBA}(-like).
+
+{\color{gray}
+(a) We use the term RBA-like (and not RBA) because there is a large community involved in solving RBA problems, usually using slightly different terms and methods and we want to avoid a misunderstanding of terminology.
+
+(b) Historically speaking, RBA was introduced in systems biology before deFBA and cFBA.
+
+(c) One more technical detail: Often, a cell doing nothing is a valid solution of the cFBA\slash RBA problems.
+In those cases, an additional constraint (e.g.\ $\sum w_i \cdot y_i (t_0) = 1$) is added.
+}
+
+
+
+\end{document}
