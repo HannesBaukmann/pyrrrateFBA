@@ -2,12 +2,17 @@
 Simple flux balance analysis
 """
 
+
+# -*- coding: utf-8 -*-
 import numpy as np
-from scipy.sparse import csr_matrix
+from copy import deepcopy
+from scipy.optimize import bisect
+from scipy.sparse import csr_matrix#, bmat
 from ..simulation.results import Solutions
 from .. import matrrrices as mat
+from ..util import runge_kutta
 from ..optimization.lp import LPModel
-from ..optimization.oc import mi_cp_linprog, cp_rk_linprog
+from ..optimization.oc import mi_cp_linprog, cp_rk_linprog, cp_rk_linprog_v
 
 
 def perform_fba(model, **kwargs):
@@ -160,6 +165,104 @@ def perform_soa_rdeFBA(model, **kwargs):
             return sols
     #print(sols)
     return sols
+
+
+
+
+# _EXPERIMENTAL ######################
+
+BISECT_TOL, BISECT_REL_TOL = 2e-12, 8.881784197001252e-16 # DEFAULT VALUES
+#BISECT_TOL, BISECT_REL_TOL = 1e-8, 1e-12
+
+
+def deFBA(MM, tspan, varphi=0.0,rkm=runge_kutta.RungeKuttaPars(s=1,family='Explicit1')):
+    out = cp_rk_linprog_v(MM, rkm, tspan, varphi=varphi)
+    return out
+  
+
+def cFBA(MM, tspan, verbosity_level=0, mumin=1.0, mumax=5.0, y_start=None, wvec=None):
+    """
+    solve:      min/max mu 
+          s.t. m_dict-problem is feasible with
+          mu*matrix_start*y0 + matrix_end=y_end = vec_bndry
+          + wvec^T*y0 == 1
+          [+ y(tspan[0]) == y0 if y0 is not None]
+    TODO: include index sets j_start, j_end (or something similar)
+    """
+    out = None
+    muend = None
+    MM_cFBA = deepcopy(MM) # avoid side effects on model
+    n_y = MM_cFBA.n_y
+    MM_cFBA.phi1 *= 0.0
+    MM_cFBA.phi2 *= 0.0
+    MM_cFBA.phi3 *= 0.0
+    #
+    if y_start is None:
+        m_start = np.eye(n_y, n_y) # TODO: Sparse support
+        m_end = -np.eye(n_y, n_y)
+        v_bndry = np.zeros((n_y, 1))
+        if wvec is None:
+            wvec = np.ones((n_y, 1))
+    else:# TODO: It is no longer necessary to use bisection if y_start is provided completely, can be dealt with using Phi_3 and an extra variable
+        if wvec is not None:
+            raise ValueError('Cannot provide both weight vector and initial value in cFBA.')
+        else:
+            wvec = np.zeros((n_y, 0))
+            m_start = np.vstack([np.eye(n_y, n_y), np.eye(n_y, n_y)])
+            m_end = np.vstack([-np.eye(n_y, n_y), np.zeros((n_y, n_y))])
+            v_bndry = np.vstack([np.zeros((n_y, 1)), y_start])
+    m_wvec= wvec.shape[1]
+    tmp_m_s = np.vstack([m_start, wvec.T])
+    MM_cFBA.matrix_start = tmp_m_s.copy() #np.vstack([m_start, wvec.T])
+    #print('pre ---------')
+    #print(m_dict_cFBA['matrix_start'], '\n', m_dict_cFBA['matrix_end'], '\n', m_dict_cFBA['vec_bndry'])
+    MM_cFBA.matrix_end = np.vstack([m_end, np.zeros((m_wvec, n_y))])
+    MM_cFBA.vec_bndry = np.vstack([v_bndry, np.ones((m_wvec, 1))])    
+    #
+    #print('post ---------')
+    #print(m_dict_cFBA['matrix_start'], '\n', m_dict_cFBA['matrix_end'], '\n', m_dict_cFBA['vec_bndry'])
+    #
+    def _bisect_fun_cFBA(mu):
+        nonlocal muend
+        nonlocal out
+        if verbosity_level > 0:
+            print('trying mu = ', mu)
+        MM_cFBA.matrix_start[:n_y, :] = mu*tmp_m_s[:n_y, :] 
+        out_trial = deFBA(MM_cFBA, tspan)
+        if out_trial['y_data'] is None:
+            if verbosity_level > 1:
+                print('no solutions')
+            return -1.0
+        else:
+            muend = mu
+            out = out_trial.copy() # This assumes that the lase call is the best(!)
+            if verbosity_level > 1:
+                print('found solution')
+                #print(out['y_data'])
+            return 1.0
+    # Actual run of the algorithm ------------
+    #muend = 
+    bisect(_bisect_fun_cFBA, mumin, mumax, xtol=BISECT_TOL, rtol=BISECT_REL_TOL) # |
+    # ----------------------------------------
+    if verbosity_level > 1:
+        print('mu =', muend)
+    #out = deFBA(m_dict_cFBA, tspan)
+    return out, muend
+
+
+def RBA_like(MM, t0, del_t, verbosity_level=0, mumin=1.0, mumax=2.0, y_start=None, wvec=None):
+    """
+    solve min/max mu
+          s.t. Matrrrices model MM is feas. and
+          mu*y0 == yend 
+    """
+    tspan = np.array([t0, t0+del_t])
+    n_y = MM.n_y
+    n_u = MM.n_u
+    out, mu = cFBA(MM, tspan, y_start=y_start, wvec=wvec,
+                   verbosity_level=verbosity_level, mumin=mumin, mumax=mumax) 
+    return {'y': np.reshape(out['y_data'][0, :], (n_y, 1)),
+            'u': np.reshape(out['u_data'][0, :], (n_u, 1))}, mu
 
 
 #def perform_shortterm_rdeFBA(model, **kwargs):
