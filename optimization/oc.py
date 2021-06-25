@@ -436,7 +436,7 @@ def cp_rk_linprog_v(matrices, rkm, tgrid, varphi=0.0,
     #t_0 = tgrid[0]  #; t_end = tgrid[-1]
     n_steps = tgrid.size - 1
     s_rk = rkm.get_stage_number()
-    n_y, n_u = matrices.n_y, matrices.n_u #shape_of_callable(matrices.smat2, default_t=t_0)
+    n_y, n_u, n_p = matrices.n_y, matrices.n_u, matrices.n_p
     n_ally = (n_steps + 1) * n_y
     n_allu = n_steps* s_rk * n_u
     n_allk = n_steps*s_rk*n_y
@@ -463,6 +463,7 @@ def cp_rk_linprog_v(matrices, rkm, tgrid, varphi=0.0,
     # Mayer part _____________________________________________________________
     f_y[0:n_y] += matrices.phi2
     f_y[n_steps * n_y:n_ally] += matrices.phi3
+    f_p = matrices.phip
 
     # Dynamics ===============================================================
     # (a) stage equations
@@ -472,6 +473,7 @@ def cp_rk_linprog_v(matrices, rkm, tgrid, varphi=0.0,
                    sp.kron(tmat_ds, np.ones((s_rk, 1))).asformat('csr'), out_type='csr')
     aeq1_k += -sp.eye(n_steps*s_rk*n_y, format='csr')
     aeq1_u = dkron(sp.eye(n_steps*s_rk, format='csr'), matrices.smat2, tt_s, along_rows=True)
+    aeq1_p = dkron(np.ones((n_steps*s_rk, 1)), matrices.smat6, tt_s, out_type='csr')
     beq1 = -dkron(np.ones((n_steps*s_rk, 1)), matrices.f_2, tt_s, out_type='np')
     # (b) state vector updates
     aeq2_y = sp.kron(sp.eye(n_steps, n_steps+1, format='csr')- # Is this simpler with sp.diags
@@ -480,6 +482,7 @@ def cp_rk_linprog_v(matrices, rkm, tgrid, varphi=0.0,
     aeq2_k = sp.kron(diagdelt, sp.kron(rkm.b, sp.eye(n_y, format='csr'),
                                        format='csr'), format='csr')
     aeq2_u = sp.csr_matrix((n_steps*n_y, n_allu))
+    aeq2_p = sp.csr_matrix((n_steps*n_y, n_p))
     beq2 = np.zeros((n_steps*n_y, 1))
 
     # Control Constraints ====================================================
@@ -488,6 +491,7 @@ def cp_rk_linprog_v(matrices, rkm, tgrid, varphi=0.0,
     aeq3_k = dkron(sp.kron(diagdelt, rkm.A, format='csr'), matrices.smat3,
                    sp.kron(tmat_ds, np.ones((s_rk, 1))).asformat('csr'), out_type='csr')
     aeq3_u = dkron(sp.eye(n_steps*s_rk, format='csr'), matrices.smat1, tt_s, along_rows=True)
+    aeq3_p = dkron(np.ones((n_steps*s_rk, 1)), matrices.smat5, tt_s, out_type='csr')
     beq3 = -dkron(np.ones((n_steps*s_rk, 1)), matrices.f_1, tt_s, out_type='np')
 
     # Mixed Constraints ======================================================
@@ -496,11 +500,16 @@ def cp_rk_linprog_v(matrices, rkm, tgrid, varphi=0.0,
     aineq1_k = dkron(sp.kron(diagdelt, rkm.A, format='csr'), matrices.matrix_y,
                      sp.kron(tmat_ds, np.ones((s_rk, 1))).asformat('csr'), out_type='csr')
     aineq1_u = dkron(sp.eye(n_steps*s_rk, format='csr'), matrices.matrix_u, tt_s, along_rows=True)
+    aineq1_p = dkron(np.ones((n_steps*s_rk, 1)), matrices.matrix_p, tt_s, out_type='csr')
     bineq1 = dkron(np.ones((n_steps*s_rk, 1)), matrices.vec_h, tt_s, out_type='np')
 
     # Control Bounds =========================================================
     lb_u = dkron(np.ones((n_steps*s_rk, 1)), matrices.lbvec, tt_s, out_type='np')
     ub_u = dkron(np.ones((n_steps*s_rk, 1)), matrices.ubvec, tt_s, out_type='np')
+
+    # Parameter Bounds =======================================================
+    lb_p = matrices.lpvec
+    ub_p = matrices.upvec
 
     # Positivity of y ========================================================
     aineq2_y = -sp.kron(sp.kron(sp.eye(n_steps, n_steps+1, format='csr'),
@@ -509,6 +518,7 @@ def cp_rk_linprog_v(matrices, rkm, tgrid, varphi=0.0,
     aineq2_k = -sp.kron(sp.kron(diagdelt, rkm.A, format='csr'), sp.eye(n_y, format='csr'),
                         format='csr')
     aineq2_u = sp.csr_matrix((n_steps*s_rk*n_y, n_allu))
+    aineq2_p = sp.csr_matrix((n_steps*s_rk*n_y, n_p))
     bineq2 = np.zeros((n_steps*s_rk*n_y, 1))
 
     # Boundary Values ========================================================
@@ -516,6 +526,7 @@ def cp_rk_linprog_v(matrices, rkm, tgrid, varphi=0.0,
                         matrices.matrix_end])
     aeq4_k = sp.csr_matrix((n_bndry, n_allk))
     aeq4_u = sp.csr_matrix((n_bndry, n_allu))
+    aeq4_p = matrices.matrix_bndry_p
     beq4 = matrices.vec_bndry
 
     # So far unset elements of the LP
@@ -527,24 +538,25 @@ def cp_rk_linprog_v(matrices, rkm, tgrid, varphi=0.0,
     ub_k = lp_wrapper.INFINITY*np.ones((n_allk, 1))
 
     # Assembly of LP =========================================================
-    f_all = np.vstack([f_y, f_k, f_u])
-    aeq = sp.bmat([[aeq1_y, aeq1_k, aeq1_u],
-                   [aeq2_y, aeq2_k, aeq2_u],
-                   [aeq3_y, aeq3_k, aeq3_u],
-                   [aeq4_y, aeq4_k, aeq4_u]], format='csr')
+    f_all = np.vstack([f_y, f_k, f_u, f_p])
+    aeq = sp.bmat([[aeq1_y, aeq1_k, aeq1_u, aeq1_p],
+                   [aeq2_y, aeq2_k, aeq2_u, aeq2_p],
+                   [aeq3_y, aeq3_k, aeq3_u, aeq3_p],
+                   [aeq4_y, aeq4_k, aeq4_u, aeq4_p]], format='csr')
     beq = np.vstack([beq1, beq2, beq3, beq4])
-    lb_all = np.vstack([lb_y, lb_k, lb_u])
-    ub_all = np.vstack([ub_y, ub_k, ub_u])
-    aineq = sp.bmat([[aineq1_y, aineq1_k, aineq1_u],
-                     [aineq2_y, aineq2_k, aineq2_u]], format='csr')
+    lb_all = np.vstack([lb_y, lb_k, lb_u, lb_p])
+    ub_all = np.vstack([ub_y, ub_k, ub_u, ub_p])
+    aineq = sp.bmat([[aineq1_y, aineq1_k, aineq1_u, aineq1_p],
+                     [aineq2_y, aineq2_k, aineq2_u, aineq2_p]], format='csr')
     bineq = np.vstack([bineq1, bineq2])
 
     # TODO: Create variable name creator function or get the names from somewhere else
-    variable_names = ["y_"+str(j+1)+"_"+str(i) for i in range(n_steps+1) for j in range(n_y)]
-    variable_names += ["k_"+str(j+1)+"_"+str(i)+"^"+str(s+1) for i in range(n_steps)
+    variable_names = ['y_'+str(j+1)+'_'+str(i) for i in range(n_steps+1) for j in range(n_y)]
+    variable_names += ['k_'+str(j+1)+'_'+str(i)+'__'+str(s+1) for i in range(n_steps)
                        for s in range(s_rk) for j in range(n_y)]
-    variable_names += ["u_"+str(j+1)+"_"+str(i)+"^"+str(s+1) for i in range(n_steps)
+    variable_names += ['u_'+str(j+1)+'_'+str(i)+'__'+str(s+1) for i in range(n_steps)
                        for s in range(s_rk) for j in range(n_u)]
+    variable_names += ['p_'+str(j+1) for j in range(n_p)]
 
     model = lp_wrapper.LPModel(name=model_name)
     model.sparse_model_setup(f_all, aineq, bineq, aeq, beq, lb_all, ub_all, variable_names)
@@ -557,12 +569,14 @@ def cp_rk_linprog_v(matrices, rkm, tgrid, varphi=0.0,
         # DEBUG:
         #y_int_data =
         #
-        u_data = np.reshape(model.get_solution()[n_ally+n_allk:n_ally+n_allk++n_allu],
+        u_data = np.reshape(model.get_solution()[n_ally+n_allk:n_ally+n_allk+n_allu],
                             (n_steps*s_rk, n_u))
+        p_result = model.get_solution()[n_ally+n_allk+n_allu:]
         return {'tgrid': tgrid,
                 'tgrid_u': tt_s.flatten(),
                 'y_data': y_data,
                 'u_data': u_data,
+                'p_result': p_result,
                 'model': model} #tgrid, tt_s.flatten(), y_data, u_data, model
     # TODO: - use cleverer/more structured output here
     #  - control verbosity level (if called from another algorithm)
@@ -573,5 +587,6 @@ def cp_rk_linprog_v(matrices, rkm, tgrid, varphi=0.0,
             'tgrid_u': None,
             'y_data': None,
             'u_data': None,
+            'p_result': None,
             'model': model}
 

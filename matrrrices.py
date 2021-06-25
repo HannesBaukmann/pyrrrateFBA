@@ -2,13 +2,15 @@
 Wrapper to interface PyrrrateFBA models and the underlying optimal control
 framework
     min int_{t_0}^{t_end} e^(-varphi *t) (phi1^T y + phi1u^T u) dt + phi2^T y_0 + phi3^T y_end
-     s.t.                                     y' == smat2*u + smat4*y + f_2
-                                               0 == smat1*u + smat3*y + f_1
+                                                                   + phiq^T*p
+     s.t.                                     y' == smat2*u + smat4*y + smat6*p + f_2
+                                               0 == smat1*u + smat3*y + smat5*p + f_1
                                            lbvec <= u <= ubvec
-                         matrix_y*y + matrix_u*u <= vec_h
+                                           lpvec <= p <= upvec
+            matrix_y*y + matrix_u*u + matrix_p*p <= vec_h
                                                0 <= y
       matrix_B_y*y + matrix_B_u*u + matrix_B_x*x <= vec_B
-      bmaty0*y_0 + bmatyend*y_end
+      bmaty0*y_0 + bmatyend*y_end + bmat_bndry_p*p
                    + bmatu0*u_0 + bmatuend*u_end == vec_bndry
                                        y in R^{n_y}, u in R^{n_u},
                                        x in B^{n_x}
@@ -25,22 +27,29 @@ from .util.linalg import solve_if_unique, shape_of_callable, is_instance_callabl
 MAT_DICT = {
     'y_vec': (('n_y',), (list,)),
     'u_vec': (('n_u',), (list,)),
-    'x_vec': (('n_x,'), (list,)),
+    'x_vec': (('n_x',), (list,)),
+    'p_vec': (('n_p',), (list,)),
     'phi1': (('n_y', 1), (np.ndarray, sp.csr_matrix)),
     'phi1u': (('n_u', 1), (np.ndarray, sp.csr_matrix)),
     'phi2':  (('n_y', 1), (np.ndarray, sp.csr_matrix)),
     'phi3': (('n_y', 1), (np.ndarray, sp.csr_matrix)),
+    'phip': (('n_p', 1), (np.ndarray, sp.csr_matrix)),
     'smat1': (('n_qssa', 'n_u'), (np.ndarray, sp.csr_matrix)),
     'smat2': (('n_dyn', 'n_u'), (np.ndarray, sp.csr_matrix)),
     'smat3': (('n_qssa', 'n_y'), (np.ndarray, sp.csr_matrix)),
     'smat4': (('n_dyn', 'n_y'), (np.ndarray, sp.csr_matrix)),
+    'smat5': (('n_qssa', 'n_p'), (np.ndarray, sp.csr_matrix)),
+    'smat6': (('n_dyn', 'n_p'), (np.ndarray, sp.csr_matrix)),
     'f_1': (('n_qssa', 1), (np.ndarray, sp.csr_matrix)),
     'f_2': (('n_dyn', 1), (np.ndarray, sp.csr_matrix)),
     'qssa_names': (('n_qssa',), (list,)),
     'lbvec': (('n_u', 1), (np.ndarray, sp.csr_matrix)),
     'ubvec': (('n_u', 1), (np.ndarray, sp.csr_matrix)),
+    'lpvec': (('n_p', 1), (np.ndarray, sp.csr_matrix)),
+    'upvec': (('n_p', 1), (np.ndarray, sp.csr_matrix)),
     'matrix_u': (('n_mix', 'n_u'), (np.ndarray, sp.csr_matrix)),
     'matrix_y': (('n_mix', 'n_y'), (np.ndarray, sp.csr_matrix)),
+    'matrix_p': (('n_mix', 'n_p'), (np.ndarray, sp.csr_matrix)),
     'vec_h': (('n_mix', 1), (np.ndarray, sp.csr_matrix)),
     'mixed_names': (('n_mix',), (list,)),
     'matrix_B_u': (('n_bmix', 'n_u'), (np.ndarray, sp.csr_matrix)),
@@ -50,6 +59,7 @@ MAT_DICT = {
     'bool_mixed_names': (('n_bmix',), (list,)),
     'matrix_start': (('n_bndry', 'n_y'), (np.ndarray, sp.csr_matrix)),
     'matrix_end': (('n_bndry', 'n_y'), (np.ndarray, sp.csr_matrix)),
+    'matrix_bndry_p': (('n_bndry', 'n_p'), (np.ndarray, sp.csr_matrix)),
     'vec_bndry': (('n_bndry', 1), (np.ndarray, sp.csr_matrix)),
     'matrix_u_start': (('n_bndry', 'n_u'), (np.ndarray, sp.csr_matrix)),
     'matrix_u_end': (('n_bndry', 'n_u'), (np.ndarray, sp.csr_matrix))
@@ -129,6 +139,7 @@ class Matrrrices:
     n_y = property(lambda self: len(self.y_vec))
     n_u = property(lambda self: len(self.u_vec))
     n_x = property(lambda self: len(self.x_vec))
+    n_p = property(lambda self: len(self.p_vec))
     n_qssa = property(lambda self: shape_of_callable(self.smat1)[0])
     n_dyn = property(lambda self: shape_of_callable(self.smat2)[0])
     n_mix = property(lambda self: shape_of_callable(self.matrix_u)[0])
@@ -165,18 +176,27 @@ class Matrrrices:
         Try to complete a poorly described Matrrrices instance
         """
         set_fields = self.__dict__.keys() # This is potentially not complete at this point
+        # special handling of p_vec necessary????
+        #if not ('p_vec' in set_fields):
+        #    self.p_vec = []
         to_be_set_fields = list(set(MAT_FIELDS).difference(set_fields))
         # sort according to MAT_FIELDS
         to_be_set_fields = sorted(to_be_set_fields, key=lambda x: MAT_FIELDS.index(x))  # pylint: disable=unnecessary-lambda
+        #
+        #print(to_be_set_fields)
         # MAYBE: These could come automatically
-        qssa_elem = ['smat1', 'smat3', 'f_1', 'qssa_names']
-        dyn_elem = ['smat2', 'smat4', 'f_2']
+        qssa_elem = ['smat1', 'smat3', 'smat5', 'f_1', 'qssa_names']
+        dyn_elem = ['smat2', 'smat4', 'smat6', 'f_2']
         bnd_elem = ['lbvec', 'ubvec']
-        mix_elem = ['matrix_u', 'matrix_y', 'vec_h', 'mixed_names']
+        bnd_p_elem = ['lpvec', 'upvec']
+        mix_elem = ['matrix_u', 'matrix_y', 'matrix_p', 'vec_h', 'mixed_names']
         bmix_elem = ['matrix_B_u', 'matrix_B_y', 'matrix_B_x', 'vec_B', 'bool_mixed_names']
-        bndry_elem = ['matrix_start', 'matrix_end', 'vec_bndry', 'matrix_u_start', 'matrix_u_end']
+        bndry_elem = ['matrix_start', 'matrix_end', 'matrix_bndry_p', 'vec_bndry',
+                      'matrix_u_start', 'matrix_u_end']
         for kw_name in to_be_set_fields:
             #
+            if kw_name == 'p_vec':
+                self.p_vec = []
             if kw_name in ['y_vec', 'u_vec', 'x_vec']:
                 raise ValueError(f'In the construction of a Matrrrices object at least the fields'
                                  f' y_vec, x_vec and u_vec need to be set, cannot set {kw_name}')
@@ -185,6 +205,8 @@ class Matrrrices:
                 self.__dict__[kw_name] = np.zeros((self.n_y, 1), dtype=float)
             elif kw_name == 'phi1u':
                 self.__dict__[kw_name] = np.zeros((self.n_u, 1), dtype=float)
+            elif kw_name == 'phip':
+                self.__dict__[kw_name] = np.zeros((self.n_p, 1), dtype=float)
             # MAYBE: What follows can be abstracted to much simpler code...
             # "QSSA rows" ----------------------------------------------------
             elif kw_name in qssa_elem:
@@ -197,6 +219,8 @@ class Matrrrices:
                     self.smat1 = sp.csr_matrix((n_rows, self.n_u))
                 elif kw_name == 'smat3':
                     self.smat3 = sp.csr_matrix((n_rows, self.n_y))
+                elif kw_name == 'smat5':
+                    self.smat5 = sp.csr_matrix((n_rows, self.n_p))
                 elif kw_name == 'f_1':
                     self.f_1 = np.zeros((n_rows, 1))
                 else:
@@ -208,6 +232,8 @@ class Matrrrices:
                     n_cols = self.n_u
                 elif kw_name == 'smat4':
                     n_cols = self.n_y
+                elif kw_name == 'smat6':
+                    n_cols = self.n_p
                 else:
                     n_cols = 1
                 self.__dict__[kw_name] = sp.csr_matrix((n_rows, n_cols))
@@ -217,6 +243,12 @@ class Matrrrices:
                     self.lbvec = -INFINITY*np.ones((self.n_u, 1))
                 else:
                     self.ubvec = INFINITY*np.ones((self.n_u, 1))
+            # parameter bounds ----------------------------------------------------
+            elif kw_name in bnd_p_elem: # This outer loop is just to "improve" readability
+                if kw_name == 'lpvec':
+                    self.lpvec = -INFINITY*np.ones((self.n_p, 1))
+                else:
+                    self.upvec = INFINITY*np.ones((self.n_p, 1))
             # rows of mixed ineqs. -------------------------------------------
             elif kw_name in mix_elem:
                 given_fields = [f for f in set_fields if f in mix_elem]
@@ -228,6 +260,8 @@ class Matrrrices:
                     self.matrix_u = sp.csr_matrix((n_rows, self.n_u))
                 elif kw_name == 'matrix_y':
                     self.matrix_y = sp.csr_matrix((n_rows, self.n_y))
+                elif kw_name == 'matrix_p':
+                    self.matrix_p = sp.csr_matrix((n_rows, self.n_p))
                 elif kw_name == 'vec_h':
                     self.vec_h = np.zeros((n_rows, 1))
                 else:
@@ -258,6 +292,8 @@ class Matrrrices:
                     n_rows = shape_of_callable(self.__dict__[given_fields[0]])[0]
                 if kw_name in ['matrix_start', 'matrix_end']:
                     n_cols = self.n_y
+                elif kw_name == 'matrix_bndry_p':
+                    n_cols = self.n_p
                 elif kw_name == 'vec_bndry':
                     n_cols = 1
                 else:
