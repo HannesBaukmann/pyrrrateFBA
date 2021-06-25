@@ -445,25 +445,16 @@ def cp_rk_linprog_v(matrices, rkm, tgrid, varphi=0.0,
     del_tt = np.array([np.diff(tgrid).flatten()]).T
     diagdelt = sp.diags(np.array(del_tt).flatten(), format='csr')
     tt_s = np.array([tgrid[i]+ del_tt[i]*c for i in range(n_steps) for c in rkm.c])
-    tmat_s = np.reshape(tt_s, (n_steps, s_rk))
     tmat_ds = sp.csr_matrix((tt_s.flatten(), range(s_rk*n_steps), range(0, s_rk*n_steps+1, s_rk)))
     # Discretization of objective ============================================
-    # TODO: outsource this code part to test for numerical order
-    # Lagrange part __________________________________________________________
-    expmt = np.exp(-varphi*tmat_s)
-    expvt = np.exp(-varphi*tt_s) # can be obtained by reshaping...
-    f_y = np.vstack([np.dot(dkron(expmt*(del_tt.repeat(s_rk, 1)), matrices.phi1, tmat_s,
-                                  out_type='np'), rkm.b.T), np.zeros((n_y, 1))])
-    #
-    mat1 = np.kron(del_tt**2, np.kron(rkm.A.T, np.ones((n_y, 1))))
-    mat2 = np.repeat(dkron(expvt, matrices.phi1, tt_s, out_type='np'), s_rk, 1)
-    f_k = np.dot(mat1*mat2, rkm.b.T)
-    #
-    f_u = dkron(np.kron(del_tt, rkm.b.T)*expvt, matrices.phi1u, tt_s, out_type='np')
-    # Mayer part _____________________________________________________________
-    f_y[0:n_y] += matrices.phi2
-    f_y[n_steps * n_y:n_ally] += matrices.phi3
-    f_p = matrices.phip
+    f_y, f_k, f_u, f_p = _inflate_integral_vectors(matrices.phi1,
+                                                   matrices.phi2,
+                                                   matrices.phi3,
+                                                   matrices.phi1u,
+                                                   matrices.phip,
+                                                   rkm,
+                                                   tgrid,
+                                                   varphi)
 
     # Dynamics ===============================================================
     # (a) stage equations
@@ -590,3 +581,34 @@ def cp_rk_linprog_v(matrices, rkm, tgrid, varphi=0.0,
             'p_result': None,
             'model': model}
 
+
+def _inflate_integral_vectors(phi1, phi2, phi3, phi1u, phip, rkm, tgrid, varphi=0.0):
+    """
+    create LP-ready (objective) vectors from the term
+     int_tgrid exp(-varphi*y)*(phi1^T*y + phi1u^T*u ) dt + phi2^T*y_0 + phi3^T*y_N + phip^T*p
+    """
+    n_steps = tgrid.size - 1
+    s_rk = rkm.get_stage_number()
+    n_y = len(phi1)
+    n_ally = (n_steps + 1) * n_y
+    #
+    del_tt = np.array([np.diff(tgrid).flatten()]).T
+    tt_s = np.array([tgrid[i]+ del_tt[i]*c for i in range(n_steps) for c in rkm.c])
+    tmat_s = np.reshape(tt_s, (n_steps, s_rk))
+    # Lagrange part __________________________________________________________
+    expmt = np.exp(-varphi*tmat_s)
+    expvt = np.exp(-varphi*tt_s) # can be obtained by reshaping...
+    f_y = np.vstack([np.dot(dkron(expmt*(del_tt.repeat(s_rk, 1)), phi1, tmat_s,
+                                  out_type='np'), rkm.b.T), np.zeros((n_y, 1))])
+    #
+    mat1 = np.kron(del_tt**2, np.kron(rkm.A.T, np.ones((n_y, 1))))
+    mat2 = np.repeat(dkron(expvt, phi1, tt_s, out_type='np'), s_rk, 1)
+    f_k = np.dot(mat1*mat2, rkm.b.T)
+    #
+    f_u = dkron(np.kron(del_tt, rkm.b.T)*expvt, phi1u, tt_s, out_type='np')
+    # Mayer part _____________________________________________________________
+    f_y[0:n_y] += phi2
+    f_y[n_steps * n_y:n_ally] += phi3
+    f_p = phip
+    #
+    return f_y, f_k, f_u, f_p
