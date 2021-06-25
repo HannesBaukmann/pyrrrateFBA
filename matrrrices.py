@@ -11,6 +11,7 @@ framework
                                                0 <= y
       matrix_B_y*y + matrix_B_u*u + matrix_B_x*x <= vec_B
       bmaty0*y_0 + bmatyend*y_end + bmat_bndry_p*p
+        + int_{t_0}^{t_end} bmatint_y*y + bmatint_u*u dt
                    + bmatu0*u_0 + bmatuend*u_end == vec_bndry
                                        y in R^{n_y}, u in R^{n_u},
                                        x in B^{n_x}
@@ -59,6 +60,8 @@ MAT_DICT = {
     'bool_mixed_names': (('n_bmix',), (list,)),
     'matrix_start': (('n_bndry', 'n_y'), (np.ndarray, sp.csr_matrix)),
     'matrix_end': (('n_bndry', 'n_y'), (np.ndarray, sp.csr_matrix)),
+    'bmatint_y': (('n_bndry', 'n_y'), (np.ndarray, sp.csr_matrix)),
+    'bmatint_u': (('n_bndry', 'n_u'), (np.ndarray, sp.csr_matrix)),
     'matrix_bndry_p': (('n_bndry', 'n_p'), (np.ndarray, sp.csr_matrix)),
     'vec_bndry': (('n_bndry', 1), (np.ndarray, sp.csr_matrix)),
     'matrix_u_start': (('n_bndry', 'n_u'), (np.ndarray, sp.csr_matrix)),
@@ -191,8 +194,8 @@ class Matrrrices:
         bnd_p_elem = ['lpvec', 'upvec']
         mix_elem = ['matrix_u', 'matrix_y', 'matrix_p', 'vec_h', 'mixed_names']
         bmix_elem = ['matrix_B_u', 'matrix_B_y', 'matrix_B_x', 'vec_B', 'bool_mixed_names']
-        bndry_elem = ['matrix_start', 'matrix_end', 'matrix_bndry_p', 'vec_bndry',
-                      'matrix_u_start', 'matrix_u_end']
+        bndry_elem = ['matrix_start', 'matrix_end', 'matrix_bndry_p', 'bmatint_y', 'bmatint_u',
+                      'vec_bndry', 'matrix_u_start', 'matrix_u_end']
         for kw_name in to_be_set_fields:
             #
             if kw_name == 'p_vec':
@@ -290,8 +293,10 @@ class Matrrrices:
                     n_rows = 0
                 else:
                     n_rows = shape_of_callable(self.__dict__[given_fields[0]])[0]
-                if kw_name in ['matrix_start', 'matrix_end']:
+                if kw_name in ['matrix_start', 'matrix_end', 'bmatint_y']:
                     n_cols = self.n_y
+                elif kw_name == 'bmatint_u':
+                    n_cols = self.n_u
                 elif kw_name == 'matrix_bndry_p':
                     n_cols = self.n_p
                 elif kw_name == 'vec_bndry':
