@@ -218,6 +218,8 @@ def cFBA(MM, tspan, verbosity_level=0, mumin=1.0, mumax=5.0, y_start=None, wvec=
     #print(m_dict_cFBA['matrix_start'], '\n', m_dict_cFBA['matrix_end'], '\n', m_dict_cFBA['vec_bndry'])
     MM_cFBA.matrix_end = np.vstack([m_end, np.zeros((m_wvec, n_y))])
     MM_cFBA.vec_bndry = np.vstack([v_bndry, np.ones((m_wvec, 1))])    
+    # TODO: Check for entries in matrix_bndry_p first and provide warning if necessary
+    MM_cFBA.matrix_bndry_p = np.zeros((MM_cFBA.matrix_start.shape[0], MM_cFBA.n_p))
     #
     #print('post ---------')
     #print(m_dict_cFBA['matrix_start'], '\n', m_dict_cFBA['matrix_end'], '\n', m_dict_cFBA['vec_bndry'])
@@ -262,7 +264,8 @@ def RBA_like(MM, t0, del_t, verbosity_level=0, mumin=1.0, mumax=2.0, y_start=Non
     out, mu = cFBA(MM, tspan, y_start=y_start, wvec=wvec,
                    verbosity_level=verbosity_level, mumin=mumin, mumax=mumax) 
     return {'y': np.reshape(out['y_data'][0, :], (n_y, 1)),
-            'u': np.reshape(out['u_data'][0, :], (n_u, 1))}, mu
+            'u': np.reshape(out['u_data'][0, :], (n_u, 1)),
+            'last_LP': out['model']}, mu
 
 
 #def perform_shortterm_rdeFBA(model, **kwargs):
