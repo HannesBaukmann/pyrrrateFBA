@@ -602,7 +602,7 @@ def cp_rk_linprog_v(matrices, rkm, tgrid, varphi=0.0,
 
     # Boundary Values ========================================================
     aeq4_y = sp.hstack([matrices.matrix_start, sp.csr_matrix((n_bndry, (n_steps-1)*n_y)),
-                        matrices.matrix_end])
+                        matrices.matrix_end], format='csr')
     aeq4_k = sp.csr_matrix((n_bndry, n_allk))
     aeq4_u = sp.csr_matrix((n_bndry, n_allu))
     aeq4_p = matrices.matrix_bndry_p
@@ -651,11 +651,15 @@ def cp_rk_linprog_v(matrices, rkm, tgrid, varphi=0.0,
         u_data = np.reshape(model.get_solution()[n_ally+n_allk:n_ally+n_allk+n_allu],
                             (n_steps*s_rk, n_u))
         p_result = model.get_solution()[n_ally+n_allk+n_allu:]
+        #
+        obj_result = model.get_objective_val()
+        #
         return {'tgrid': tgrid,
                 'tgrid_u': tt_s.flatten(),
                 'y_data': y_data,
                 'u_data': u_data,
                 'p_result': p_result,
+                'obj_result': obj_result,
                 'model': model} #tgrid, tt_s.flatten(), y_data, u_data, model
     # TODO: - use cleverer/more structured output here
     #  - control verbosity level (if called from another algorithm)
@@ -667,6 +671,7 @@ def cp_rk_linprog_v(matrices, rkm, tgrid, varphi=0.0,
             'y_data': None,
             'u_data': None,
             'p_result': None,
+            'obj_result': None,
             'model': model}
 
 
