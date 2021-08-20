@@ -135,10 +135,10 @@ class Solutions:#(pd.DataFrame):
     def _get_index_from_name(self, name_list, part='dyn'):
         #list(self.dyndata.keys().index(name))
         if part == 'dyn':
-            index_set = [self.dyndata.columns.get_loc(name) for name in name_list]
+            index_list = [self.dyndata.columns.get_loc(name) for name in name_list]
         else:
-            index_set = [self.condata.columns.get_loc(name) for name in name_list]
-        return index_set
+            index_list = [self.condata.columns.get_loc(name) for name in name_list]
+        return index_list
 
 
  #   def _create_data_names(sol_y, sol_u, sol_x):

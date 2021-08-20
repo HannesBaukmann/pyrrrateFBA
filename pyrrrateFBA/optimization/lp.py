@@ -773,13 +773,13 @@ def _sparse_model_setup_glpk(model, fvec, amat, bvec, aeqmat, beq, lbvec,
         #fvec = -fvec
     n_x = lbvec.size - nbooles
     model.cols.add(n_x+nbooles)
-    for i, c in enumerate(model.cols):
-        c.name = variable_names[i]
-        c.bounds = lbvec[i], ubvec[i]
+    for i, col in enumerate(model.cols):
+        col.name = variable_names[i]
+        col.bounds = lbvec[i], ubvec[i]
         if i < n_x: # FIXME: Check this!!!!!!!!!!
-            c.kind = float
+            col.kind = float
         else:
-            c.kind = bool
+            col.kind = bool
     model.obj[:] = list(fvec)
     m_amat = amat.shape[0]
     m_aeqmat = aeqmat.shape[0]

@@ -66,5 +66,6 @@ class TestLP(unittest.TestCase):
         print(model.status)
         self.assertTrue(model.status==lp.OPTIMAL)
 
+
 if __name__ == '__main__':
     unittest.main()

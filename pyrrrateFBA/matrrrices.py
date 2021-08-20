@@ -266,9 +266,9 @@ class Matrrrices:
             # parameter bounds ----------------------------------------------------
             elif kw_name in bnd_p_elem: # This outer loop is just to "improve" readability
                 if kw_name == 'lpvec':
-                    self.lpvec = -INFINITY*np.ones((self.n_p, 1))
+                    self.lpvec = -INFINITY*np.ones((self.n_p, 1))# MAYBE: These defaults are bad because they can create 
                 else:
-                    self.upvec = INFINITY*np.ones((self.n_p, 1))
+                    self.upvec = INFINITY*np.ones((self.n_p, 1))# unbounded LPs.
             # rows of mixed ineqs. -------------------------------------------
             elif kw_name in mix_elem:
                 given_fields = [f for f in set_fields if f in mix_elem]
@@ -437,7 +437,7 @@ class Matrrrices:
                 # only for dynamical extracellular species
                 if ext in self.y_vec:
                     new_row = np.zeros(self.n_y, dtype=float)
-                    new_row[self.y_vec.index(ext)] = 1
+                    new_row[self.y_vec.index(ext)] = 1.0
                     matrix_start = np.append(matrix_start, [new_row], axis=0)
                     vec_bndry = np.append(vec_bndry, [[amount]], axis=0)
         for macrom in macromolecules_dict.keys():
@@ -446,7 +446,7 @@ class Matrrrices:
             else:
                 amount = float(macromolecules_dict[macrom]["initialAmount"])
                 new_row = np.zeros(self.n_y, dtype=float)
-                new_row[self.y_vec.index(macrom)] = 1
+                new_row[self.y_vec.index(macrom)] = 1.0
                 matrix_start = np.append(matrix_start, [new_row], axis=0)
                 vec_bndry = np.append(vec_bndry, [[amount]], axis=0)
 
