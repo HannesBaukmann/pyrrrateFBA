@@ -796,8 +796,9 @@ class Matrrrices:
             main_scaling = model.reactions_dict[main_rxn]['maintenanceScaling']
             main_index = self.u_vec.index(main_rxn)
             u_matrix[k, main_index] = -1.0
+            n_extracellular = len(model.extracellular_dict)
             for i, macrom in enumerate(model.macromolecules_dict.values()):
-                y_matrix[k, i] = main_scaling * macrom['molecularWeight']
+                y_matrix[k, i + n_extracellular] = main_scaling * macrom['molecularWeight']
         #
         return y_matrix, u_matrix, maint_constraint_names
 
