@@ -670,20 +670,23 @@ class Matrrrices:
         """
         all_q_names = [n for (n, m) in model.macromolecules_dict.items() \
                                                                     if m['speciesType'] == 'quota']
-        #According to https://doi.org/10.1016/j.jtbi.2020.110317 this is a single constraint.
-        if all_q_names:
-            all_q_names = [all_q_names[0]]
+        # According to https://doi.org/10.1016/j.jtbi.2020.110317 this is a single constraint.
+        # Is it? also in case of multiple quota species?
+        # if all_q_names:
+        #     all_q_names = [all_q_names[0]]
+
+        # Create one constraint for each quota species
         n_quota = len(all_q_names)
         y_matrix = np.zeros((n_quota, len(self.y_vec)))
         quota_constraint_names = n_quota*['quota']
         if n_quota:
-            biom_perc = model.macromolecules_dict[all_q_names[0]]['biomassPercentage']
-            # TODO: (a) It's not 'percentage', (b) what if =1?, (c) what if multiple quota present?
-            for m_name, macro in model.macromolecules_dict.items():
-                y_matrix[0, self.y_vec.index(m_name)] = macro['molecularWeight']*biom_perc
-            for q_name in all_q_names:
+            for k, q_name in enumerate(all_q_names):
+                biom_perc = model.macromolecules_dict[q_name]['biomassPercentage']
+                # TODO: (a) It's not 'percentage', (b) what if =1?, (c) what if multiple quota present?
+                for m_name, macro in model.macromolecules_dict.items():
+                    y_matrix[k, self.y_vec.index(m_name)] = macro['molecularWeight']*biom_perc
                 # (b-1)*w = ( (b-1)/b ) * (b*w)
-                y_matrix[0, self.y_vec.index(q_name)] *= (biom_perc-1.0)/biom_perc
+                y_matrix[k, self.y_vec.index(q_name)] *= (biom_perc-1.0)/biom_perc
         return y_matrix, quota_constraint_names
 
 
