@@ -6,15 +6,26 @@ import numpy as np
 import scipy.sparse as sp
 
 DEFAULT_SOLVER = 'gurobi'
+DEFAULT_SOLVER = 'cplex'
 #DEFAULT_SOLVER = 'soplex'
 #DEFAULT_SOLVER = 'glpk'
 if DEFAULT_SOLVER == 'gurobi':
     try:
         import gurobipy
-        # Module constants
         INFINITY = gurobipy.GRB.INFINITY
         OPTIMAL = gurobipy.GRB.OPTIMAL
         MINIMIZE = gurobipy.GRB.MINIMIZE
+    except ImportError:
+        DEFAULT_SOLVER = 'soplex'
+if DEFAULT_SOLVER == 'cplex':
+    try:
+        import docplex
+        from docplex.mp.model import Model
+        from docplex.util.status import JobSolveStatus
+        # Module constants
+        INFINITY = Model().infinity
+        OPTIMAL = JobSolveStatus.OPTIMAL_SOLUTION
+        MINIMIZE = 'min'
     except ImportError:
         DEFAULT_SOLVER = 'soplex'
 if DEFAULT_SOLVER == 'soplex':
@@ -58,6 +69,8 @@ class LPModel():
         self.solver_name = DEFAULT_SOLVER
         if self.solver_name == 'gurobi':
             self.solver_model = gurobipy.Model() # pylint: disable=E1101
+        if self.solver_name == 'cplex':
+            self.solver_model = Model()
         if self.solver_name == 'soplex':
             self.solver_model = pyscipopt.Model()
         if self.solver_name == 'glpk':
@@ -80,6 +93,8 @@ class LPModel():
             return None
         if self.solver_name == 'gurobi':
             return np.array(self.solver_model.x)
+        if self.solver_name == 'cplex':
+            return np.array(self.solver_model.solution.get_value_list(self.solver_model.data))
         if self.solver_name == 'soplex':
             #return np.array([self.solver_model.getVal(x) for x in
             #                   self.solver_model.getVars()]).transpose()
@@ -120,6 +135,10 @@ class LPModel():
             _sparse_model_setup_gurobi(self.solver_model,
                                        fvec, amat, bvec, aeqmat, beq,
                                        lbvec, ubvec, variable_names)
+        elif self.solver_name == 'cplex':
+            _sparse_model_setup_cplex(self.solver_model,
+                                      fvec, amat, bvec, aeqmat, beq,
+                                      lbvec, ubvec, variable_names)
         elif self.solver_name == 'soplex':
             _sparse_model_setup_soplex(self.solver_model,
                                        fvec, amat, bvec, aeqmat, beq,
@@ -151,6 +170,8 @@ class LPModel():
     def get_objective_vector(self):
         if self.solver_name == 'gurobi':
             return _get_objective_vector_gurobi(self.solver_model)
+        if self.solver_name == 'cplex':
+            return _get_objective_vector_cplex(self.solver_model)
         if self.solver_name == 'soplex':
             return _get_objective_vector_soplex(self.solver_model)
 
@@ -158,6 +179,8 @@ class LPModel():
     def get_objective_val(self):
         if self.solver_name == 'gurobi':
             return _get_objective_val_gurobi(self.solver_model)
+        if self.solver_name == 'cplex':
+            return _get_objective_val_cplex(self.solver_model)
         if self.solver_name == 'soplex':
             return _get_objective_val_soplex(self.solver_model)
 
@@ -178,6 +201,17 @@ class LPModel():
             self.solver_model.optimize()
             self.status = self.solver_model.status
             # MAYBE: It would probably be better to have one status meaning on the self-level
+        elif self.solver_name == 'cplex':
+            parameters = {
+                # 'mip.tolerances.integrality': 0,
+                # 'emphasis.numerical': 1,
+                # 'simplex.tolerances.feasibility': 1e-9,
+                # 'mip.strategy.startalgorithm': 4,       # barrier
+            }
+            self.solver_model.solve(cplex_parameters=parameters)
+            self.status = self.solver_model.solve_status
+            if self.status == OPTIMAL:
+                print(f"Objective value = {self.get_objective_val()}")
         elif self.solver_name == 'soplex':
             self.solver_model.optimize()
             self.status = self.solver_model.getStatus()
@@ -234,6 +268,18 @@ class MILPModel(LPModel):
         m_aeqmat = aeqmat.shape[0]
         if self.solver_name == 'gurobi':
             _sparse_model_setup_gurobi(
+                self.solver_model,
+                np.vstack([fvec, barf]), # f
+                sp.bmat([[amat, baramat]], format='csr'), # A,
+                bvec, # b
+                sp.bmat([[aeqmat, sp.csr_matrix((m_aeqmat, n_booles))]], format='csr'), # Aeq
+                beq, # beq
+                np.vstack([lbvec, np.zeros((n_booles, 1))]), # lb
+                np.vstack([ubvec, np.ones((n_booles, 1))]), # ub
+                variable_names,
+                nbooles=n_booles)
+        elif self.solver_name == 'cplex':
+            _sparse_model_setup_cplex(
                 self.solver_model,
                 np.vstack([fvec, barf]), # f
                 sp.bmat([[amat, baramat]], format='csr'), # A,
@@ -450,6 +496,65 @@ def _get_objective_vector_gurobi(model):
 
 def _get_objective_val_gurobi(model):
     return model.ObjVal - model.getObjective().getConstant() # TODO: Why is the Constant sometimes not zero?
+
+
+# CPLEX - specifics ###########################################################
+def _sparse_model_setup_cplex(model, fvec, amat, bvec, aeqmat, beq, lbvec,
+                               ubvec, variable_names, nbooles=0):
+    """
+    We set up the following (continuous) LP for gurobipy:
+      min f'*x
+      s.t. A*x <= b
+           Aeq*x == beq
+           lb <= x <= ub
+    where f, b, beq, lb and ub are 1d numpy-arrays and
+          A, Aeq are scipy.sparse.csr_matrix instances,
+          the vector x contains nBooles binary variables "at the end"
+    TODO:
+     - Include possibility for coupling constraints between binary <-> cont.
+     - More security checks: Are the system matrices really csr with sorted
+        indices and are the dimensions correct in the first place?
+    """
+    model.objective_sense = MINIMIZE
+
+    n_x = lbvec.size - nbooles
+    x_variables = [model.continuous_var(lb=lbvec[i][0],
+                                        ub=ubvec[i][0],
+                                        name=variable_names[i]) for i in range(n_x)]
+    x_variables += [model.binary_var(name=variable_names[i]) for i in range(n_x, n_x+nbooles)]  # pylint: disable=E1101
+
+    model.data = x_variables    # store variables for later
+    tmp = model.scal_prod(terms=x_variables, coefs=fvec.flatten())
+    model.objective_expr = tmp
+    _add_sparse_constraints_cplex(model, amat, bvec, x_variables, 'le') # pylint: disable=E1101
+    _add_sparse_constraints_cplex(model, aeqmat, beq, x_variables, 'eq') # pylint: disable=E1101
+
+def _add_sparse_constraints_cplex(model, amat, bvec, x_variables, sense):
+    """
+    bulk-add constraints of the form A*x <sense> b to a cplex model
+    Note that we do not update the model!
+    """
+    nrows = bvec.size
+    for i in range(nrows):
+        start = amat.indptr[i]
+        end = amat.indptr[i+1]
+        variables = [x_variables[j] for j in amat.indices[start:end]]
+        coeff = amat.data[start:end]
+
+        expr = model.scal_prod(terms=variables, coefs=coeff) # pylint: disable=E1101
+        lin_constr = model.linear_constraint(lhs=expr, rhs=bvec[i, 0], ctsense=sense)
+        model.add_constraint(ct=lin_constr)
+
+def _get_objective_vector_cplex(model):
+    return np.array([[model.objective_coef(variable) for variable in model.iter_variables()]]).T
+
+def _get_objective_val_cplex(model):
+    return model.objective_value
+
+# TODO: Replace gurobi functions with equivalent cplex functions
+def _set_new_objective_vector_cplex(model, fvec):
+    model.setObjective(gurobipy.LinExpr(fvec, model.getVars()))# QUESTION: Is the order uniquely preserved?
+    model.update() # QUESTION: Maybe outsource this updating
 
 
 # SOPLEX - specifics ##########################################################
