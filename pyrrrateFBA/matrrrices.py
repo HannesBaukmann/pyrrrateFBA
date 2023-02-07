@@ -509,6 +509,7 @@ class Matrrrices:
         x_matrix_1 = np.zeros((n_assignments, self.n_x), dtype=float)
         b_vec_1 = np.zeros((n_assignments, 1))
 
+        reg_rule_index = 0  # counter for regulatory rules. One event might contain more than one regulatory rule
         for event_index, event in enumerate(model.events_dict.values()):
             variables = event['variable'].split(' + ')
             # Difference between geq and gt??
@@ -518,30 +519,31 @@ class Matrrrices:
                         # boolean variable depends on species amount
                         if variable in self.y_vec:
                             species_index = self.y_vec.index(variable)
-                            y_matrix_1[event_index, species_index] = 1
+                            y_matrix_1[reg_rule_index, species_index] = 1
                             if event['listOfEffects'][i] == 0:
-                                x_matrix_1[event_index, self.x_vec.index(affected_bool)] = \
+                                x_matrix_1[reg_rule_index, self.x_vec.index(affected_bool)] = \
                                                                                     epsilon + big_u
-                                b_vec_1[event_index] = event['threshold'] + big_u
+                                b_vec_1[reg_rule_index] = event['threshold'] + big_u
                             elif event['listOfEffects'][i] == 1:
-                                x_matrix_1[event_index, self.x_vec.index(affected_bool)] = \
+                                x_matrix_1[reg_rule_index, self.x_vec.index(affected_bool)] = \
                                                                                 - (epsilon + big_u)
-                                b_vec_1[event_index] = event['threshold'] - epsilon
+                                b_vec_1[reg_rule_index] = event['threshold'] - epsilon
 
                         # boolean variable depends on flux
                         elif variable in self.u_vec:
                             flux_index = self.u_vec.index(variable)
-                            u_matrix_1[event_index, flux_index] = 1
+                            u_matrix_1[reg_rule_index, flux_index] = 1
                             if event['listOfEffects'][i] == 0:
-                                x_matrix_1[event_index, self.x_vec.index(affected_bool)] = \
+                                x_matrix_1[reg_rule_index, self.x_vec.index(affected_bool)] = \
                                                                                     epsilon + big_u
-                                b_vec_1[event_index] = event['threshold'] + big_u
+                                b_vec_1[reg_rule_index] = event['threshold'] + big_u
                             elif event['listOfEffects'][i] == 1:
-                                x_matrix_1[event_index, self.x_vec.index(affected_bool)] = \
+                                x_matrix_1[reg_rule_index, self.x_vec.index(affected_bool)] = \
                                                                                 - (epsilon + big_u)
-                                b_vec_1[event_index] = event['threshold'] - epsilon
+                                b_vec_1[reg_rule_index] = event['threshold'] - epsilon
                         else:
                             print(variable + ' not defined as Species or Reaction!')
+                    reg_rule_index += 1
 
 
             # TODO Difference between leq and lt??
@@ -551,27 +553,27 @@ class Matrrrices:
                         # boolean variable depends on species amount
                         if variable in self.y_vec:
                             species_index = self.y_vec.index(variable)
-                            y_matrix_1[event_index, species_index] = -1
+                            y_matrix_1[reg_rule_index, species_index] = -1
                             if event['listOfEffects'][i] == 0:
-                                x_matrix_1[event_index, self.x_vec.index(affected_bool)] = -big_l
-                                b_vec_1[event_index] = -event['threshold'] - big_l
+                                x_matrix_1[reg_rule_index, self.x_vec.index(affected_bool)] = -big_l
+                                b_vec_1[reg_rule_index] = -event['threshold'] - big_l
                             elif event['listOfEffects'][i] == 1:
-                                x_matrix_1[event_index, self.x_vec.index(affected_bool)] = big_l
-                                b_vec_1[event_index] = -event['threshold']
+                                x_matrix_1[reg_rule_index, self.x_vec.index(affected_bool)] = big_l
+                                b_vec_1[reg_rule_index] = -event['threshold']
 
                         # boolean variable depends on flux
                         elif variable in self.u_vec:
                             flux_index = self.u_vec.index(variable)
-                            u_matrix_1[event_index, flux_index] = -1
+                            u_matrix_1[reg_rule_index, flux_index] = -1
                             if event['listOfEffects'][i] == 0:
-                                x_matrix_1[event_index, self.x_vec.index(affected_bool)] = -big_l
-                                b_vec_1[event_index] = -event['threshold'] - big_l
+                                x_matrix_1[reg_rule_index, self.x_vec.index(affected_bool)] = -big_l
+                                b_vec_1[reg_rule_index] = -event['threshold'] - big_l
                             elif event['listOfEffects'][i] == 1:
-                                x_matrix_1[event_index, self.x_vec.index(affected_bool)] = big_l
-                                b_vec_1[event_index] = -event['threshold']
+                                x_matrix_1[reg_rule_index, self.x_vec.index(affected_bool)] = big_l
+                                b_vec_1[reg_rule_index] = -event['threshold']
                         else:
                             print(variable + ' not defined as Species or Reaction!')
-                event_index += 1
+                    reg_rule_index += 1
 
 
         n_rules = 0
