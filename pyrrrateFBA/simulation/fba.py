@@ -8,11 +8,11 @@ import numpy as np
 from copy import deepcopy
 from scipy.optimize import bisect
 from scipy.sparse import csr_matrix#, bmat
-from ..simulation.results import Solutions
-from .. import matrrrices as mat
-from ..util import runge_kutta
-from ..optimization.lp import LPModel
-from ..optimization.oc import mi_cp_linprog, cp_rk_linprog, cp_rk_linprog_v
+from pyrrrateFBA.simulation.results import Solutions
+from pyrrrateFBA import matrrrices as mat
+from pyrrrateFBA.util import runge_kutta
+from pyrrrateFBA.optimization.lp import LPModel
+from pyrrrateFBA.optimization.oc import mi_cp_linprog, cp_rk_linprog, cp_rk_linprog_v
 
 
 def perform_fba(model, **kwargs):
@@ -175,7 +175,7 @@ BISECT_TOL, BISECT_REL_TOL = 2e-12, 8.881784197001252e-16 # DEFAULT VALUES
 #BISECT_TOL, BISECT_REL_TOL = 1e-8, 1e-12
 
 
-def deFBA(MM, tspan, varphi=0.0,rkm=runge_kutta.RungeKuttaPars(s=1,family='Explicit1')):
+def deFBA(MM, tspan, varphi=0.0, rkm=runge_kutta.RungeKuttaPars(s=1, family='Explicit1')):
     out = cp_rk_linprog_v(MM, rkm, tspan, varphi=varphi)
     return out
   

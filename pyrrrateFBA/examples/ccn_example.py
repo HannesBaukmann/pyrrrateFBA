@@ -9,11 +9,9 @@ Created on Wed Jul 22 15:53:15 2020
 
 
 import numpy as np
-import matplotlib.pyplot as plt
 import scipy.sparse as sp
 from collections import Counter
-from ..optimization.oc import mi_cp_linprog
-from ..optimization.lp import INFINITY
+from pyrrrateFBA.optimization.lp import INFINITY
 
 
 def build_ccn_example():

@@ -19,8 +19,8 @@ framework
 """
 import numpy as np
 import scipy.sparse as sp
-from .optimization.lp import INFINITY, EPSILON, BIGM, MINUSBIGM
-from .util.linalg import solve_if_unique, shape_of_callable, is_instance_callable
+from pyrrrateFBA.optimization.lp import INFINITY, EPSILON, BIGM, MINUSBIGM
+from pyrrrateFBA.util.linalg import solve_if_unique, shape_of_callable, is_instance_callable
 
 
 # The order is important, types need to be checked later, maybe also more general checker/create

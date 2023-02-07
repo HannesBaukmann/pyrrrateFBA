@@ -8,9 +8,9 @@ Created on Fri Jul 24 12:21:02 2020
 import scipy.sparse as sp
 import numpy as np
 import matplotlib.pyplot as plt
-from ..matrrrices import Matrrrices
-from ..util.runge_kutta import RungeKuttaPars
-from ..optimization.oc import cp_rk_linprog
+from pyrrrateFBA.matrrrices import Matrrrices
+from pyrrrateFBA.util.runge_kutta import RungeKuttaPars
+from pyrrrateFBA.optimization.oc import cp_rk_linprog
 
 
 def run_example(actually_plot=True):

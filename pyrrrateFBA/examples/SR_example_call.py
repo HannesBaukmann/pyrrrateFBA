@@ -6,10 +6,10 @@ paper
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.sparse as sp
-from ..matrrrices import Matrrrices
-from ..optimization.oc import mi_cp_linprog
-from ..optimization.lp import EPSILON, BIGM, MINUSBIGM
-from ..simulation.results import Solutions
+from pyrrrateFBA.matrrrices import Matrrrices
+from pyrrrateFBA.optimization.oc import mi_cp_linprog
+from pyrrrateFBA.optimization.lp import EPSILON, BIGM, MINUSBIGM
+from pyrrrateFBA.simulation.results import Solutions
 
 
 def create_model_constants():

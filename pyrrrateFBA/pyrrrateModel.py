@@ -3,8 +3,8 @@ Main module for PyrrrateFBA models
 """
 
 import numpy as np
-from . imporrrt import Parrrser, readSBML
-from .simulation import fba
+from pyrrrateFBA.imporrrt import Parrrser, readSBML
+from pyrrrateFBA.simulation import fba
 
 
 class Model(Parrrser):

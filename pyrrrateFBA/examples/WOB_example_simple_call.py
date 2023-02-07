@@ -6,9 +6,9 @@ Test the OC function cp_linprog using the model from
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.sparse as sp
-from ..matrrrices import Matrrrices
-from ..util.runge_kutta import RungeKuttaPars
-from ..optimization.oc import cp_rk_linprog
+from pyrrrateFBA.matrrrices import Matrrrices
+from pyrrrateFBA.util.runge_kutta import RungeKuttaPars
+from pyrrrateFBA.optimization.oc import cp_rk_linprog
 #from ..optimization import lp as lp_wrapper
 
 def build_example():

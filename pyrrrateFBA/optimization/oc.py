@@ -4,9 +4,8 @@ Optimal Control stuff
 """
 import numpy as np
 import scipy.sparse as sp
-from . import lp as lp_wrapper
-from ..util.runge_kutta import RungeKuttaPars
-from ..util.linalg import dkron, shape_of_callable
+from pyrrrateFBA.optimization import lp as lp_wrapper
+from pyrrrateFBA.util.linalg import dkron, shape_of_callable
 
 
 def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0):
