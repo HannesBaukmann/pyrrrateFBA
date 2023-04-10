@@ -114,6 +114,8 @@ class LPModel():
         """
         if self.solver_name == 'gurobi':
             self.solver_model.write(filename)
+        elif self.solver_name == 'cplex':
+            self.solver_model.export_as_lp(str(filename))
         else:
             raise NotImplementedError('Export only available for gurobi (yet)')
         
@@ -166,6 +168,8 @@ class LPModel():
     def set_new_objective_vector(self, new_fvec):
         if self.solver_name == 'gurobi':
             _set_new_objective_vector_gurobi(self.solver_model, new_fvec)
+        if self.solver_name == 'cplex':
+            _set_new_objective_vector_cplex(self.solver_model, new_fvec)
 
     def get_objective_vector(self):
         if self.solver_name == 'gurobi':
@@ -191,6 +195,11 @@ class LPModel():
             x_variables = self.solver_model.getVars()
             _add_sparse_constraints_gurobi(self.solver_model, amat, bvec, x_variables,
                                            sense_mapping[sense])
+        if self.solver_name == 'cplex':
+            sense_mapping = {'<': 'LE', '=': 'EQ', '>': 'GE'}
+            x_variables = [var for var in self.solver_model.iter_variables()]
+            _add_sparse_constraints_cplex(self.solver_model, amat, bvec, x_variables,
+                                          sense_mapping[sense])
 
 
     def optimize(self):
@@ -544,6 +553,11 @@ def _add_sparse_constraints_cplex(model, amat, bvec, x_variables, sense):
         expr = model.scal_prod(terms=variables, coefs=coeff) # pylint: disable=E1101
         lin_constr = model.linear_constraint(lhs=expr, rhs=bvec[i, 0], ctsense=sense)
         model.add_constraint(ct=lin_constr)
+
+def _set_new_objective_vector_cplex(model, fvec):
+    variables = [var for var in model.iter_variables()]
+    expr = model.scal_prod(terms=variables, coefs=fvec.flatten())
+    model.set_objective(expr=expr, sense='min')
 
 def _get_objective_vector_cplex(model):
     return np.array([[model.objective_coef(variable) for variable in model.iter_variables()]]).T
