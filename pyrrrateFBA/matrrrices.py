@@ -760,7 +760,7 @@ class Matrrrices:
                                     else:
                                         u_matrix[i + r_cnt, self.u_vec.index(r_name)] = \
                                                               -1*np.reciprocal(rxn['kcatBackward'])
-                                        y_matrix[i + r_cnt, self.y_vec.index(enzyme)] = -1
+                                        y_matrix[i + r_cnt, self.y_vec.index(enzyme)] = 1
                                         r_cnt += 1
                                         # as above, fwd will be switched after 1/2, 1/4, ... of the
                                         # possible combinations
