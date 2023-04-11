@@ -116,6 +116,8 @@ class LPModel():
             self.solver_model.write(filename)
         elif self.solver_name == 'cplex':
             self.solver_model.export_as_lp(str(filename))
+        elif self.solver_name == 'soplex':
+            self.solver_model.writeProblem(str(filename))
         else:
             raise NotImplementedError('Export only available for gurobi (yet)')
         
@@ -201,6 +203,13 @@ class LPModel():
             _add_sparse_constraints_cplex(self.solver_model, amat, bvec, x_variables,
                                           sense_mapping[sense])
 
+    def set_solver_parameters(self, parameters):
+        if self.solver_name == 'gurobi':
+            _set_solver_parameters_gurobi(self.solver_model, parameters)
+        if self.solver_name == 'cplex':
+            _set_solver_parameters_cplex(self.solver_model, parameters)
+        if self.solver_name == 'soplex':
+            _set_solver_parameters_soplex(self.solver_model, parameters)
 
     def optimize(self):
         """
@@ -507,6 +516,11 @@ def _get_objective_val_gurobi(model):
     return model.ObjVal - model.getObjective().getConstant() # TODO: Why is the Constant sometimes not zero?
 
 
+def _set_solver_parameters_gurobi(model, parameters: dict):
+    for p, value in parameters.items():
+        model.setParam(p, value)
+
+
 # CPLEX - specifics ###########################################################
 def _sparse_model_setup_cplex(model, fvec, amat, bvec, aeqmat, beq, lbvec,
                                ubvec, variable_names, nbooles=0):
@@ -565,10 +579,8 @@ def _get_objective_vector_cplex(model):
 def _get_objective_val_cplex(model):
     return model.objective_value
 
-# TODO: Replace gurobi functions with equivalent cplex functions
-def _set_new_objective_vector_cplex(model, fvec):
-    model.setObjective(gurobipy.LinExpr(fvec, model.getVars()))# QUESTION: Is the order uniquely preserved?
-    model.update() # QUESTION: Maybe outsource this updating
+def _set_solver_parameters_cplex(model, parameters: dict):
+    model.context.update_cplex_parameters(parameters)
 
 
 # SOPLEX - specifics ##########################################################
@@ -641,6 +653,9 @@ def _get_objective_vector_soplex(model):
     """
     #return None
     return np.array( [[ variable.getObj() for variable in model.getVars() ]] ).T
+
+def _set_solver_parameters_soplex(model, parameters: dict):
+    model.setParams(parameters)
     
 
 # GLPK specifics ##############################################################

@@ -85,7 +85,7 @@ class Model(Parrrser):
         return sol
 
 
-    def rdeFBA(self, tspan, varphi, do_soa=False, **kwargs):  # pylint: disable=C0103
+    def rdeFBA(self, tspan, varphi, do_soa=False, optimization_kwargs={}, **kwargs):  # pylint: disable=C0103
         """
         Perform (r)deFBA
         """
@@ -93,9 +93,9 @@ class Model(Parrrser):
         kwargs['t_end'] = tspan[-1]
         kwargs['varphi'] = varphi
         if do_soa:
-            sol = fba.perform_soa_rdeFBA(self, **kwargs)
+            sol = fba.perform_soa_rdeFBA(self, optimization_kwargs, **kwargs)
         else:
-            sol = fba.perform_rdefba(self, **kwargs)
+            sol = fba.perform_rdefba(self, optimization_kwargs, **kwargs)
 
         return sol
 

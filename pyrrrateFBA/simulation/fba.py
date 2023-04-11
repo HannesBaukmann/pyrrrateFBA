@@ -71,7 +71,7 @@ def perform_fba(model, **kwargs):
     return sol
 
 
-def perform_rdefba(model, **kwargs):
+def perform_rdefba(model, optimization_kwargs={}, **kwargs):
     """
     Use (r)deFBA to approximate the dynamic behavior of the model
 
@@ -109,12 +109,12 @@ def perform_rdefba(model, **kwargs):
     # Call the OC routine
     if rkm is None:
         tgrid, tt_shift, sol_y, sol_u, sol_x = mi_cp_linprog(mtx, t_0, t_end, n_steps=n_steps,
-                                                             varphi=varphi)
+                                                             varphi=varphi, **optimization_kwargs)
     else:
         if run_rdeFBA:
             print('Cannot (yet) run r-deFBA with arbitrary Runge-Kutta scheme. Fallback to deFBA')
         tgrid, tt_shift, sol_y, sol_u = cp_rk_linprog(mtx, rkm, t_0, t_end, n_steps=n_steps,
-                                                      varphi=varphi)
+                                                      varphi=varphi, **optimization_kwargs)
         #sol_x = np.zeros((0, sol_u.shape[1]))
         sol_x = np.zeros((sol_u.shape[0], 0))
 
@@ -123,7 +123,7 @@ def perform_rdefba(model, **kwargs):
     return sols
 
 
-def perform_soa_rdeFBA(model, **kwargs):
+def perform_soa_rdeFBA(model, optimiziation_kwargs={}, **kwargs):
     """
     iterative process consisting of several (r)deFBA runs with a very crude one-step
     approximation in each step (quasi-_S_tatic _O_ptimization _A_pproach)
@@ -146,14 +146,14 @@ def perform_soa_rdeFBA(model, **kwargs):
     kwargs['n_steps'] = 1
     #
     tslice = tgrid[0:2]
-    sols = model.rdeFBA(tslice, varphi, do_soa=False, **kwargs)
+    sols = model.rdeFBA(tslice, varphi, do_soa=False, optimization_kwargs={}, **kwargs)
     y_new = np.array(sols.dyndata.tail(n=1)) # row
     for k in range(1, n_steps-1):
         kwargs['set_y0'] = y_new # row
         tslice = tgrid[k:k+2]
         #print(tslice)# DEBUG
         try:
-            sol_tmp = model.rdeFBA(tslice, varphi, do_soa=False, **kwargs)
+            sol_tmp = model.rdeFBA(tslice, varphi, do_soa=False, optimization_kwargs={}, **kwargs)
         # TODO: Find a more elegant solution than try
             new_t_shift = sol_tmp.condata.index[-1]
             ux_new = np.array(sol_tmp.condata.tail(n=1))

@@ -8,7 +8,7 @@ from pyrrrateFBA.optimization import lp as lp_wrapper
 from pyrrrateFBA.util.linalg import dkron, shape_of_callable
 
 
-def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0):
+def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0, **optimization_kwargs):
     """
     Approximate the solution of the mixed integer optimal control problem
      min int_{t_0}^{t_end} exp(-varphi*t) phi1^T y dt + phi2^T y_0 + phi3^T y_end
@@ -121,6 +121,14 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0):
     model = lp_wrapper.MILPModel(name=model_name)
     model.sparse_mip_model_setup(f_all, fbar_all, amat, abarmat, bineq, aeqmat,
                                  beq, lb_all, ub_all, variable_names)
+
+    # write model to file and set solver parameters
+    if lp_wrapper.DEFAULT_SOLVER not in ['glpk', 'scipy']:
+        write_model = optimization_kwargs.get('write_model', None)
+        solver_parameters = optimization_kwargs.get('parameters', {})
+        if write_model:
+            model.write_to_file(write_model)
+        model.set_solver_parameters(solver_parameters)
 
     model.optimize()
 
@@ -286,7 +294,8 @@ def _inflate_vec(fvec, ttvec):
 
 
 def cp_rk_linprog(matrices, rkm, t_0, t_end, n_steps=101, varphi=0.0,
-                  model_name="OC Model - Full par., Runge-Kutta scheme"):
+                  model_name="OC Model - Full par., Runge-Kutta scheme",
+                  **optimization_kwargs):
     """
     Runge Kutta based on slope variables k_{m+1}^i
     DEBUG
@@ -408,6 +417,14 @@ def cp_rk_linprog(matrices, rkm, t_0, t_end, n_steps=101, varphi=0.0,
 
     model = lp_wrapper.LPModel(name=model_name)
     model.sparse_model_setup(f_all, aineq, bineq, aeq, beq, lb_all, ub_all, variable_names)
+
+    # write model to file and set solver parameters
+    if lp_wrapper.DEFAULT_SOLVER not in ['glpk', 'scipy']:
+        write_model = optimization_kwargs.get('write_model', None)
+        solver_parameters = optimization_kwargs.get('parameters', {})
+        if write_model:
+            model.write_to_file(write_model)
+        model.set_solver_parameters(solver_parameters)
 
     model.optimize()
 
