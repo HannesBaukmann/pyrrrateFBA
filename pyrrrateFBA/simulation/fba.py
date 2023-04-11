@@ -146,14 +146,14 @@ def perform_soa_rdeFBA(model, optimiziation_kwargs={}, **kwargs):
     kwargs['n_steps'] = 1
     #
     tslice = tgrid[0:2]
-    sols = model.rdeFBA(tslice, varphi, do_soa=False, optimization_kwargs={}, **kwargs)
+    sols = model.rdeFBA(tslice, varphi, do_soa=False, optimization_kwargs=optimiziation_kwargs, **kwargs)
     y_new = np.array(sols.dyndata.tail(n=1)) # row
     for k in range(1, n_steps-1):
         kwargs['set_y0'] = y_new # row
         tslice = tgrid[k:k+2]
         #print(tslice)# DEBUG
         try:
-            sol_tmp = model.rdeFBA(tslice, varphi, do_soa=False, optimization_kwargs={}, **kwargs)
+            sol_tmp = model.rdeFBA(tslice, varphi, do_soa=False, optimization_kwargs=optimiziation_kwargs, **kwargs)
         # TODO: Find a more elegant solution than try
             new_t_shift = sol_tmp.condata.index[-1]
             ux_new = np.array(sol_tmp.condata.tail(n=1))
