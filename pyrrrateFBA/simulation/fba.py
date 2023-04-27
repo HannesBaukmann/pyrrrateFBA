@@ -118,7 +118,8 @@ def perform_rdefba(model, optimization_kwargs={}, **kwargs):
         #sol_x = np.zeros((0, sol_u.shape[1]))
         sol_x = np.zeros((sol_u.shape[0], 0))
 
-    sols = Solutions(tgrid, tt_shift, sol_y, sol_u, sol_x)
+    y_names, u_names, x_names = mtx.y_vec, mtx.u_vec, mtx.x_vec
+    sols = Solutions(tgrid, tt_shift, sol_y, sol_u, sol_x, y_names, u_names, x_names)
 
     return sols
 

@@ -17,7 +17,7 @@ class Solutions:#(pd.DataFrame):
     TODO - extend/delete elements, interpolate etc.
          - Kann es passieren, dass eines der Felder leer ist? -> Edge case handling
     """
-    def __init__(self, tt, tt_shift, sol_y, sol_u, sol_x):
+    def __init__(self, tt, tt_shift, sol_y, sol_u, sol_x, y_names=None, u_names=None, x_names=None):
         #super().__init__()
         self.dyndata = pd.DataFrame() #
         self.dyndata['time'] = tt
@@ -32,6 +32,12 @@ class Solutions:#(pd.DataFrame):
             self.condata['x'+str(i)] = sol_x[:, i]
         for i in range(sol_u.shape[1]):
             self.condata['u'+str(i)] = sol_u[:, i]
+
+        # replace current column names (y1, y2, ...) with actual variable names
+        if y_names is not None:
+            self.dyndata.columns = y_names
+        if u_names is not None and x_names is not None:
+            self.condata.columns = x_names + u_names
 
     def __str__(self):
         return 'Solutions object with dynamics data : \n' \
