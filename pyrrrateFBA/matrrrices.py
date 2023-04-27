@@ -77,7 +77,7 @@ class Matrrrices:
         Class Matrrrices has fields according to MAT_FIELDS
     """
 
-    def __init__(self, model, run_rdeFBA=True, **kwargs):
+    def __init__(self, model, run_rdeFBA=True, scale=1.0, **kwargs):
         #
         if model is None:
             # We just initialize an empty model. This is just quick and dirty at the moment...
@@ -106,6 +106,10 @@ class Matrrrices:
                 self.matrix_B_x = np.zeros((0, 0), dtype=float) # pylint: disable=C0103
                 self.vec_B = np.zeros((0, 1)) # pylint: disable=C0103
                 self.x_vec = []
+
+        # epsilon scaling
+        self.scale = scale
+
         #
         # set so-far unset fields
         #
@@ -806,6 +810,88 @@ class Matrrrices:
                 y_matrix[k, i + n_extracellular] = main_scaling * macrom['molecularWeight']
         #
         return y_matrix, u_matrix, maint_constraint_names
+
+    def epsilon_scaling(self, model, run_rdeFBA):
+        """ Epsilon-scaling
+        Scales macromolecule synthesis fluxes (u_p) (except quota synth.), macromolecule amounts (P(t)) and their change
+        over time (dP(t)/dt) by a small epsilon (eps).
+
+        The function scales the following constraints:
+        - QSSA:
+                0 == S_xy*u_y + S_xx*u_x + S_xp*u_p + S_xq*u_q  (u_q - Quota Synthesis)
+            ==> 0 == S_xy*u_y + S_xx*u_x + eps*S_xp*u_p + S_xq*u_q
+        - boundary constraints:
+                P(t0) = p0  ==>  eps*P(t0) = p0
+        - flux bounds:
+                u_p >= lb_p  ==>  u_p >= (1/eps)*lb_p
+                u_p <= ub_p  ==>  u_p <= (1/eps)*ub_p
+        - Enzyme capacity constraints:
+                1/kcat*u_y - E <= 0   ==>   1/kcat*u_y - eps*E <= 0
+                1/kcat*u_x - E <= 0   ==>   1/kcat*u_x - eps*E <= 0
+                1/kcat*u_p - E <= 0   ==>   eps*1/kcat*u_p - eps*E <= 0
+                1/kcat*u_q - E <= 0   ==>   1/kcat*u_q - eps*E <= 0
+                Note: E won't be scaled by eps if E is quota!
+        - Biomass composition constraint:
+                phi_q*(weights_p*P + weights_q*Q) - weights_q*q <= 0
+            ==> phi_q*(eps*weights_p*P + weights_q*Q) - weights_q*q <= 0
+        - Maintenance constraint (assuming maintenance reaction is no macromolecule synth. reactions):
+                phi_m*(weights_p*P + weights_q*Q) - u_maint <= 0
+            ==> phi_m*(eps*weights_p*P + weights_q*Q) - u_maint <= 0
+        - Regulatory constraints:
+                scale P and u_p
+
+        u_y - Exchange reactions
+        u_x - Metabolic reactions
+        u_p - Macromolecule synthesis (w/o quota)
+        u_q - Quota synthesis
+        phi_q - Quota coefficient
+        phi_m - Maintenance coefficient
+        """
+
+        y_scale = np.ones((1, self.n_y))
+        for macro, dicti in model.macromolecules_dict.items():
+            if dicti['speciesType'] != 'quota':
+                y_scale[:, self.y_vec.index(macro)] *= self.scale
+
+        u_scale = np.ones((1, self.n_u))
+        for u in self.u_p_vec:
+            u_scale[:, self.u_vec.index(u)] *= self.scale
+
+        x_scale = np.ones((1, self.n_x))    # not really needed. Just for completion
+
+        # scale objective function
+        self.phi1 *= y_scale.transpose()
+
+        # scale QSSA constraints
+        self.smat1 = self.smat1.multiply(u_scale)
+
+        # scale boundary constraints
+        self.matrix_start = self.matrix_start.multiply(y_scale)
+        self.matrix_end = self.matrix_end.multiply(y_scale)
+        self.matrix_u_start = self.matrix_u_start.multiply(u_scale)
+        self.matrix_u_end = self.matrix_u_end.multiply(u_scale)
+
+        # scale flux bounds
+        self.lbvec *= 1/u_scale.transpose()
+        self.ubvec *= 1/u_scale.transpose()
+
+        # scale mixed matrices (enzyme capacity constraints, biomass composition constraints, maintenance constraints)
+        self.matrix_y = self.matrix_y.multiply(y_scale)
+        self.matrix_u = self.matrix_u.multiply(u_scale)
+
+        # scale regulatory constraints
+        if run_rdeFBA:
+            self.matrix_B_y = self.matrix_B_y.multiply(y_scale)
+            self.matrix_B_u = self.matrix_B_u.multiply(u_scale)
+
+            # scale indicator constraints
+            # if indicator_constraints:
+            #     self.matrix_ind_y = self.matrix_ind_y.multiply(y_scale)
+            #     self.matrix_ind_u = self.matrix_ind_u.multiply(u_scale)
+
+        self.y_scale = y_scale
+        self.u_scale = u_scale
+        self.x_scale = x_scale
 
 
     def _dimen_asserttest(self, matname, shape_names):

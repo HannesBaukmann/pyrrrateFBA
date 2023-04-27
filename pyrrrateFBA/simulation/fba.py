@@ -96,8 +96,9 @@ def perform_rdefba(model, optimization_kwargs={}, **kwargs):
     n_steps = kwargs.get('n_steps', 51)
     varphi = kwargs.get('varphi', 0.0)
     rkm = kwargs.get('runge_kutta', None)
+    scaling_factor = kwargs.get('eps_scaling_factor', 1)
     #
-    mtx = mat.Matrrrices(model, run_rdeFBA=run_rdeFBA)
+    mtx = mat.Matrrrices(model, run_rdeFBA=run_rdeFBA, scale=scaling_factor)
     # adapt initial values if explicitly given
     y_0 = kwargs.get('set_y0', None)# FIXME: So far, y0 is acceted as row vector only(!?)
     if y_0 is not None:
@@ -136,10 +137,12 @@ def perform_soa_rdeFBA(model, optimiziation_kwargs={}, **kwargs):
     n_steps = kwargs.get('n_steps', 51)
     tgrid = np.linspace(kwargs.get('t_0', 0.0), kwargs.get('t_end', 1.0), n_steps)
     varphi = kwargs.get('varphi', 0.0)
+    scaling_factor = kwargs.get('eps_scaling_factor', 1.0)
     kwargs.pop('varphi', kwargs)
     #
-    mtx = mat.Matrrrices(model, run_rdeFBA=run_rdeFBA)
+    mtx = mat.Matrrrices(model, run_rdeFBA=run_rdeFBA, scale=scaling_factor)
     y_0 = mtx.extract_initial_values()
+    y_0 *= mtx.y_scale
     if y_0 is None:
         print('SOA (r)deFBA cannot be perforrrmed.')
         return None
