@@ -329,6 +329,25 @@ class Matrrrices:
         # Why are these specified by finite kcatforward?
         u_vec = [r for (r, rxn) in model.reactions_dict.items() if np.isfinite(rxn['kcatForward'])]
 
+        # reaction vector u_p contains all macromolecule synthesis reactions. Except Quota synthesis!
+        # macromolecule synthesis reactions are reactions with metabolites (or extracellular species) as educts
+        # and at least one macromolecule as product
+        y_vec_all = np.array(
+            [ext for ext in model.extracellular_dict.keys()] +
+            [met for met in model.metabolites_dict.keys()] +
+            [macro for macro in model.macromolecules_dict.keys()]
+        )
+        u_p_vec = []
+        quota_species = [macro for macro, dicti in model.macromolecules_dict.items() if dicti['speciesType'] == 'quota']
+        for index, (r, rxn) in enumerate(model.reactions_dict.items()):
+            if np.isfinite(rxn['kcatForward']):     # it's not a degradation reaction
+                products = y_vec_all[model.stoich[:, index] > 0]
+                educts = y_vec_all[model.stoich[:, index] < 0]
+                if not any(y in model.macromolecules_dict.keys() for y in educts) and \
+                        any(y in model.macromolecules_dict.keys() for y in products) and \
+                        not any(y in quota_species for y in products):
+                    u_p_vec.append(r)
+
         # boolean variables species vector x contains all boolean variables
         # can occur multiple times in different rules/events
         x_vec = []
@@ -352,6 +371,7 @@ class Matrrrices:
 
         self.y_vec = y_vec
         self.u_vec = u_vec
+        self.u_p_vec = u_p_vec
         self.x_vec = x_vec
 
     def construct_objective(self, model, phi2=None, phi3=None):
