@@ -6,7 +6,7 @@ import numpy as np
 import scipy.sparse as sp
 
 DEFAULT_SOLVER = 'gurobi'
-DEFAULT_SOLVER = 'cplex'
+# DEFAULT_SOLVER = 'cplex'
 #DEFAULT_SOLVER = 'soplex'
 #DEFAULT_SOLVER = 'glpk'
 if DEFAULT_SOLVER == 'gurobi':
@@ -220,13 +220,8 @@ class LPModel():
             self.status = self.solver_model.status
             # MAYBE: It would probably be better to have one status meaning on the self-level
         elif self.solver_name == 'cplex':
-            parameters = {
-                # 'mip.tolerances.integrality': 0,
-                # 'emphasis.numerical': 1,
-                # 'simplex.tolerances.feasibility': 1e-9,
-                # 'mip.strategy.startalgorithm': 4,       # barrier
-            }
-            self.solver_model.solve(cplex_parameters=parameters)
+            self.solver_model.context.solver.log_output = True
+            self.solver_model.solve()
             self.status = self.solver_model.solve_status
             if self.status == OPTIMAL:
                 print(f"Objective value = {self.get_objective_val()}")
