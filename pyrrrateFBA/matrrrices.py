@@ -17,6 +17,7 @@ framework
                                        x in B^{n_x}
 
 """
+import copy
 import numpy as np
 import scipy.sparse as sp
 from pyrrrateFBA.optimization.lp import INFINITY, EPSILON, BIGM, MINUSBIGM
@@ -77,7 +78,7 @@ class Matrrrices:
         Class Matrrrices has fields according to MAT_FIELDS
     """
 
-    def __init__(self, model, run_rdeFBA=True, scale=1.0, **kwargs):
+    def __init__(self, model, y0=None, run_rdeFBA=True, scale=1.0, **kwargs):
         #
         if model is None:
             # We just initialize an empty model. This is just quick and dirty at the moment...
@@ -93,7 +94,7 @@ class Matrrrices:
 
             self.construct_vectors(model)
             self.construct_objective(model)
-            self.construct_boundary(model)
+            self.construct_boundary(model, y0)
             self.construct_reactions(model)
             self.construct_flux_bounds(model)
             self.construct_mixed(model)
@@ -109,6 +110,7 @@ class Matrrrices:
 
         # epsilon scaling
         self.scale = scale
+        self.epsilon_scaling(model, run_rdeFBA)
 
         #
         # set so-far unset fields
@@ -394,32 +396,46 @@ class Matrrrices:
         else:
             self.phi3 = np.zeros((self.n_y, 1), dtype=float)
 
-    def construct_boundary(self, model):
+    def construct_boundary(self, model, y0):
         """
         construct matrices to enforce boundary conditions
         """
+
+        # create extracellular and macromolecules dicts containing passed initial values
+        extracellular_dict = copy.deepcopy(model.extracellular_dict)
+        macromolecules_dict = copy.deepcopy(model.macromolecules_dict)
+        if y0 is not None:
+            for ext in extracellular_dict:
+                if self.y_vec.index(ext) >= y0.shape[1]:
+                    break
+                extracellular_dict[ext]['initialAmount'] = y0[0, self.y_vec.index(ext)]
+            for macrom in macromolecules_dict:
+                if self.y_vec.index(macrom) >= y0.shape[1]:
+                    break
+                macromolecules_dict[macrom]['initialAmount'] = y0[0, self.y_vec.index(macrom)]
+
         # initialize matrices
         matrix_start = np.zeros((0, self.n_y), dtype=float)
         # how to encode cyclic behaviour in SBML?
         # matrix_end = np.zeros((0, len(self.y_vec)), dtype=float)
         vec_bndry = np.zeros((0, 1), dtype=float)
         # append rows if initialAmount is given and fill bndry vector
-        for ext in model.extracellular_dict.keys():
+        for ext in extracellular_dict.keys():
             if np.isnan(model.extracellular_dict[ext]["initialAmount"]):
                 pass
             else:
-                amount = float(model.extracellular_dict[ext]["initialAmount"])
+                amount = float(extracellular_dict[ext]["initialAmount"])
                 # only for dynamical extracellular species
                 if ext in self.y_vec:
                     new_row = np.zeros(self.n_y, dtype=float)
                     new_row[self.y_vec.index(ext)] = 1
                     matrix_start = np.append(matrix_start, [new_row], axis=0)
                     vec_bndry = np.append(vec_bndry, [[amount]], axis=0)
-        for macrom in model.macromolecules_dict.keys():
-            if np.isnan(model.macromolecules_dict[macrom]["initialAmount"]):
+        for macrom in macromolecules_dict.keys():
+            if np.isnan(macromolecules_dict[macrom]["initialAmount"]):
                 pass
             else:
-                amount = float(model.macromolecules_dict[macrom]["initialAmount"])
+                amount = float(macromolecules_dict[macrom]["initialAmount"])
                 new_row = np.zeros(self.n_y, dtype=float)
                 new_row[self.y_vec.index(macrom)] = 1
                 matrix_start = np.append(matrix_start, [new_row], axis=0)
@@ -430,18 +446,19 @@ class Matrrrices:
         #FIXME: This is dangerous: If one initial amount is larger one, we never get feasibility
         #       and it is not needed in general
         enforce_biomass = False
-        for macrom in model.macromolecules_dict.keys():
-            if np.isnan(model.macromolecules_dict[macrom]['initialAmount']):
+        for macrom in macromolecules_dict.keys():
+            if np.isnan(macromolecules_dict[macrom]['initialAmount']):
                 enforce_biomass = True
                 break
         if enforce_biomass:
             #print('We need to "enforce biomass" here.')
             weights_row = np.zeros(self.n_y, dtype=float)
-            for macrom in model.macromolecules_dict.keys():
-                weight = float(model.macromolecules_dict[macrom]["molecularWeight"])
+            for macrom in macromolecules_dict.keys():
+                weight = float(macromolecules_dict[macrom]["molecularWeight"])
                 weights_row[self.y_vec.index(macrom)] = weight
             matrix_start = np.append(matrix_start, [weights_row], axis=0)
             vec_bndry = np.append(vec_bndry, [[1.0]], axis=0)
+
         self.matrix_start = sp.csr_matrix(matrix_start)
         self.matrix_end = sp.csr_matrix(np.zeros((self.matrix_start.shape), dtype=float))
         self.vec_bndry = vec_bndry
@@ -867,7 +884,6 @@ class Matrrrices:
         phi_q - Quota coefficient
         phi_m - Maintenance coefficient
         """
-
         y_scale = np.ones((1, self.n_y))
         for macro, dicti in model.macromolecules_dict.items():
             if dicti['speciesType'] != 'quota':

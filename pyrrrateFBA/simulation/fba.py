@@ -95,18 +95,18 @@ def perform_rdefba(model, optimization_kwargs={}, **kwargs):
     t_end = kwargs.get('t_end', 1.0)
     n_steps = kwargs.get('n_steps', 51)
     varphi = kwargs.get('varphi', 0.0)
+    y_0 = kwargs.get('set_y0', None)# FIXME: So far, y0 is acceted as row vector only(!?)
     rkm = kwargs.get('runge_kutta', None)
     scaling_factor = kwargs.get('eps_scaling_factor', 1)
     #
-    mtx = mat.Matrrrices(model, run_rdeFBA=run_rdeFBA, scale=scaling_factor)
+    mtx = mat.Matrrrices(model, y0=y_0, run_rdeFBA=run_rdeFBA, scale=scaling_factor)
     # adapt initial values if explicitly given
-    y_0 = kwargs.get('set_y0', None)# FIXME: So far, y0 is acceted as row vector only(!?)
-    if y_0 is not None:
-        mtx.matrix_end = csr_matrix((y_0.size, y_0.size))
-        mtx.matrix_start = csr_matrix(np.eye(y_0.size))
-        mtx.matrix_u_start = csr_matrix((y_0.size, mtx.n_u))
-        mtx.matrix_u_end = csr_matrix((y_0.size, mtx.n_u))
-        mtx.vec_bndry = y_0.transpose()
+    # if y_0 is not None:
+    #     mtx.matrix_end = csr_matrix((y_0.size, y_0.size))
+    #     mtx.matrix_start = csr_matrix(np.eye(y_0.size))
+    #     mtx.matrix_u_start = csr_matrix((y_0.size, mtx.n_u))
+    #     mtx.matrix_u_end = csr_matrix((y_0.size, mtx.n_u))
+    #     mtx.vec_bndry = y_0.transpose()
     # Call the OC routine
     if rkm is None:
         tgrid, tt_shift, sol_y, sol_u, sol_x = mi_cp_linprog(mtx, t_0, t_end, n_steps=n_steps,
