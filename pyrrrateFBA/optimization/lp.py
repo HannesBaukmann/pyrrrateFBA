@@ -55,7 +55,7 @@ if DEFAULT_SOLVER == 'scipy':
 
 
 # Constants for BigM and small M constraints
-EPSILON = 10**-6
+EPSILON = 10**-7
 BIGM = 10**8
 MINUSBIGM = -BIGM
 
@@ -216,11 +216,12 @@ class LPModel():
         Call the optimization routine of the underlying solver
         """
         if self.solver_name == 'gurobi':
+            # self.solver_model.setParam('OutputFlag', 1)
             self.solver_model.optimize()
             self.status = self.solver_model.status
             # MAYBE: It would probably be better to have one status meaning on the self-level
         elif self.solver_name == 'cplex':
-            self.solver_model.context.solver.log_output = True
+            # self.solver_model.context.solver.log_output = True
             self.solver_model.solve()
             self.status = self.solver_model.solve_status
             if self.status == OPTIMAL:
