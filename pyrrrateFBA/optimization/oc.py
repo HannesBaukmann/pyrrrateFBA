@@ -81,7 +81,6 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0, **optimization_
     (amat1_y, amat1_u, bineq1) = _inflate_constraints(0.5*matrices.matrix_y, 0.5*matrices.matrix_y,
                                                       matrices.matrix_u, matrices.vec_h,
                                                       n_steps=n_steps)
-    amat1_x = sp.csr_matrix((bineq1.shape[0], n_allx))
 
     # Discretization of mixed Boolean constraints
     (amat2_y, amat2_u, bineq2) = _inflate_constraints(0.5*matrices.matrix_B_y,
@@ -93,27 +92,24 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0, **optimization_
     # Discretization of equality boundary constraints
     aeqmat3_y = sp.hstack([matrices.matrix_start,
                            sp.csr_matrix((n_bndry, (n_steps-1)*n_y)), matrices.matrix_end],
-                           format='csr')
+                          format='csr')
     aeqmat3_u = sp.csr_matrix((n_bndry, n_allu))
     beq3 = matrices.vec_bndry
 
-    # So far unset fields of the MILP
-    lb_x = np.zeros((n_allx, 1))
-    ub_x = np.ones((n_allx, 1))
-
     # Collect all data
-    f_all = np.vstack([f_y, f_u, f_x])
+    f_all = np.vstack([f_y, f_u])
+    fbar_all = f_x
+
     aeqmat = sp.bmat([[aeqmat1_y, aeqmat1_u],
                       [aeqmat2_y, aeqmat2_u],
                       [aeqmat3_y, aeqmat3_u]], format='csr')
-    aeqmat = sp.bmat([[aeqmat, sp.csr_matrix((aeqmat.shape[0], n_allx))]], format='csr')    # add entries for x-variables
 
     beq = np.vstack([beq1, beq2, beq3])
-    lb_all = np.vstack([lb_y, lb_u, lb_x])
-    ub_all = np.vstack([ub_y, ub_u, ub_x])
+    lb_all = np.vstack([lb_y, lb_u])
+    ub_all = np.vstack([ub_y, ub_u])
 
-    amat = sp.bmat([[amat1_y, amat1_u, amat1_x],
-                    [amat2_y, amat2_u, amat2_x]], format='csr')
+    amat = sp.bmat([[amat1_y, amat1_u], [amat2_y, amat2_u]], format='csr')
+    abarmat = sp.bmat([[sp.csr_matrix((bineq1.shape[0], n_allx))], [amat2_x]], format='csr')
 
     bineq = np.vstack([bineq1, bineq2])
 
@@ -123,7 +119,8 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0, **optimization_
 
     model_name = "MIOC Model - Full par., midpoint rule"
     model = lp_wrapper.MILPModel(name=model_name)
-    model.sparse_mip_model_setup(f_all, amat, bineq, aeqmat, beq, lb_all, ub_all, variable_names)
+    model.sparse_mip_model_setup(f_all, fbar_all, amat, abarmat, bineq, aeqmat,
+                                 beq, lb_all, ub_all, variable_names)
 
     # write model to file and set solver parameters
     if lp_wrapper.DEFAULT_SOLVER not in ['glpk', 'scipy']:
