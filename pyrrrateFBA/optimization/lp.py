@@ -273,62 +273,32 @@ class MILPModel(LPModel):
                      xbar in B^m
         and the variable names stored in the list "variable_names"
     """
-    def sparse_mip_model_setup(self, fvec, barf, amat, baramat, bvec, aeqmat,
-                               beq, lbvec, ubvec, variable_names):
+    def sparse_mip_model_setup(self, fvec, amat, bvec, aeqmat, beq, lbvec, ubvec, variable_names):
         """
         cf. sparse_model_setup for the LPModel class
         """
-        n_booles = len(barf)
-        m_aeqmat = aeqmat.shape[0]
+        n_booles = len([var for var in variable_names if var.startswith('x_')])
         if self.solver_name == 'gurobi':
-            _sparse_model_setup_gurobi(
-                self.solver_model,
-                np.vstack([fvec, barf]), # f
-                sp.bmat([[amat, baramat]], format='csr'), # A,
-                bvec, # b
-                sp.bmat([[aeqmat, sp.csr_matrix((m_aeqmat, n_booles))]], format='csr'), # Aeq
-                beq, # beq
-                np.vstack([lbvec, np.zeros((n_booles, 1))]), # lb
-                np.vstack([ubvec, np.ones((n_booles, 1))]), # ub
-                variable_names,
-                nbooles=n_booles)
+            _sparse_model_setup_gurobi(self.solver_model,
+                                       fvec, amat, bvec, aeqmat, beq,
+                                       lbvec, ubvec, variable_names,
+                                       nbooles=n_booles)
         elif self.solver_name == 'cplex':
-            _sparse_model_setup_cplex(
-                self.solver_model,
-                np.vstack([fvec, barf]), # f
-                sp.bmat([[amat, baramat]], format='csr'), # A,
-                bvec, # b
-                sp.bmat([[aeqmat, sp.csr_matrix((m_aeqmat, n_booles))]], format='csr'), # Aeq
-                beq, # beq
-                np.vstack([lbvec, np.zeros((n_booles, 1))]), # lb
-                np.vstack([ubvec, np.ones((n_booles, 1))]), # ub
-                variable_names,
-                nbooles=n_booles)
+            _sparse_model_setup_cplex(self.solver_model,
+                                      fvec, amat, bvec, aeqmat, beq,
+                                      lbvec, ubvec, variable_names,
+                                      nbooles=n_booles)
         elif self.solver_name == 'soplex':
-            _sparse_model_setup_soplex(
-                self.solver_model,
-                np.vstack([fvec, barf]), # f
-                sp.bmat([[amat, baramat]], format='csr'), # A,
-                bvec, # b
-                sp.bmat([[aeqmat, sp.csr_matrix((m_aeqmat, n_booles))]], format='csr'), # Aeq
-                beq, # beq
-                np.vstack([lbvec, np.zeros((n_booles, 1))]), # lb
-                np.vstack([ubvec, np.ones((n_booles, 1))]), # ub
-                variable_names,
-                nbooles=n_booles)
+            _sparse_model_setup_soplex(self.solver_model,
+                                       fvec, amat, bvec, aeqmat, beq,
+                                       lbvec, ubvec, variable_names,
+                                       nbooles=n_booles)
         elif self.solver_name == 'glpk':
             self.n_booles = n_booles # Nicht schoen, aber vllt hilft's ja
-            _sparse_model_setup_glpk(
-                self.solver_model,
-                np.vstack([fvec, barf]), # f
-                sp.bmat([[amat, baramat]], format='csr'), # amat,
-                bvec, # bvec
-                sp.bmat([[aeqmat, sp.csr_matrix((m_aeqmat, n_booles))]], format='csr'), # aeqmat
-                beq, # beq
-                np.vstack([lbvec, np.zeros((n_booles, 1))]), # lbvec
-                np.vstack([ubvec, np.zeros((n_booles, 1))]), # ubvec
-                variable_names, # variable_names
-                nbooles=n_booles)
+            _sparse_model_setup_glpk(self.solver_model,
+                                     fvec, amat, bvec, aeqmat, beq,
+                                     lbvec, ubvec, variable_names,
+                                     nbooles=n_booles)
 
 
 class MinabsLPModel():
