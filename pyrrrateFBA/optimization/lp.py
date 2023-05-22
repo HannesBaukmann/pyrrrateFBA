@@ -5,8 +5,8 @@ Collection of routines for (Mixed Integer) Linear Programming
 import numpy as np
 import scipy.sparse as sp
 
-DEFAULT_SOLVER = 'gurobi'
-# DEFAULT_SOLVER = 'cplex'
+# DEFAULT_SOLVER = 'gurobi'
+DEFAULT_SOLVER = 'cplex'
 #DEFAULT_SOLVER = 'soplex'
 #DEFAULT_SOLVER = 'glpk'
 if DEFAULT_SOLVER == 'gurobi':
@@ -273,8 +273,8 @@ class MILPModel(LPModel):
                      xbar in B^m
         and the variable names stored in the list "variable_names"
     """
-    def sparse_mip_model_setup(self, fvec, barf, amat, baramat, bvec, aeqmat,
-                               beq, lbvec, ubvec, variable_names):
+    def sparse_mip_model_setup(self, fvec, barf, amat, baramat, bvec, aeqmat, beq,
+                               indmat, xindmat, bind, lbvec, ubvec, variable_names):
         """
         cf. sparse_model_setup for the LPModel class
         """
@@ -300,6 +300,9 @@ class MILPModel(LPModel):
                 bvec, # b
                 sp.bmat([[aeqmat, sp.csr_matrix((m_aeqmat, n_booles))]], format='csr'), # Aeq
                 beq, # beq
+                sp.bmat([[indmat, sp.csr_matrix((indmat.shape[0], n_booles))]], format='csr'),
+                sp.bmat([[sp.csr_matrix((xindmat.shape[0], len(variable_names)-n_booles)), xindmat]], format='csr'),
+                bind,
                 np.vstack([lbvec, np.zeros((n_booles, 1))]), # lb
                 np.vstack([ubvec, np.ones((n_booles, 1))]), # ub
                 variable_names,
@@ -312,6 +315,9 @@ class MILPModel(LPModel):
                 bvec, # b
                 sp.bmat([[aeqmat, sp.csr_matrix((m_aeqmat, n_booles))]], format='csr'), # Aeq
                 beq, # beq
+                sp.bmat([[indmat, sp.csr_matrix((indmat.shape[0], n_booles))]], format='csr'),
+                sp.bmat([[sp.csr_matrix((xindmat.shape[0], len(variable_names)-n_booles)), xindmat]], format='csr'),
+                bind,
                 np.vstack([lbvec, np.zeros((n_booles, 1))]), # lb
                 np.vstack([ubvec, np.ones((n_booles, 1))]), # ub
                 variable_names,
@@ -518,8 +524,8 @@ def _set_solver_parameters_gurobi(model, parameters: dict):
 
 
 # CPLEX - specifics ###########################################################
-def _sparse_model_setup_cplex(model, fvec, amat, bvec, aeqmat, beq, lbvec,
-                               ubvec, variable_names, nbooles=0):
+def _sparse_model_setup_cplex(model, fvec, amat, bvec, aeqmat, beq, indmat, xindmat, bind,
+                              lbvec, ubvec, variable_names, nbooles=0):
     """
     We set up the following (continuous) LP for gurobipy:
       min f'*x
@@ -547,6 +553,7 @@ def _sparse_model_setup_cplex(model, fvec, amat, bvec, aeqmat, beq, lbvec,
     model.objective_expr = tmp
     _add_sparse_constraints_cplex(model, amat, bvec, x_variables, 'le') # pylint: disable=E1101
     _add_sparse_constraints_cplex(model, aeqmat, beq, x_variables, 'eq') # pylint: disable=E1101
+    _add_indicator_constraints_cplex(model, x_variables, indmat, xindmat, bind)
 
 def _add_sparse_constraints_cplex(model, amat, bvec, x_variables, sense):
     """
@@ -564,6 +571,23 @@ def _add_sparse_constraints_cplex(model, amat, bvec, x_variables, sense):
         lin_constr = model.linear_constraint(lhs=expr, rhs=bvec[i, 0], ctsense=sense)
         model.add_constraint(ct=lin_constr)
 
+def _add_indicator_constraints_cplex(model, x_variables, indmat, xindmat, bind):
+    nrows = bind.size
+    for i in range(nrows):
+        # lhs of implication
+        condition = 0 if xindmat.data[i] < 0 else 1
+        sense = 'EQ' if xindmat.data[i] == -2 else 'LE'
+        var_bool = x_variables[xindmat.indices[i]]
+
+        # rhs of implication
+        start = indmat.indptr[i]
+        end = indmat.indptr[i+1]
+        variables = [x_variables[j] for j in indmat.indices[start:end]]
+        coeff = indmat.data[start:end]
+        expr = model.scal_prod(terms=variables, coefs=coeff)
+        lin_constr = model.linear_constraint(lhs=expr, rhs=bind[i, 0], ctsense=sense)
+        model.add_indicator(binary_var=var_bool, linear_ct=lin_constr, active_value=condition)
+
 def _set_new_objective_vector_cplex(model, fvec):
     variables = [var for var in model.iter_variables()]
     expr = model.scal_prod(terms=variables, coefs=fvec.flatten())
@@ -580,8 +604,8 @@ def _set_solver_parameters_cplex(model, parameters: dict):
 
 
 # SOPLEX - specifics ##########################################################
-def _sparse_model_setup_soplex(model, fvec, amat, bvec, aeqmat, beq, lbvec,
-                               ubvec, variable_names, nbooles=0):
+def _sparse_model_setup_soplex(model, fvec, amat, bvec, aeqmat, beq, indmat, xindmat, bind,
+                               lbvec, ubvec, variable_names, nbooles=0):
     """
     We set up the following LP for pyscipopt:
       min f'*x
@@ -615,6 +639,7 @@ def _sparse_model_setup_soplex(model, fvec, amat, bvec, aeqmat, beq, lbvec,
     model.data = x_variables
     _add_sparse_constraints_soplex(model, amat, bvec, x_variables, 'LEQ')
     _add_sparse_constraints_soplex(model, aeqmat, beq, x_variables, 'EQ')
+    _add_indicator_constraints_soplex(model, x_variables, indmat, xindmat, bind)
 
 
 def _add_sparse_constraints_soplex(model, amat, bvec, x_variables, sense):
@@ -635,6 +660,25 @@ def _add_sparse_constraints_soplex(model, amat, bvec, x_variables, sense):
         elif sense=='EQ':
             model.addCons(expr == bvec[i])
 
+def _add_indicator_constraints_soplex(model, x_variables, indmat, xindmat, bind):
+    nrows = bind.size
+    for i in range(nrows):
+        # lhs of implication
+        condition = 0 if xindmat.data[i] < 0 else 1
+        sense = 'EQ' if xindmat.data[i] == -2 else 'LEQ'
+        var_bool = x_variables[xindmat.indices[i]]
+
+        # rhs of implication
+        start = indmat.indptr[i]
+        end = indmat.indptr[i+1]
+        variables = [x_variables[j] for j in indmat.indices[start:end]]
+        coeff = indmat.data[start:end]
+        expr = pyscipopt.quicksum([coeff[j]*variables[j] for j in range(len(coeff))])
+        if sense == 'LEQ':
+            model.addConsIndicator(expr <= bind[i], binvar=var_bool, activeone=condition)
+        elif sense == 'EQ':
+            model.addConsIndicator(expr <= bind[i], binvar=var_bool, activeone=condition)
+            model.addConsIndicator(-expr <= -bind[i], binvar=var_bool, activeone=condition)
 
 def _get_objective_val_soplex(model):
     """

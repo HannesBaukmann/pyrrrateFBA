@@ -78,7 +78,7 @@ class Matrrrices:
         Class Matrrrices has fields according to MAT_FIELDS
     """
 
-    def __init__(self, model, y0=None, run_rdeFBA=True, scale=1.0, **kwargs):
+    def __init__(self, model, y0=None, scale=1.0, run_rdeFBA=True, indicator_constraints=False, **kwargs):
         #
         if model is None:
             # We just initialize an empty model. This is just quick and dirty at the moment...
@@ -99,7 +99,14 @@ class Matrrrices:
             self.construct_flux_bounds(model)
             self.construct_mixed(model)
             if run_rdeFBA:
-                self.construct_fullmixed(model)
+                self.construct_fullmixed(model, indicator_constraints)
+                if indicator_constraints:
+                    self.construct_indicator(model)
+                else:
+                    self.matrix_ind_y = np.zeros((0, len(self.y_vec)), dtype=float)
+                    self.matrix_ind_u = np.zeros((0, len(self.u_vec)), dtype=float)
+                    self.matrix_ind_x = np.zeros((0, len(self.x_vec)), dtype=float)
+                    self.bvec_ind = np.zeros((0, 1))
             # corresponding deFBA model is obtained by omitting the regulatory constraints
             else:
                 self.matrix_B_y = np.zeros((0, len(self.y_vec)), dtype=float) # pylint: disable=C0103
@@ -107,10 +114,14 @@ class Matrrrices:
                 self.matrix_B_x = np.zeros((0, 0), dtype=float) # pylint: disable=C0103
                 self.vec_B = np.zeros((0, 1)) # pylint: disable=C0103
                 self.x_vec = []
+                self.matrix_ind_y = np.zeros((0, len(self.y_vec)), dtype=float)
+                self.matrix_ind_u = np.zeros((0, len(self.u_vec)), dtype=float)
+                self.matrix_ind_x = np.zeros((0, len(self.x_vec)), dtype=float)
+                self.bvec_ind = np.zeros((0, 1))
 
         # epsilon scaling
         self.scale = scale
-        self.epsilon_scaling(model, run_rdeFBA)
+        self.epsilon_scaling(model, run_rdeFBA, indicator_constraints)
 
         #
         # set so-far unset fields
@@ -531,7 +542,7 @@ class Matrrrices:
         self.lbvec = lbvec
         self.ubvec = ubvec
 
-    def construct_fullmixed(self, model):
+    def construct_fullmixed(self, model, indicator_constraints):
         """
         construct matrices for regulation
         """
@@ -543,83 +554,84 @@ class Matrrrices:
         # control of discrete jumps
 
         # initialize matrices
-        n_assignments = sum([len(evnt['listOfAssignments'])
-                             for evnt in model.events_dict.values()])
+        n_assignments = 0 if indicator_constraints \
+            else sum([len(event['listOfAssignments']) for event in model.events_dict.values()])
         y_matrix_1 = np.zeros((n_assignments, self.n_y), dtype=float)
         u_matrix_1 = np.zeros((n_assignments, self.n_u), dtype=float)
         x_matrix_1 = np.zeros((n_assignments, self.n_x), dtype=float)
         b_vec_1 = np.zeros((n_assignments, 1))
 
-        reg_rule_index = 0  # counter for regulatory rules. One event might contain more than one regulatory rule
-        for event_index, event in enumerate(model.events_dict.values()):
-            variables = event['variable'].split(' + ')
-            # Difference between geq and gt??
-            if event['relation'] == 'geq' or event['relation'] == 'gt':
-                for i, affected_bool in enumerate(event['listOfAssignments']):
-                    for variable in variables:
-                        # boolean variable depends on species amount
-                        if variable in self.y_vec:
-                            species_index = self.y_vec.index(variable)
-                            y_matrix_1[reg_rule_index, species_index] = 1
-                            if event['listOfEffects'][i] == 0:
-                                x_matrix_1[reg_rule_index, self.x_vec.index(affected_bool)] = \
-                                                                                    epsilon + big_u
-                                b_vec_1[reg_rule_index] = event['threshold'] + big_u
-                            elif event['listOfEffects'][i] == 1:
-                                x_matrix_1[reg_rule_index, self.x_vec.index(affected_bool)] = \
-                                                                                - (epsilon + big_u)
-                                b_vec_1[reg_rule_index] = event['threshold'] - epsilon
+        if not indicator_constraints:   # only fill these matrices if we want big-M constraints
+            reg_rule_index = 0  # counter for regulatory rules. One event might contain more than one regulatory rule
+            for event_index, event in enumerate(model.events_dict.values()):
+                variables = event['variable'].split(' + ')
+                # Difference between geq and gt??
+                if event['relation'] == 'geq' or event['relation'] == 'gt':
+                    for i, affected_bool in enumerate(event['listOfAssignments']):
+                        for variable in variables:
+                            # boolean variable depends on species amount
+                            if variable in self.y_vec:
+                                species_index = self.y_vec.index(variable)
+                                y_matrix_1[reg_rule_index, species_index] = 1
+                                if event['listOfEffects'][i] == 0:
+                                    x_matrix_1[reg_rule_index, self.x_vec.index(affected_bool)] = \
+                                                                                        epsilon + big_u
+                                    b_vec_1[reg_rule_index] = event['threshold'] + big_u
+                                elif event['listOfEffects'][i] == 1:
+                                    x_matrix_1[reg_rule_index, self.x_vec.index(affected_bool)] = \
+                                                                                    - (epsilon + big_u)
+                                    b_vec_1[reg_rule_index] = event['threshold'] - epsilon
 
-                        # boolean variable depends on flux
-                        elif variable in self.u_vec:
-                            flux_index = self.u_vec.index(variable)
-                            u_matrix_1[reg_rule_index, flux_index] = 1
-                            if event['listOfEffects'][i] == 0:
-                                x_matrix_1[reg_rule_index, self.x_vec.index(affected_bool)] = \
-                                                                                    epsilon + big_u
-                                b_vec_1[reg_rule_index] = event['threshold'] + big_u
-                            elif event['listOfEffects'][i] == 1:
-                                x_matrix_1[reg_rule_index, self.x_vec.index(affected_bool)] = \
-                                                                                - (epsilon + big_u)
-                                b_vec_1[reg_rule_index] = event['threshold'] - epsilon
-                        else:
-                            print(variable + ' not defined as Species or Reaction!')
-                    reg_rule_index += 1
+                            # boolean variable depends on flux
+                            elif variable in self.u_vec:
+                                flux_index = self.u_vec.index(variable)
+                                u_matrix_1[reg_rule_index, flux_index] = 1
+                                if event['listOfEffects'][i] == 0:
+                                    x_matrix_1[reg_rule_index, self.x_vec.index(affected_bool)] = \
+                                                                                        epsilon + big_u
+                                    b_vec_1[reg_rule_index] = event['threshold'] + big_u
+                                elif event['listOfEffects'][i] == 1:
+                                    x_matrix_1[reg_rule_index, self.x_vec.index(affected_bool)] = \
+                                                                                    - (epsilon + big_u)
+                                    b_vec_1[reg_rule_index] = event['threshold'] - epsilon
+                            else:
+                                print(variable + ' not defined as Species or Reaction!')
+                        reg_rule_index += 1
 
 
-            # TODO Difference between leq and lt??
-            elif event['relation'] == 'leq' or event['relation'] == 'lt':
-                for i, affected_bool in enumerate(event['listOfAssignments']):
-                    for variable in variables:
-                        # boolean variable depends on species amount
-                        if variable in self.y_vec:
-                            species_index = self.y_vec.index(variable)
-                            y_matrix_1[reg_rule_index, species_index] = -1
-                            if event['listOfEffects'][i] == 0:
-                                x_matrix_1[reg_rule_index, self.x_vec.index(affected_bool)] = -big_l
-                                b_vec_1[reg_rule_index] = -event['threshold'] - big_l
-                            elif event['listOfEffects'][i] == 1:
-                                x_matrix_1[reg_rule_index, self.x_vec.index(affected_bool)] = big_l
-                                b_vec_1[reg_rule_index] = -event['threshold']
+                # TODO Difference between leq and lt??
+                elif event['relation'] == 'leq' or event['relation'] == 'lt':
+                    for i, affected_bool in enumerate(event['listOfAssignments']):
+                        for variable in variables:
+                            # boolean variable depends on species amount
+                            if variable in self.y_vec:
+                                species_index = self.y_vec.index(variable)
+                                y_matrix_1[reg_rule_index, species_index] = -1
+                                if event['listOfEffects'][i] == 0:
+                                    x_matrix_1[reg_rule_index, self.x_vec.index(affected_bool)] = -big_l
+                                    b_vec_1[reg_rule_index] = -event['threshold'] - big_l
+                                elif event['listOfEffects'][i] == 1:
+                                    x_matrix_1[reg_rule_index, self.x_vec.index(affected_bool)] = big_l
+                                    b_vec_1[reg_rule_index] = -event['threshold']
 
-                        # boolean variable depends on flux
-                        elif variable in self.u_vec:
-                            flux_index = self.u_vec.index(variable)
-                            u_matrix_1[reg_rule_index, flux_index] = -1
-                            if event['listOfEffects'][i] == 0:
-                                x_matrix_1[reg_rule_index, self.x_vec.index(affected_bool)] = -big_l
-                                b_vec_1[reg_rule_index] = -event['threshold'] - big_l
-                            elif event['listOfEffects'][i] == 1:
-                                x_matrix_1[reg_rule_index, self.x_vec.index(affected_bool)] = big_l
-                                b_vec_1[reg_rule_index] = -event['threshold']
-                        else:
-                            print(variable + ' not defined as Species or Reaction!')
-                    reg_rule_index += 1
+                            # boolean variable depends on flux
+                            elif variable in self.u_vec:
+                                flux_index = self.u_vec.index(variable)
+                                u_matrix_1[reg_rule_index, flux_index] = -1
+                                if event['listOfEffects'][i] == 0:
+                                    x_matrix_1[reg_rule_index, self.x_vec.index(affected_bool)] = -big_l
+                                    b_vec_1[reg_rule_index] = -event['threshold'] - big_l
+                                elif event['listOfEffects'][i] == 1:
+                                    x_matrix_1[reg_rule_index, self.x_vec.index(affected_bool)] = big_l
+                                    b_vec_1[reg_rule_index] = -event['threshold']
+                            else:
+                                print(variable + ' not defined as Species or Reaction!')
+                        reg_rule_index += 1
 
 
         n_rules = 0
         for rule in model.rules_dict.keys():
-            if 'reactionID' in model.rules_dict[rule]:
+            if 'reactionID' in model.rules_dict[rule] and not indicator_constraints:
                 n_rules += 1
             elif 'operator' in model.rules_dict[rule]:
                 n_rules += len(model.rules_dict[rule]['indicators']) + 1
@@ -633,7 +645,7 @@ class Matrrrices:
 
         for rule_name, rule in model.rules_dict.items():
             # Control of continuous dynamics by discrete states
-            if 'reactionID' in rule:
+            if not indicator_constraints and 'reactionID' in rule:
                 rxn_index = self.u_vec.index(rule['reactionID'])
                 par_index = self.x_vec.index(rule['bool_parameter'])
                 if rule['direction'] == 'lower':
@@ -677,11 +689,126 @@ class Matrrrices:
                         x_matrix_2[rule_row_index + i + 1, variable_index] = -1
                     rule_row_index += len(rule['indicators']) + 1
 
-
         self.matrix_B_y = sp.csr_matrix(np.vstack((y_matrix_1, y_matrix_2)))
         self.matrix_B_u = sp.csr_matrix(np.vstack((u_matrix_1, u_matrix_2)))
         self.matrix_B_x = sp.csr_matrix(np.vstack((x_matrix_1, x_matrix_2)))
         self.vec_B = np.vstack((b_vec_1, b_vec_2))
+
+    def construct_indicator(self, model):
+        """ Constructs matrices for regulation as indicator constraints of the form: Cx=[0,1] -> Ay + Bu <= b.
+        matrix_x_ind*x = [0,1]  ->  matrix_y_ind*y + matrix_u_ind*u <= bvec_ind
+
+        Entries of matrix_x_ind are not coefficients. Instead, they encode the form of the indicator constraint.
+        They encode (i) which binary variable x is used in the constraint, (ii) whether the active value is 0 or 1,
+        i.e. the value that triggers the satisfaction of the constraint, and (iii) whether the constraint right of the
+        implication is an equality or inequality constraint*.
+        1  - x=1, inequality
+        -1 - x=0, inequality
+        -2 - x=0, equality
+
+        *Most constraints are inequality constraints. However, in the case of an inactive gene blocking a flux, we have
+        an equality constraint (x=0 -> u=0). (Could be encoded as two inequality constraints (x=0 -> u<=0, -u<=0))
+        """
+
+        epsilon = EPSILON
+
+        # initialize matrices
+        n_assignments_0 = sum([event['listOfEffects'].count(0) for event in model.events_dict.values()])
+        n_assignments_1 = sum([event['listOfEffects'].count(1) for event in model.events_dict.values()])
+
+        y_matrix_1_0 = np.zeros((n_assignments_0, self.n_y), dtype=float)
+        y_matrix_1_1 = np.zeros((n_assignments_1, self.n_y), dtype=float)
+        u_matrix_1_0 = np.zeros((n_assignments_0, self.n_u), dtype=float)
+        u_matrix_1_1 = np.zeros((n_assignments_1, self.n_u), dtype=float)
+        x_matrix_1_0 = np.zeros((n_assignments_0, self.n_x), dtype=float)
+        x_matrix_1_1 = np.zeros((n_assignments_1, self.n_x), dtype=float)
+        b_vec_1_0 = np.zeros((n_assignments_0, 1))
+        b_vec_1_1 = np.zeros((n_assignments_1, 1))
+
+        constraint_index_0 = 0
+        constraint_index_1 = 0
+        for event_index, event in enumerate(model.events_dict.values()):
+            variables = event['variable'].split(' + ')
+            # Difference between geq and gt??
+            if event['relation'] == 'geq' or event['relation'] == 'gt':
+                sign = -1
+            elif event['relation'] == 'leq' or event['relation'] == 'lt':
+                sign = 1
+            if event['relation'] == 'gt' or event['relation'] == 'lt':
+                eps = epsilon
+            else:
+                eps = 0
+            for i, affected_bool in enumerate(event['listOfAssignments']):
+                for variable in variables:
+                    # boolean variable depends on species amount
+                    if variable in self.y_vec:
+                        species_index = self.y_vec.index(variable)
+                        if event['listOfEffects'][i] == 0:
+                            y_matrix_1_0[constraint_index_0, species_index] = sign
+                            x_matrix_1_0[constraint_index_0, self.x_vec.index(affected_bool)] = -1
+                            b_vec_1_0[constraint_index_0] = sign * event['threshold'] - eps
+                        elif event['listOfEffects'][i] == 1:
+                            y_matrix_1_1[constraint_index_1, species_index] = sign
+                            x_matrix_1_1[constraint_index_1, self.x_vec.index(affected_bool)] = 1
+                            b_vec_1_1[constraint_index_1] = sign * event['threshold'] - eps
+
+                    # boolean variable depends on flux
+                    elif variable in self.u_vec:
+                        flux_index = self.u_vec.index(variable)
+                        if event['listOfEffects'][i] == 0:
+                            u_matrix_1_0[constraint_index_0, flux_index] = sign
+                            x_matrix_1_0[constraint_index_0, self.x_vec.index(affected_bool)] = -1
+                            b_vec_1_0[constraint_index_0] = sign * event['threshold']
+                        elif event['listOfEffects'][i] == 1:
+                            u_matrix_1_1[constraint_index_1, flux_index] = sign
+                            x_matrix_1_1[constraint_index_1, self.x_vec.index(affected_bool)] = 1
+                            b_vec_1_1[constraint_index_1] = sign * event['threshold']
+                    else:
+                        print(variable + ' not defined as Species or Reaction!')
+
+                if event['listOfEffects'][i] == 0:
+                    constraint_index_0 += 1
+                elif event['listOfEffects'][i] == 1:
+                    constraint_index_1 += 1
+
+        n_rules = 0
+        for rule in model.rules_dict.values():
+            if 'reactionID' in rule and ~np.isnan(rule['threshold']):
+                n_rules += 1
+
+        y_matrix_2_0 = np.zeros((n_rules, len(self.y_vec)), dtype=float)
+        y_matrix_2_1 = np.zeros((n_rules, len(self.y_vec)), dtype=float)
+        u_matrix_2_0 = np.zeros((n_rules, len(self.u_vec)), dtype=float)
+        u_matrix_2_1 = np.zeros((n_rules, len(self.u_vec)), dtype=float)
+        x_matrix_2_0 = np.zeros((n_rules, len(self.x_vec)), dtype=float)
+        x_matrix_2_1 = np.zeros((n_rules, len(self.x_vec)), dtype=float)
+        b_vec_2_0 = np.zeros((n_rules, 1))
+        b_vec_2_1 = np.zeros((n_rules, 1))
+        rule_row_index = 0
+        for rule_name, rule in model.rules_dict.items():
+            # Control of continuous dynamics by discrete states
+            if 'reactionID' in rule and ~np.isnan(rule['threshold']):
+                rxn_index = self.u_vec.index(rule['reactionID'])
+                par_index = self.x_vec.index(rule['bool_parameter'])
+                # x=0  ==>  u=0
+                x_matrix_2_0[rule_row_index, par_index] = -2
+                u_matrix_2_0[rule_row_index, rxn_index] = 1
+                # x=1  ==>  u>=threshold
+                x_matrix_2_1[rule_row_index, par_index] = 1
+                if rule['direction'] == 'lower':
+                    u_matrix_2_1[rule_row_index, rxn_index] = -1
+                    b_vec_2_1[rule_row_index] = float(rule['threshold']) * -1
+                if rule['direction'] == 'upper':
+                    u_matrix_2_1[rule_row_index, rxn_index] = 1
+                    b_vec_2_1[rule_row_index, par_index] = float(rule['threshold'])
+
+                rule_row_index += 1 # only requires one line, i.e. one inequality
+
+        self.matrix_ind_y = sp.csr_matrix(np.vstack((y_matrix_1_0, y_matrix_1_1, y_matrix_2_0, y_matrix_2_1)))
+        self.matrix_ind_u = sp.csr_matrix(np.vstack((u_matrix_1_0, u_matrix_1_1, u_matrix_2_0, u_matrix_2_1)))
+        self.matrix_ind_x = sp.csr_matrix(np.vstack((x_matrix_1_0, x_matrix_1_1, x_matrix_2_0, x_matrix_2_1)))
+        self.bvec_ind = np.vstack((b_vec_1_0, b_vec_1_1, b_vec_2_0, b_vec_2_1))
+
 
     def construct_mixed(self, model):
         """
@@ -848,7 +975,7 @@ class Matrrrices:
         #
         return y_matrix, u_matrix, maint_constraint_names
 
-    def epsilon_scaling(self, model, run_rdeFBA):
+    def epsilon_scaling(self, model, run_rdeFBA, indicator_constraints):
         """ Epsilon-scaling
         Scales macromolecule synthesis fluxes (u_p) (except quota synth.), macromolecule amounts (P(t)) and their change
         over time (dP(t)/dt) by a small epsilon (eps).
@@ -921,9 +1048,9 @@ class Matrrrices:
             self.matrix_B_u = self.matrix_B_u.multiply(u_scale)
 
             # scale indicator constraints
-            # if indicator_constraints:
-            #     self.matrix_ind_y = self.matrix_ind_y.multiply(y_scale)
-            #     self.matrix_ind_u = self.matrix_ind_u.multiply(u_scale)
+            if indicator_constraints:
+                self.matrix_ind_y = self.matrix_ind_y.multiply(y_scale)
+                self.matrix_ind_u = self.matrix_ind_u.multiply(u_scale)
 
         self.y_scale = y_scale
         self.u_scale = u_scale

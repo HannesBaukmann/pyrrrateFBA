@@ -89,6 +89,13 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0, **optimization_
                                                       matrices.vec_B, n_steps=n_steps)
     amat2_x = sp.kron(sp.eye(n_steps), matrices.matrix_B_x, format='csr')
 
+    # Discretization of indicator constraints
+    (indmat_y, indmat_u, bind) = _inflate_constraints(0.5*matrices.matrix_ind_y,
+                                                      0.5*matrices.matrix_ind_y,
+                                                      matrices.matrix_ind_u,
+                                                      matrices.bvec_ind, n_steps=n_steps)
+    xindmat = sp.kron(sp.eye(n_steps), matrices.matrix_ind_x, format='csr')
+
     # Discretization of equality boundary constraints
     aeqmat3_y = sp.hstack([matrices.matrix_start,
                            sp.csr_matrix((n_bndry, (n_steps-1)*n_y)), matrices.matrix_end],
@@ -110,7 +117,7 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0, **optimization_
 
     amat = sp.bmat([[amat1_y, amat1_u], [amat2_y, amat2_u]], format='csr')
     abarmat = sp.bmat([[sp.csr_matrix((bineq1.shape[0], n_allx))], [amat2_x]], format='csr')
-
+    indmat = sp.bmat([[indmat_y, indmat_u], [None, None]], format='csr')
     bineq = np.vstack([bineq1, bineq2])
 
     variable_names = ["y_"+str(j+1)+"_"+str(i) for i in range(n_steps+1) for j in range(n_y)]
@@ -119,8 +126,8 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0, **optimization_
 
     model_name = "MIOC Model - Full par., midpoint rule"
     model = lp_wrapper.MILPModel(name=model_name)
-    model.sparse_mip_model_setup(f_all, fbar_all, amat, abarmat, bineq, aeqmat,
-                                 beq, lb_all, ub_all, variable_names)
+    model.sparse_mip_model_setup(f_all, fbar_all, amat, abarmat, bineq, aeqmat, beq,
+                                 indmat, xindmat, bind, lb_all, ub_all, variable_names)
 
     # write model to file and set solver parameters
     if lp_wrapper.DEFAULT_SOLVER not in ['glpk', 'scipy']:
