@@ -308,9 +308,11 @@ def cp_rk_linprog(matrices, rkm, t_0, t_end, n_steps=101, varphi=0.0,
     """
     s_rk = rkm.get_stage_number()
     n_y, n_u = shape_of_callable(matrices.smat2, default_t=t_0)
+    n_x = shape_of_callable(matrices.matrix_B_x, default_t=t_0)[1]
     n_ally = (n_steps + 1) * n_y
-    n_allu = n_steps* s_rk * n_u
-    n_allk = n_steps*s_rk*n_y
+    n_allu = n_steps * s_rk * n_u
+    n_allk = n_steps * s_rk * n_y
+    n_allx = n_steps * s_rk * n_x
     n_bndry = shape_of_callable(matrices.vec_bndry, default_t=t_0)[0]
 
     tgrid = np.linspace(t_0, t_end, n_steps + 1)
@@ -331,6 +333,7 @@ def cp_rk_linprog(matrices, rkm, t_0, t_end, n_steps=101, varphi=0.0,
     #
     f_u = del_t*dkron(np.kron(np.ones((n_steps, 1)), rkm.b.T)*expvt,
                       matrices.phi1u, tt_s, out_type='np')
+    f_x = np.zeros((n_allx, 1))
     # Mayer part _____________________________________________________________
     f_y[0:n_y] += matrices.phi2
     f_y[n_steps * n_y:n_ally] += matrices.phi3
@@ -372,6 +375,16 @@ def cp_rk_linprog(matrices, rkm, t_0, t_end, n_steps=101, varphi=0.0,
     aineq1_u = dkron(sp.eye(n_steps*s_rk, format='csr'), matrices.matrix_u, tt_s, along_rows=True)
     bineq1 = dkron(np.ones((n_steps*s_rk, 1)), matrices.vec_h, tt_s, out_type='np')
 
+    # Mixed Boolean Constraints ==============================================
+    aineq3_y = dkron(sp.kron(sp.eye(n_steps, n_steps+1, format='csr'), np.ones((s_rk, 1)),
+                             format='csr'), matrices.matrix_B_y, tt_s, along_rows=True)
+    aineq3_k = del_t*dkron(sp.kron(sp.eye(n_steps, format='csr'), rkm.A, format='csr'),
+                           matrices.matrix_B_y, sp.kron(tmat_ds, np.ones((s_rk, 1))).asformat('csr'),
+                           out_type='csr')
+    aineq3_u = dkron(sp.eye(n_steps*s_rk, format='csr'), matrices.matrix_B_u, tt_s, along_rows=True)
+    aineq3_x = dkron(sp.eye(n_steps*s_rk, format='csr'), matrices.matrix_B_x, tt_s, along_rows=True)
+    bineq3 = dkron(np.ones((n_steps*s_rk, 1)), matrices.vec_B, tt_s, out_type='np')
+
     # Control Bounds =========================================================
     lb_u = dkron(np.ones((n_steps*s_rk, 1)), matrices.lbvec, tt_s, out_type='np')
     ub_u = dkron(np.ones((n_steps*s_rk, 1)), matrices.ubvec, tt_s, out_type='np')
@@ -402,6 +415,7 @@ def cp_rk_linprog(matrices, rkm, t_0, t_end, n_steps=101, varphi=0.0,
 
     # Assembly of LP =========================================================
     f_all = np.vstack([f_y, f_k, f_u])
+    fbar_all = f_x
     aeq = sp.bmat([[aeq1_y, aeq1_k, aeq1_u],
                    [aeq2_y, aeq2_k, aeq2_u],
                    [aeq3_y, aeq3_k, aeq3_u],
@@ -410,17 +424,25 @@ def cp_rk_linprog(matrices, rkm, t_0, t_end, n_steps=101, varphi=0.0,
     lb_all = np.vstack([lb_y, lb_k, lb_u])
     ub_all = np.vstack([ub_y, ub_k, ub_u])
     aineq = sp.bmat([[aineq1_y, aineq1_k, aineq1_u],
-                     [aineq2_y, aineq2_k, aineq2_u]], format='csr')
-    bineq = np.vstack([bineq1, bineq2])
+                     [aineq2_y, aineq2_k, aineq2_u],
+                     [aineq3_y, aineq3_k, aineq3_u]], format='csr')
+    abarineq = sp.bmat([[sp.csr_matrix((bineq1.shape[0] + bineq2.shape[0], n_allx))], [aineq3_x]], format='csr')
+    bineq = np.vstack([bineq1, bineq2, bineq3])
 
     variable_names = ["y_"+str(j+1)+"_"+str(i) for i in range(n_steps+1) for j in range(n_y)]
     variable_names += ["k_"+str(j+1)+"_"+str(i)+"^"+str(s+1) for i in range(n_steps)
                        for s in range(s_rk) for j in range(n_y)]
     variable_names += ["u_"+str(j+1)+"_"+str(i)+"^"+str(s+1) for i in range(n_steps)
                        for s in range(s_rk) for j in range(n_u)]
+    variable_names += ["x_"+str(j+1)+"_"+str(i)+"^"+str(s+1) for i in range(n_steps)
+                       for s in range(s_rk) for j in range(n_x)]
 
-    model = lp_wrapper.LPModel(name=model_name)
-    model.sparse_model_setup(f_all, aineq, bineq, aeq, beq, lb_all, ub_all, variable_names)
+    if n_allx == 0:     # It's a LP (deFBA)
+        model = lp_wrapper.LPModel(name=model_name)
+        model.sparse_model_setup(f_all, aineq, bineq, aeq, beq, lb_all, ub_all, variable_names)
+    else:               # It's a MILP (r-deFBA)
+        model = lp_wrapper.MILPModel(name=model_name)
+        model.sparse_mip_model_setup(f_all, fbar_all, aineq, abarineq, bineq, aeq, beq, lb_all, ub_all, variable_names)
 
     # write model to file and set solver parameters
     if lp_wrapper.DEFAULT_SOLVER not in ['glpk', 'scipy']:
@@ -436,11 +458,14 @@ def cp_rk_linprog(matrices, rkm, t_0, t_end, n_steps=101, varphi=0.0,
         y_data = np.reshape(model.get_solution()[:n_ally], (n_steps+1, n_y))
         u_data = np.reshape(model.get_solution()[n_ally+n_allk:n_ally+n_allk++n_allu],
                             (n_steps*s_rk, n_u))
+        x_data = np.reshape(model.get_solution()[n_ally+n_allk+n_allu:], (n_steps*s_rk, n_x))
+
         # undo epsilon-scaling
         y_data *= matrices.y_scale
         u_data *= matrices.u_scale
+        x_data *= matrices.x_scale
 
-        return tgrid, tt_s.flatten(), y_data, u_data
+        return tgrid, tt_s.flatten(), y_data, u_data, x_data
     print("No solution found")
 
     return None
