@@ -758,11 +758,11 @@ class Matrrrices:
                         if event['listOfEffects'][i] == 0:
                             u_matrix_1_0[constraint_index_0, flux_index] = sign
                             x_matrix_1_0[constraint_index_0, self.x_vec.index(affected_bool)] = -1
-                            b_vec_1_0[constraint_index_0] = sign * event['threshold']
+                            b_vec_1_0[constraint_index_0] = sign * event['threshold'] - eps
                         elif event['listOfEffects'][i] == 1:
                             u_matrix_1_1[constraint_index_1, flux_index] = sign
                             x_matrix_1_1[constraint_index_1, self.x_vec.index(affected_bool)] = 1
-                            b_vec_1_1[constraint_index_1] = sign * event['threshold']
+                            b_vec_1_1[constraint_index_1] = sign * event['threshold'] - eps
                     else:
                         print(variable + ' not defined as Species or Reaction!')
 
