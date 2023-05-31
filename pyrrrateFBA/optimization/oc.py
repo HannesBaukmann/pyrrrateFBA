@@ -451,11 +451,11 @@ def cp_rk_linprog(matrices, rkm, t_0, t_end, n_steps=101, varphi=0.0,
     ub_all = np.vstack([ub_y, ub_k, ub_u])
 
     variable_names = ["y_"+str(j+1)+"_"+str(i) for i in range(n_steps+1) for j in range(n_y)]
-    variable_names += ["k_"+str(j+1)+"_"+str(i)+"^"+str(s+1) for i in range(n_steps)
+    variable_names += ["k_"+str(j+1)+"_"+str(i)+"."+str(s+1) for i in range(n_steps)
                        for s in range(s_rk) for j in range(n_y)]
-    variable_names += ["u_"+str(j+1)+"_"+str(i)+"^"+str(s+1) for i in range(n_steps)
+    variable_names += ["u_"+str(j+1)+"_"+str(i)+"."+str(s+1) for i in range(n_steps)
                        for s in range(s_rk) for j in range(n_u)]
-    variable_names += ["x_"+str(j+1)+"_"+str(i)+"^"+str(s+1) for i in range(n_steps)
+    variable_names += ["x_"+str(j+1)+"_"+str(i)+"."+str(s+1) for i in range(n_steps)
                        for s in range(s_rk) for j in range(n_x)]
 
     if n_allx == 0:     # It's a LP (deFBA)
