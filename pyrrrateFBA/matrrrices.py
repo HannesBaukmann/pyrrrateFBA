@@ -800,7 +800,7 @@ class Matrrrices:
                     b_vec_2_1[rule_row_index] = float(rule['threshold']) * -1
                 if rule['direction'] == 'upper':
                     u_matrix_2_1[rule_row_index, rxn_index] = 1
-                    b_vec_2_1[rule_row_index, par_index] = float(rule['threshold'])
+                    b_vec_2_1[rule_row_index] = float(rule['threshold'])
 
                 rule_row_index += 1 # only requires one line, i.e. one inequality
 
