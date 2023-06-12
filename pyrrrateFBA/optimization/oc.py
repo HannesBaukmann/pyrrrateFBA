@@ -407,7 +407,7 @@ def cp_rk_linprog(matrices, rkm, t_0, t_end, n_steps=101, varphi=0.0,
     beq4 = matrices.vec_bndry
 
     # So far unset elements of the LP
-    lb_y = -lp_wrapper.INFINITY*np.ones((n_ally, 1))
+    lb_y = np.zeros((n_ally, 1))
     # Here, it would be easy to additionally enforce positivity
     ub_y = lp_wrapper.INFINITY*np.ones((n_ally, 1))
     lb_k = -lp_wrapper.INFINITY*np.ones((n_allk, 1))
