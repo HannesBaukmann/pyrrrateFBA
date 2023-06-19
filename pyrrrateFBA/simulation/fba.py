@@ -110,18 +110,18 @@ def perform_rdefba(model, optimization_kwargs={}, **kwargs):
     #     mtx.vec_bndry = y_0.transpose()
     # Call the OC routine
     if rkm is None:
-        tgrid, tt_shift, sol_y, sol_u, sol_x = mi_cp_linprog(mtx, t_0, t_end, n_steps=n_steps,
-                                                             varphi=varphi, **optimization_kwargs)
+        tgrid, tt_shift, sol_y, sol_u, sol_x, obj_val = mi_cp_linprog(mtx, t_0, t_end, n_steps=n_steps,
+                                                                      varphi=varphi, **optimization_kwargs)
     else:
         # if run_rdeFBA:
         #     print('Cannot (yet) run r-deFBA with arbitrary Runge-Kutta scheme. Fallback to deFBA')
-        tgrid, tt_shift, sol_y, sol_u, sol_x = cp_rk_linprog(mtx, rkm, t_0, t_end, n_steps=n_steps,
-                                                             varphi=varphi, **optimization_kwargs)
+        tgrid, tt_shift, sol_y, sol_u, sol_x, obj_val = cp_rk_linprog(mtx, rkm, t_0, t_end, n_steps=n_steps,
+                                                                      varphi=varphi, **optimization_kwargs)
         # sol_x = np.zeros((0, sol_u.shape[1]))
         # sol_x = np.zeros((sol_u.shape[0], 0))
 
     y_names, u_names, x_names = mtx.y_vec, mtx.u_vec, mtx.x_vec
-    sols = Solutions(tgrid, tt_shift, sol_y, sol_u, sol_x, y_names, u_names, x_names)
+    sols = Solutions(tgrid, tt_shift, sol_y, sol_u, sol_x, obj_val, y_names, u_names, x_names)
 
     return sols
 

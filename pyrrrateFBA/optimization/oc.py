@@ -143,11 +143,13 @@ def mi_cp_linprog(matrices, t_0, t_end, n_steps=101, varphi=0.0, **optimization_
         y_data = np.reshape(model.get_solution()[:n_ally], (n_steps+1, n_y))
         u_data = np.reshape(model.get_solution()[n_ally:n_ally+n_allu], (n_steps, n_u))
         x_data = np.reshape(model.get_solution()[n_ally+n_allu:], (n_steps, n_x))
+        objective_value = model.get_objective_val()
+
         # undo epsilon-scaling
         y_data *= matrices.y_scale
         u_data *= matrices.u_scale
         x_data *= matrices.x_scale
-        return tgrid, tt_s, y_data, u_data, x_data
+        return tgrid, tt_s, y_data, u_data, x_data, objective_value
     print("No solution found")
 
     return None
@@ -481,13 +483,14 @@ def cp_rk_linprog(matrices, rkm, t_0, t_end, n_steps=101, varphi=0.0,
         u_data = np.reshape(model.get_solution()[n_ally+n_allk:n_ally+n_allk++n_allu],
                             (n_steps*s_rk, n_u))
         x_data = np.reshape(model.get_solution()[n_ally+n_allk+n_allu:], (n_steps*s_rk, n_x))
+        objective_value = model.get_objective_val()
 
         # undo epsilon-scaling
         y_data *= matrices.y_scale
         u_data *= matrices.u_scale
         x_data *= matrices.x_scale
 
-        return tgrid, tt_s.flatten(), y_data, u_data, x_data
+        return tgrid, tt_s.flatten(), y_data, u_data, x_data, objective_value
     print("No solution found")
 
     return None
