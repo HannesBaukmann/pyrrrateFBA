@@ -132,20 +132,27 @@ class LPModel():
             and the variable names stored in the list "variable_names"
         """
         self.variable_names = variable_names
+        # create empty matrices since LP cannot contain indicator constraints
+        indmat = sp.csr_matrix(0)
+        xindmat = sp.csr_matrix(0)
+        bind = np.zeros(0)
         #
         # TODO: Check dimensions first
         #
         if self.solver_name == 'gurobi':
             _sparse_model_setup_gurobi(self.solver_model,
                                        fvec, amat, bvec, aeqmat, beq,
+                                       indmat, xindmat, bind,
                                        lbvec, ubvec, variable_names)
         elif self.solver_name == 'cplex':
             _sparse_model_setup_cplex(self.solver_model,
                                       fvec, amat, bvec, aeqmat, beq,
+                                      indmat, xindmat, bind,
                                       lbvec, ubvec, variable_names)
         elif self.solver_name == 'soplex':
             _sparse_model_setup_soplex(self.solver_model,
                                        fvec, amat, bvec, aeqmat, beq,
+                                       indmat, xindmat, bind,
                                        lbvec, ubvec, variable_names)
         elif self.solver_name == 'glpk':
             _sparse_model_setup_glpk(self.solver_model,
