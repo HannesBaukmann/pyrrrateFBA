@@ -278,6 +278,7 @@ class MILPModel(LPModel):
         """
         cf. sparse_model_setup for the LPModel class
         """
+        self.variable_names = variable_names
         n_booles = len(barf)
         m_aeqmat = aeqmat.shape[0]
         if self.solver_name == 'gurobi':
