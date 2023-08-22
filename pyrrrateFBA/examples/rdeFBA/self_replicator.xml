@@ -329,7 +329,7 @@ fbc:strict="false"&gt; <model id="self_regulator" name="self_regulator"
         </annotation>
 
         <listOfReactants>
-          <speciesReference constant="true" species="RP" stoichiometry="0.1"/>
+          <speciesReference constant="true" species="RP" stoichiometry="0.2"/>
 
           <speciesReference/>
         </listOfReactants>
