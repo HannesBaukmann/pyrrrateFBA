@@ -97,7 +97,7 @@ def perform_rdefba(model, optimization_kwargs={}, **kwargs):
     varphi = kwargs.get('varphi', 0.0)
     y_0 = kwargs.get('set_y0', None)# FIXME: So far, y0 is acceted as row vector only(!?)
     rkm = kwargs.get('runge_kutta', None)
-    scaling_factors = kwargs.get('scaling_factor', (1.0, 1.0))
+    scaling_factors = kwargs.get('scaling_factors', (1.0, 1.0))
     indicator_constraints = kwargs.get('indicator_constraints', False)
     #
     mtx = mat.Matrrrices(model, y0=y_0, scaling_factors=scaling_factors, run_rdeFBA=run_rdeFBA,
@@ -114,8 +114,8 @@ def perform_rdefba(model, optimization_kwargs={}, **kwargs):
         tgrid, tt_shift, sol_y, sol_u, sol_x, obj_val = mi_cp_linprog(mtx, t_0, t_end, n_steps=n_steps,
                                                                       varphi=varphi, **optimization_kwargs)
     else:
-        # if run_rdeFBA:
-        #     print('Cannot (yet) run r-deFBA with arbitrary Runge-Kutta scheme. Fallback to deFBA')
+        if run_rdeFBA and rkm.s > 1:
+            raise ValueError('Cannot (yet) run r-deFBA with Runge-Kutta schemes of higher order (>1).')
         tgrid, tt_shift, sol_y, sol_u, sol_x, obj_val = cp_rk_linprog(mtx, rkm, t_0, t_end, n_steps=n_steps,
                                                                       varphi=varphi, **optimization_kwargs)
         # sol_x = np.zeros((0, sol_u.shape[1]))
@@ -139,10 +139,10 @@ def perform_soa_rdeFBA(model, optimiziation_kwargs={}, **kwargs):
     n_steps = kwargs.get('n_steps', 51)
     tgrid = np.linspace(kwargs.get('t_0', 0.0), kwargs.get('t_end', 1.0), n_steps)
     varphi = kwargs.get('varphi', 0.0)
-    scaling_factor = kwargs.get('eps_scaling_factor', 1.0)
+    scaling_factors = kwargs.get('scaling_factors', (1.0, 1.0))
     kwargs.pop('varphi', kwargs)
     #
-    mtx = mat.Matrrrices(model, run_rdeFBA=run_rdeFBA, scale=scaling_factor)
+    mtx = mat.Matrrrices(model, run_rdeFBA=run_rdeFBA, scaling_factors=scaling_factors)
     y_0 = mtx.extract_initial_values()
     y_0 *= mtx.y_scale
     if y_0 is None:

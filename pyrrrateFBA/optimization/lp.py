@@ -55,7 +55,7 @@ if DEFAULT_SOLVER == 'scipy':
 
 
 # Constants for BigM and small M constraints
-EPSILON = 10**-7
+EPSILON = 10**-3
 BIGM = 10**8
 MINUSBIGM = -BIGM
 
