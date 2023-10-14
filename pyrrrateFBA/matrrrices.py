@@ -78,7 +78,7 @@ class Matrrrices:
         Class Matrrrices has fields according to MAT_FIELDS
     """
 
-    def __init__(self, model, y0=None, scale=1.0, run_rdeFBA=True, indicator_constraints=False, **kwargs):
+    def __init__(self, model, y0=None, scaling_factors=(1.0, 1.0), run_rdeFBA=True, indicator_constraints=False, **kwargs):
         #
         if model is None:
             # We just initialize an empty model. This is just quick and dirty at the moment...
@@ -119,16 +119,15 @@ class Matrrrices:
                 self.matrix_ind_x = np.zeros((0, len(self.x_vec)), dtype=float)
                 self.bvec_ind = np.zeros((0, 1))
 
-        # epsilon scaling
-        self.scale = scale
-        self.epsilon_scaling(model, run_rdeFBA, indicator_constraints)
-
         #
         # set so-far unset fields
         #
         self._set_unset_fields()
         self.check_dimensions()
 
+        # model scaling
+        self.scaling_factors = scaling_factors
+        self.epsilon_scaling(model, run_rdeFBA, indicator_constraints)
 
     def __repr__(self):
         return f'Matrrrix with n_y = {self.n_y}, n_u = {self.n_u}, and n_x = {self.n_x}'
@@ -342,7 +341,7 @@ class Matrrrices:
         # Why are these specified by finite kcatforward?
         u_vec = [r for (r, rxn) in model.reactions_dict.items() if np.isfinite(rxn['kcatForward'])]
 
-        # reaction vector u_p contains all macromolecule synthesis reactions. Except Quota synthesis!
+        # reaction vector u_p contains all macromolecule synthesis reactions.
         # macromolecule synthesis reactions are reactions with metabolites (or extracellular species) as educts
         # and at least one macromolecule as product
         y_vec_all = np.array(
@@ -351,14 +350,12 @@ class Matrrrices:
             [macro for macro in model.macromolecules_dict.keys()]
         )
         u_p_vec = []
-        quota_species = [macro for macro, dicti in model.macromolecules_dict.items() if dicti['speciesType'] == 'quota']
         for index, (r, rxn) in enumerate(model.reactions_dict.items()):
             if np.isfinite(rxn['kcatForward']):     # it's not a degradation reaction
                 products = y_vec_all[model.stoich[:, index] > 0]
                 educts = y_vec_all[model.stoich[:, index] < 0]
                 if not any(y in model.macromolecules_dict.keys() for y in educts) and \
-                        any(y in model.macromolecules_dict.keys() for y in products) and \
-                        not any(y in quota_species for y in products):
+                        any(y in model.macromolecules_dict.keys() for y in products):
                     u_p_vec.append(r)
 
         # boolean variables species vector x contains all boolean variables
@@ -456,12 +453,12 @@ class Matrrrices:
         # only if there is a macromolecule without an initialAmount specified
         #FIXME: This is dangerous: If one initial amount is larger one, we never get feasibility
         #       and it is not needed in general
-        enforce_biomass = False
+        self.enforce_biomass = False
         for macrom in macromolecules_dict.keys():
             if np.isnan(macromolecules_dict[macrom]['initialAmount']):
-                enforce_biomass = True
+                self.enforce_biomass = True
                 break
-        if enforce_biomass:
+        if self.enforce_biomass:
             #print('We need to "enforce biomass" here.')
             weights_row = np.zeros(self.n_y, dtype=float)
             for macrom in macromolecules_dict.keys():
@@ -975,26 +972,26 @@ class Matrrrices:
         #
         return y_matrix, u_matrix, maint_constraint_names
 
-    def epsilon_scaling(self, model, run_rdeFBA, indicator_constraints):
+    def epsilon_scaling(self, model, scaling_factors, run_rdeFBA, indicator_constraints):
         """ Epsilon-scaling
-        Scales macromolecule synthesis fluxes (u_p) (except quota synth.), macromolecule amounts (P(t)) and their change
-        over time (dP(t)/dt) by a small epsilon (eps).
+        Scales macromolecule synthesis fluxes (u_p) by eps_u, macromolecule amounts (P(t)) and their change
+        over time (dP(t)/dt) by eps_p.
 
         The function scales the following constraints:
         - QSSA:
                 0 == S_xy*u_y + S_xx*u_x + S_xp*u_p + S_xq*u_q  (u_q - Quota Synthesis)
-            ==> 0 == S_xy*u_y + S_xx*u_x + eps*S_xp*u_p + S_xq*u_q
+            ==> 0 == S_xy*u_y + S_xx*u_x + eps_u*S_xp*u_p + S_xq*u_q
         - boundary constraints:
-                P(t0) = p0  ==>  eps*P(t0) = p0
+                P(t0) = p0
+                ==>  P(t0) = 1/eps_p*p0  (if enforce_biomass=False, i.e. initial values were provided)
+                ==>  P(t0) = min(1/eps_y)*p0  (if enforce_biomass=True, i.e. no initial values were provided)
         - flux bounds:
-                u_p >= lb_p  ==>  u_p >= (1/eps)*lb_p
-                u_p <= ub_p  ==>  u_p <= (1/eps)*ub_p
+                u_p >= lb_p  ==>  u_p >= (1/eps_u)*lb_p
+                u_p <= ub_p  ==>  u_p <= (1/eps_u)*ub_p
         - Enzyme capacity constraints:
-                1/kcat*u_y - E <= 0   ==>   1/kcat*u_y - eps*E <= 0
-                1/kcat*u_x - E <= 0   ==>   1/kcat*u_x - eps*E <= 0
-                1/kcat*u_p - E <= 0   ==>   eps*1/kcat*u_p - eps*E <= 0
-                1/kcat*u_q - E <= 0   ==>   1/kcat*u_q - eps*E <= 0
-                Note: E won't be scaled by eps if E is quota!
+                1/kcat*u_y - E <= 0   ==>   1/eps_y*1/kcat*u_y - E <= 0
+                1/kcat*u_x - E <= 0   ==>   1/eps_y*1/kcat*u_x - E <= 0
+                1/kcat*u_p - E <= 0   ==>   1/eps_y*eps_u*1/kcat*u_p - E <= 0
         - Biomass composition constraint:
                 phi_q*(weights_p*P + weights_q*Q) - weights_q*q <= 0
             ==> phi_q*(eps*weights_p*P + weights_q*Q) - weights_q*q <= 0
@@ -1011,36 +1008,65 @@ class Matrrrices:
         phi_q - Quota coefficient
         phi_m - Maintenance coefficient
         """
-        y_scale = np.ones((1, self.n_y))
-        for macro, dicti in model.macromolecules_dict.items():
-            if dicti['speciesType'] != 'quota':
-                y_scale[:, self.y_vec.index(macro)] *= self.scale
+        if len(scaling_factors) != 2:   # 2 elements expected. One for macromolecules and one for macromolecule synth. fluxes
+            raise ValueError()
+        if not set(map(type, scaling_factors)).issubset([int, float, list, tuple, np.ndarray,]):
+            raise TypeError(f"Unsupported type for 'scaling_factor':{type(scaling_factors)}{list(map(type, scaling_factors))}."
+                            f"Expected a tuple with type(s) [int, float, list, tuple, ndarray,]")
 
-        u_scale = np.ones((1, self.n_u))
-        for u in self.u_p_vec:
-            u_scale[:, self.u_vec.index(u)] *= self.scale
+        scaling_factor_y, scaling_factor_u = scaling_factors
+        if isinstance(scaling_factor_y, Number):
+            y_scale = np.ones((1, self.n_y))
+            for macro, dicti in model.macromolecules_dict.items():
+                y_scale[:, self.y_vec.index(macro)] *= scaling_factor_y
+        else:
+            y_scale = scaling_factor_y
+
+        if isinstance(scaling_factor_u, Number):
+            u_scale = np.ones((1, self.n_u))
+            for u in self.u_p_vec:
+                u_scale[:, self.u_vec.index(u)] *= scaling_factor_u
+        else:
+            u_scale = scaling_factor_u
 
         x_scale = np.ones((1, self.n_x))    # not really needed. Just for completion
 
         # scale objective function
         self.phi1 *= y_scale.transpose()
 
+        # scale dynamic constraints
+        self.smat2 = self.smat2.multiply(u_scale)
+        self.smat2 = self.smat2.multiply(1/y_scale.transpose()) # can't scale smat4 here. therefore we scale smat2 by 1/yscale
+
         # scale QSSA constraints
         self.smat1 = self.smat1.multiply(u_scale)
 
         # scale boundary constraints
-        self.matrix_start = self.matrix_start.multiply(y_scale)
-        self.matrix_end = self.matrix_end.multiply(y_scale)
-        self.matrix_u_start = self.matrix_u_start.multiply(u_scale)
-        self.matrix_u_end = self.matrix_u_end.multiply(u_scale)
+        # FIXME: select the correct scaling-factor, matching the given initial amounts (i.e. what if some macromolecules are given, others not)
+        n_initial_values = self.matrix_start.shape[0]
+        if self.enforce_biomass:
+            n_initial_values -= 1
+            # scale enforce biomass constraint
+            # scale variable y_i by y_scale_i/min(y_scale) (lhs) and rhs by 1/min(y_scale)
+            y_scale_min = np.min(y_scale[:, len(model.extracellular_dict):], axis=1)
+            self.matrix_start[-1] = self.matrix_start[-1].multiply(y_scale/y_scale_min)     # enforce biomass constraint must be in the last row
+            self.vec_bndry[-1] *= 1/y_scale_min
+
+        # get indices of dynamic species with predefined initial value
+        i_bndry = []
+        for row in range(n_initial_values):
+            start, end = self.matrix_start.indptr[row], self.matrix_start.indptr[row+1]
+            i_bndry.append(self.matrix_start.indices[start:end][0])
+        scaling_factors_rhs = 1/y_scale[:, i_bndry]
+        self.vec_bndry[:n_initial_values, :] = self.vec_bndry[:n_initial_values, :]*scaling_factors_rhs.transpose()
 
         # scale flux bounds
         self.lbvec *= 1/u_scale.transpose()
         self.ubvec *= 1/u_scale.transpose()
 
         # scale mixed matrices (enzyme capacity constraints, biomass composition constraints, maintenance constraints)
-        self.matrix_y = self.matrix_y.multiply(y_scale)
-        self.matrix_u = self.matrix_u.multiply(u_scale)
+        self.matrix_y = self.matrix_y.multiply(y_scale/min(y_scale.flatten()))
+        self.matrix_u = self.matrix_u.multiply(u_scale/min(y_scale.flatten()))
 
         # scale regulatory constraints
         if run_rdeFBA:
@@ -1049,8 +1075,23 @@ class Matrrrices:
 
             # scale indicator constraints
             if indicator_constraints:
-                self.matrix_ind_y = self.matrix_ind_y.multiply(y_scale)
-                self.matrix_ind_u = self.matrix_ind_u.multiply(u_scale)
+                # we only want to scale the rhs. But a regulatory state could depend on multiple differently scaled variables
+                # --> 1. Scale each variable individually
+                # --> 2. Scale the whole constraint by some factor (row_scaling_factor)
+
+                # row_scaling_factor is the smallest scaling factor used in that row
+                matrix_ind = sp.hstack([self.matrix_ind_y, self.matrix_ind_u], format='csr')
+                scale = np.hstack([y_scale, u_scale]).flatten()
+                row_scaling_factors = []
+                for row_idx in range(matrix_ind.shape[0]):
+                    start, end = matrix_ind.indptr[row_idx], matrix_ind.indptr[row_idx+1]
+                    row_scaling_factors.append([min(scale[matrix_ind.indices[start:end]])])
+                row_scaling_factors = np.array(row_scaling_factors)
+
+                # scale each variable by var_scaling_factor/row_scaling_factor
+                self.matrix_ind_y = self.matrix_ind_y.multiply(y_scale/row_scaling_factors)
+                self.matrix_ind_u = self.matrix_ind_u.multiply(u_scale/row_scaling_factors)
+                self.bvec_ind *= 1/row_scaling_factors
 
         self.y_scale = y_scale
         self.u_scale = u_scale
