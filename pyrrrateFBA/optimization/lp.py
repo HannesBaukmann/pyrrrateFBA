@@ -196,8 +196,7 @@ class LPModel():
             return _get_objective_val_cplex(self.solver_model)
         if self.solver_name == 'soplex':
             return _get_objective_val_soplex(self.solver_model)
-        else:
-            return None
+        return None
 
         
     def add_constraints(self, amat, bvec, sense):
