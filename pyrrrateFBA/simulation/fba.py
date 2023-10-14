@@ -98,8 +98,9 @@ def perform_rdefba(model, optimization_kwargs={}, **kwargs):
     y_0 = kwargs.get('set_y0', None)# FIXME: So far, y0 is acceted as row vector only(!?)
     rkm = kwargs.get('runge_kutta', None)
     scaling_factor = kwargs.get('eps_scaling_factor', 1)
+    indicator_constraints = kwargs.get('indicator_constraints', False)
     #
-    mtx = mat.Matrrrices(model, y0=y_0, run_rdeFBA=run_rdeFBA, scale=scaling_factor)
+    mtx = mat.Matrrrices(model, y0=y_0, scale=scaling_factor, run_rdeFBA=run_rdeFBA, indicator_constraints=indicator_constraints)
     # adapt initial values if explicitly given
     # if y_0 is not None:
     #     mtx.matrix_end = csr_matrix((y_0.size, y_0.size))
@@ -109,18 +110,18 @@ def perform_rdefba(model, optimization_kwargs={}, **kwargs):
     #     mtx.vec_bndry = y_0.transpose()
     # Call the OC routine
     if rkm is None:
-        tgrid, tt_shift, sol_y, sol_u, sol_x = mi_cp_linprog(mtx, t_0, t_end, n_steps=n_steps,
-                                                             varphi=varphi, **optimization_kwargs)
+        tgrid, tt_shift, sol_y, sol_u, sol_x, obj_val = mi_cp_linprog(mtx, t_0, t_end, n_steps=n_steps,
+                                                                      varphi=varphi, **optimization_kwargs)
     else:
         # if run_rdeFBA:
         #     print('Cannot (yet) run r-deFBA with arbitrary Runge-Kutta scheme. Fallback to deFBA')
-        tgrid, tt_shift, sol_y, sol_u, sol_x = cp_rk_linprog(mtx, rkm, t_0, t_end, n_steps=n_steps,
-                                                             varphi=varphi, **optimization_kwargs)
+        tgrid, tt_shift, sol_y, sol_u, sol_x, obj_val = cp_rk_linprog(mtx, rkm, t_0, t_end, n_steps=n_steps,
+                                                                      varphi=varphi, **optimization_kwargs)
         # sol_x = np.zeros((0, sol_u.shape[1]))
         # sol_x = np.zeros((sol_u.shape[0], 0))
 
     y_names, u_names, x_names = mtx.y_vec, mtx.u_vec, mtx.x_vec
-    sols = Solutions(tgrid, tt_shift, sol_y, sol_u, sol_x, y_names, u_names, x_names)
+    sols = Solutions(tgrid, tt_shift, sol_y, sol_u, sol_x, obj_val, y_names, u_names, x_names)
 
     return sols
 
