@@ -219,21 +219,27 @@ class LPModel():
         if self.solver_name == 'soplex':
             _set_solver_parameters_soplex(self.solver_model, parameters)
 
+    def print_optimization_log(self):
+        if self.solver_name == 'gurobi':
+            _print_optimization_log_gurobi(self.solver_model)
+        elif self.solver_name == 'cplex':
+            _print_optimization_log_cplex(self.solver_model)
+        elif self.solver_name == 'soplex':
+            _print_optimization_log_soplex(self.solver_model)
+        else:
+            print(f'Optimization log cannot (yet) be printed for solver {self.solver_name}')
+
     def optimize(self):
         """
         Call the optimization routine of the underlying solver
         """
         if self.solver_name == 'gurobi':
-            # self.solver_model.setParam('OutputFlag', 1)
             self.solver_model.optimize()
             self.status = self.solver_model.status
             # MAYBE: It would probably be better to have one status meaning on the self-level
         elif self.solver_name == 'cplex':
-            # self.solver_model.context.solver.log_output = True
             self.solver_model.solve()
             self.status = self.solver_model.solve_status
-            if self.status == OPTIMAL:
-                print(f"Objective value = {self.get_objective_val()}")
         elif self.solver_name == 'soplex':
             self.solver_model.optimize()
             self.status = self.solver_model.getStatus()
@@ -559,6 +565,8 @@ def _set_solver_parameters_gurobi(model, parameters: dict):
     for p, value in parameters.items():
         model.setParam(p, value)
 
+def _print_optimization_log_gurobi(model):
+    model.setParam('OutputFlag', 1)
 
 # CPLEX - specifics ###########################################################
 def _sparse_model_setup_cplex(model, fvec, amat, bvec, aeqmat, beq, indmat, xindmat, bind,
@@ -638,6 +646,9 @@ def _get_objective_val_cplex(model):
 
 def _set_solver_parameters_cplex(model, parameters: dict):
     model.context.update_cplex_parameters(parameters)
+
+def _print_optimization_log_cplex(model):
+    model.context.solver.log_output = True
 
 
 # SOPLEX - specifics ##########################################################
@@ -733,6 +744,9 @@ def _get_objective_vector_soplex(model):
 
 def _set_solver_parameters_soplex(model, parameters: dict):
     model.setParams(parameters)
+
+def _print_optimization_log_soplex(model):
+    model.hideOutput(False)
     
 
 # GLPK specifics ##############################################################

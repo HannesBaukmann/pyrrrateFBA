@@ -476,6 +476,11 @@ def cp_rk_linprog(matrices, rkm, t_0, t_end, n_steps=101, varphi=0.0,
             model.write_to_file(write_model)
         model.set_solver_parameters(solver_parameters)
 
+    # get verbosity_level and activate printing of optimization log if verbosity_level > 2
+    verbosity_level = optimization_kwargs.get('verbosity_level', 1)
+    if verbosity_level > 2:
+        model.print_optimization_log()
+
     model.optimize()
 
     if model.status == lp_wrapper.OPTIMAL:
@@ -484,6 +489,8 @@ def cp_rk_linprog(matrices, rkm, t_0, t_end, n_steps=101, varphi=0.0,
                             (n_steps*s_rk, n_u))
         x_data = np.reshape(model.get_solution()[n_ally+n_allk+n_allu:], (n_steps*s_rk, n_x))
         objective_value = model.get_objective_val()
+        if verbosity_level > 1:
+            print(f"Optimal solution found with objective value: {objective_value}")
 
         # undo epsilon-scaling
         y_data *= matrices.y_scale
