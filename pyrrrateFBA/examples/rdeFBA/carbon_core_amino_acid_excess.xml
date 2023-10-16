@@ -621,8 +621,8 @@
       <ram:reaction ram:kcatForward="3.0" ram:kcatBackward="0.0" ram:maintenanceScaling="0.0"/>
     </ram:RAM>
   </annotation>
-  <fbc:geneProductAssociation fbc:id="R">
-    <fbc:geneProductRef fbc:geneProduct="R"/>
+  <fbc:geneProductAssociation fbc:id="E_Q">
+    <fbc:geneProductRef fbc:geneProduct="E_Q"/>
   </fbc:geneProductAssociation>
   <listOfReactants>
     <speciesReference species="H" stoichiometry="250.0" constant="true"/>
@@ -935,6 +935,7 @@
   <listOfReactants>
     <speciesReference species="H" stoichiometry="4500.0" constant="true"/>
     <speciesReference species="ATP" stoichiometry="18000.0" constant="true"/>
+    <speciesReference species="C" stoichiometry="1500.0" constant="true"/>
   </listOfReactants>
   <listOfProducts>
     <speciesReference species="R" stoichiometry="1.0" constant="true"/>
