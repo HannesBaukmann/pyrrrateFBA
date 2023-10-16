@@ -6,6 +6,7 @@ Simple flux balance analysis
 # -*- coding: utf-8 -*-
 import numpy as np
 from copy import deepcopy
+from warnings import warn
 from scipy.optimize import bisect
 from scipy.sparse import csr_matrix#, bmat
 from pyrrrateFBA.simulation.results import Solutions
@@ -115,7 +116,7 @@ def perform_rdefba(model, optimization_kwargs={}, **kwargs):
                                                                       varphi=varphi, **optimization_kwargs)
     else:
         if run_rdeFBA and rkm.s > 1:
-            raise ValueError('Cannot (yet) run r-deFBA with Runge-Kutta schemes of higher order (>1).')
+            warn("Higher-order Runge-Kutta methods (> Order 1) don't work as intended yet. Use with caution!")
         tgrid, tt_shift, sol_y, sol_u, sol_x, obj_val = cp_rk_linprog(mtx, rkm, t_0, t_end, n_steps=n_steps,
                                                                       varphi=varphi, **optimization_kwargs)
         # sol_x = np.zeros((0, sol_u.shape[1]))
