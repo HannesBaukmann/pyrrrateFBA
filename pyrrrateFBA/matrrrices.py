@@ -20,6 +20,7 @@ framework
 import copy
 import numpy as np
 import scipy.sparse as sp
+from numbers import Number
 from pyrrrateFBA.optimization.lp import INFINITY, EPSILON, BIGM, MINUSBIGM
 from pyrrrateFBA.util.linalg import solve_if_unique, shape_of_callable, is_instance_callable
 
@@ -126,8 +127,8 @@ class Matrrrices:
         self.check_dimensions()
 
         # model scaling
-        self.scaling_factors = scaling_factors
-        self.epsilon_scaling(model, run_rdeFBA, indicator_constraints)
+        # self.scaling_factors = scaling_factors
+        self.epsilon_scaling(model, scaling_factors, run_rdeFBA, indicator_constraints)
 
     def __repr__(self):
         return f'Matrrrix with n_y = {self.n_y}, n_u = {self.n_u}, and n_x = {self.n_x}'
@@ -755,7 +756,7 @@ class Matrrrices:
                         if event['listOfEffects'][i] == 0:
                             u_matrix_1_0[constraint_index_0, flux_index] = sign
                             x_matrix_1_0[constraint_index_0, self.x_vec.index(affected_bool)] = -1
-                            b_vec_1_0[constraint_index_0] = event['threshold'] (sign - eps)
+                            b_vec_1_0[constraint_index_0] = event['threshold'] * (sign - eps)
                         elif event['listOfEffects'][i] == 1:
                             u_matrix_1_1[constraint_index_1, flux_index] = sign
                             x_matrix_1_1[constraint_index_1, self.x_vec.index(affected_bool)] = 1
@@ -1033,6 +1034,8 @@ class Matrrrices:
 
         # scale objective function
         self.phi1 *= y_scale.transpose()
+        self.phi2 *= y_scale.transpose()
+        self.phi3 *= y_scale.transpose()
 
         # scale dynamic constraints
         self.smat2 = self.smat2.multiply(u_scale)
